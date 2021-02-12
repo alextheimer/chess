@@ -13,6 +13,7 @@ namespace board {
     enum class PieceColor { BLACK, WHITE, NUM_PIECE_COLORS };
 
     typedef uint8_t DimIndex;
+    typedef uint64_t Bitboard;
 
     struct Piece {
         const PieceType type;
@@ -33,15 +34,18 @@ namespace board {
         public:
             Board(const std::unordered_map<Square, Piece>& piece_map);
             Board(const Board& copy_me);
-            Board(const Board&& move_me);
+            Board(Board&& move_me);
             ~Board();
             Board& operator=(const Board& copy_assign_me);
-            Board& operator=(const Board&& move_assign_me);
+            Board& operator=(Board&& move_assign_me);
 
+            friend void swapBoard(Board& board1, Board& board2);
             bool squareIsOccupied(const Square& square) const;
             void setPiece(const Piece& piece, const Square& square);
-            Piece getPiece(const Square& square);
+//              Piece getPiece(const Square& square);
     };
+
+    void swapBoard(Board& board1, Board& board2);
 }
 
 #endif  // BOARD_H_

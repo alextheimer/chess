@@ -3,6 +3,8 @@
 
 #include <cassert>
 #include <unordered_map>
+#include <algorithm>
+#include <iterator>
 
 #include "util/math.h"
 
@@ -15,7 +17,6 @@ const size_t PIECE_COLOR_MASK = ((size_t)1 << NUM_PIECE_COLOR_BITS) - 1;
 const size_t PIECE_TYPE_MASK = ((size_t)1 << NUM_PIECE_TYPE_BITS) - 1;
 
 typedef uint8_t BitboardIndex;
-typedef uint64_t Bitboard;
 
 Piece::Piece(PieceType type, PieceColor color) : type(type), color(color) {
     assert(type != PieceType::NUM_PIECE_TYPES);
@@ -48,13 +49,17 @@ Piece decompressPiece(CompressedPiece compressed_piece) {
     compressed_piece >>= NUM_PIECE_TYPE_BITS;
     color = static_cast<PieceColor>(compressed_piece & PIECE_COLOR_MASK);
 
-    // TODO(theimer): this is C-ish
+    // TODO(theimer): this seems too C-ish
     return (Piece){type, color};
+}
+
+void board::swapBoard(Board& board1, Board& board2) {
+	swap(board1.color_bitboards_, board2.color_bitboards_);
+	swap(board1.piece_bitboards_, board2.piece_bitboards_);
 }
 
 Board::Board(const std::unordered_map<Square, Piece>& piece_map) {
     // Note: all field array indices initialized to zero.
-
     for (auto iterator = piece_map.begin(); iterator != piece_map.end(); ++iterator)  {
         const Square& square = iterator->first;
         const Piece& piece = iterator->second;
@@ -66,23 +71,31 @@ Board::Board(const std::unordered_map<Square, Piece>& piece_map) {
 }
 
 Board::Board(const Board& copy_me) {
-
+	std::copy(copy_me.color_bitboards_.begin(),
+			  copy_me.color_bitboards_.end(),
+			  this->color_bitboards_.begin());
+	std::copy(copy_me.piece_bitboards_.begin(),
+			  copy_me.piece_bitboards_.end(),
+			  this->piece_bitboards_.begin());
 }
 
-Board::Board(const Board&& move_me) {
-
+Board::Board(Board&& move_me) {
+	board::swapBoard(*this, move_me);
 }
 
 Board::~Board() {
-
+	// blank
 }
 
-Board& Board::operator=(const Board& copy_assign_me){
-
+Board& Board::operator=(const Board& copy_assign_me) {
+	Board copy(copy_assign_me);
+	board::swapBoard(*this, copy);
+	return *this;
 }
 
-Board& Board::operator=(const Board&& move_assign_me) {
-
+Board& Board::operator=(Board&& move_assign_me) {
+	board::swapBoard(*this, move_assign_me);
+	return *this;
 }
 
 bool Board::squareIsOccupied(const Square& square) const {
