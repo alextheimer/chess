@@ -16,6 +16,7 @@ const size_t PIECE_TYPE_MASK = ((size_t)1 << NUM_PIECE_TYPE_BITS) - 1;
 
 typedef uint8_t DimIndex;
 typedef uint8_t BitboardIndex;
+typedef uint64_t Bitboard;
 
 Piece::Piece(PieceType type, PieceColor color) : type(type), color(color) {
     assert(type != PieceType::NUM_PIECE_TYPES);
@@ -87,9 +88,9 @@ Board& Board::operator=(const Board&& move_assign_me) {
 
 bool Board::squareIsOccupied(const Square& square) const {
     size_t index = squareToBitboardIndex(square);
-    uint64_t occupancy_bits = (this->color_bitboards_[static_cast<int>(PieceColor::WHITE)] | 
+    Bitboard occupancy_board = (this->color_bitboards_[static_cast<int>(PieceColor::WHITE)] |
                                this->color_bitboards_[static_cast<int>(PieceColor::BLACK)]);
-    return static_cast<bool>(bitops::get_bit(occupancy_bits, index));
+    return static_cast<bool>(bitops::get_bit(occupancy_board, index));
 }
 
 void Board::setPiece(const Piece& piece, const Square& square) {
