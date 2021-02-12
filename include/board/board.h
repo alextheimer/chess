@@ -28,8 +28,8 @@ namespace board {
 
     class Board {
         private:
-            uint64_t piece_bitboards_[static_cast<int>(PieceType::NUM_PIECE_TYPES)] = { 0 };
-            uint64_t color_bitboards_[static_cast<int>(PieceColor::NUM_PIECE_COLORS)] = { 0 };
+            std::array<Bitboard, static_cast<int>(PieceType::NUM_PIECE_TYPES)> piece_bitboards_ = { 0 };
+            std::array<Bitboard, static_cast<int>(PieceColor::NUM_PIECE_COLORS)> color_bitboards_ = { 0 };
         public:
             Board(const std::unordered_map<Square, Piece>& piece_map);
             Board(const Board& copy_me);
