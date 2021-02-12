@@ -12,6 +12,8 @@ namespace board {
     enum class PieceType { KING, PAWN, ROOK, KNIGHT, BISHOP, NUM_PIECE_TYPES };
     enum class PieceColor { BLACK, WHITE, NUM_PIECE_COLORS };
 
+    typedef uint8_t DimIndex;
+
     struct Piece {
         const PieceType type;
         const PieceColor color;
@@ -19,9 +21,9 @@ namespace board {
     };
 
     struct Square {
-        const uint8_t row;
-        const uint8_t col;
-        Square(uint8_t row, uint8_t col);
+        const DimIndex row;
+        const DimIndex col;
+        Square(DimIndex row, DimIndex col);
     };
 
     class Board {

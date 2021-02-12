@@ -14,7 +14,6 @@ const size_t NUM_PIECE_TYPE_BITS = math::log2Ceil(static_cast<int>(PieceType::NU
 const size_t PIECE_COLOR_MASK = ((size_t)1 << NUM_PIECE_COLOR_BITS) - 1;
 const size_t PIECE_TYPE_MASK = ((size_t)1 << NUM_PIECE_TYPE_BITS) - 1;
 
-typedef uint8_t DimIndex;
 typedef uint8_t BitboardIndex;
 typedef uint64_t Bitboard;
 
@@ -23,7 +22,7 @@ Piece::Piece(PieceType type, PieceColor color) : type(type), color(color) {
     assert(color != PieceColor::NUM_PIECE_COLORS);
 }
 
-Square::Square(uint8_t row, uint8_t col) : row(row), col(col) {
+Square::Square(DimIndex row, DimIndex col) : row(row), col(col) {
     assert(row >= 0 && row < BOARD_WIDTH);
     assert(col >= 0 && col < BOARD_WIDTH);
 }
