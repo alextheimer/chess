@@ -4,7 +4,6 @@
 #include <cassert>
 #include <unordered_map>
 #include <algorithm>
-#include <iterator>
 
 #include "util/math.h"
 
