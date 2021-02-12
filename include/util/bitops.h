@@ -5,10 +5,11 @@
 
 namespace bitops {
 
-	const std::size_t NUM_BITS = 64;
+	typedef uint64_t BitOpType;
+	const std::size_t NUM_BITS = 8 * sizeof(BitOpType);
 
-    void set_bit(uint64_t& bits, std::size_t bit_index, std::size_t bit);
-    std::size_t get_bit(uint64_t bits, std::size_t bit_index);
+    void set_bit(BitOpType& bits, std::size_t bit_index, bool bit);
+    bool get_bit(BitOpType bits, std::size_t bit_index);
 }
 
 #endif  // BITOPS_H_

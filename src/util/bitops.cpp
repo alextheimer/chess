@@ -3,18 +3,23 @@
 #include "board/board.h"
 #include "util/bitops.h"
 
-void bitops::set_bit(uint64_t& bits, std::size_t bit_index, std::size_t bit) {
-    assert((bit_index < bitops::NUM_BITS) && (bit_index >= 0));
-    unsigned int shift_count = (bitops::NUM_BITS - bit_index - 1);
-    unsigned int mask = ~((uint64_t)1 << shift_count);
-    bits &= mask;
-    bit <<= shift_count;
-    bits |= bit;
+bool validBitIndex(std::size_t bit_index) {
+	return (bit_index < bitops::NUM_BITS) && (bit_index >= 0);
 }
 
-size_t bitops::get_bit(uint64_t bits, size_t bit_index) {
-    assert((bit_index < bitops::NUM_BITS) && (bit_index >= 0));
-    unsigned int shift_count = (bitops::NUM_BITS - bit_index - 1);
-    unsigned int mask = (uint64_t)1 << shift_count;
-    return (bits & mask) >> shift_count;
+void bitops::set_bit(BitOpType& bits, std::size_t bit_index, bool bit) {
+    assert(validBitIndex(bit_index));
+    std::size_t shift_count = (bitops::NUM_BITS - bit_index - 1);
+    BitOpType mask = ~((BitOpType)1 << shift_count);
+    bits &= mask;
+    bits |= (static_cast<BitOpType>(bit) << shift_count);
+}
+
+bool bitops::get_bit(BitOpType bits, size_t bit_index) {
+    assert(validBitIndex(bit_index));
+    std::size_t shift_count = (bitops::NUM_BITS - bit_index - 1);
+    BitOpType mask = (BitOpType)1 << shift_count;
+    BitOpType bitVal = (bits & mask) >> shift_count;
+    assert((bitVal == 0) || (bitVal == 1));
+    return static_cast<bool>(bitVal);
 }
