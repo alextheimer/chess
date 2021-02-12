@@ -5,7 +5,6 @@
 #include <unordered_map>
 
 #include "util/math.h"
-#include "globs.h"
 
 using namespace board;
 
@@ -30,7 +29,7 @@ Square::Square(uint8_t row, uint8_t col) : row(row), col(col) {
 
 BitboardIndex squareToBitboardIndex(const Square& square) {
     BitboardIndex index = (square.row * BOARD_WIDTH) + square.col;
-    assert(index >= 0 && index < globs::BOARD_SIZE);
+    assert(index >= 0 && index < board::BOARD_SIZE);
     return index;
 }
 

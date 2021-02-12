@@ -6,7 +6,8 @@
 
 namespace board {
 
-    static const int BOARD_WIDTH = 8;
+    const std::size_t BOARD_WIDTH = 8;
+    const std::size_t BOARD_SIZE = BOARD_WIDTH * BOARD_WIDTH;
 
     enum class PieceType { KING, PAWN, ROOK, KNIGHT, BISHOP, NUM_PIECE_TYPES };
     enum class PieceColor { BLACK, WHITE, NUM_PIECE_COLORS };
