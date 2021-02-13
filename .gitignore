@@ -1,4 +1,5 @@
 bin/
+test/bin/
 .cproject
 .project
 .settings/
