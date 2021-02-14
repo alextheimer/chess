@@ -8,9 +8,8 @@ TEST_DEPS = $(shell find test -type f)
 
 default: $(TARGET)
 
-ifdef $(DEBUG)
-CFLAGS += -g -O0 
-endif
+debug: CFLAGS += -g -O0 
+debug: $(TARGET)
 
 $(TARGET): src/main.cpp $(TARGET_DEPS)
 	$(CC) $(CFLAGS) -o bin/$(TARGET) src/main.cpp $(TARGET_DEPS) -I include
