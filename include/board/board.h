@@ -19,22 +19,18 @@ namespace board {
         const PieceType type;
         const PieceColor color;
         Piece(PieceType type, PieceColor color);
-
-    	friend bool operator==(const Piece& lhs, const Piece& rhs) {
-    		return (lhs.type == rhs.type) && (lhs.color == rhs.color);
-    	}
-
+    	friend bool operator==(const Piece& lhs, const Piece& rhs);
     };
 
     struct Square {
         const DimIndex row;
         const DimIndex col;
         Square(DimIndex row, DimIndex col);
-
-    	friend bool operator==(const Square& lhs, const Square& rhs) {
-    		return (lhs.row == rhs.row) && (lhs.col == rhs.col);
-    	}
+        friend bool operator==(const Square& lhs, const Square& rhs);
     };
+
+    bool operator==(const Piece& lhs, const Piece& rhs);
+	bool operator==(const Square& lhs, const Square& rhs);
 
     class Board {
         private:
@@ -51,26 +47,18 @@ namespace board {
             friend void swapBoard(Board& board1, Board& board2);
             bool squareIsOccupied(const Square& square) const;
             void setPiece(const Piece& piece, const Square& square);
-//              Piece getPiece(const Square& square);
     };
 
     void swapBoard(Board& board1, Board& board2);
 }
 
 namespace std {
-
 	template <> struct hash<board::Square> {
-		size_t operator()(const board::Square& x) const {
-			hash<int> int_hash;
-			return int_hash(static_cast<int>(x.row)) ^ int_hash(static_cast<int>(x.col));
-		}
+		size_t operator()(const board::Square& x) const;
 	};
 
 	template <> struct hash<board::Piece> {
-	    size_t operator()(const board::Piece& x) const {
-	        hash<int> int_hash;
-		    return int_hash(static_cast<int>(x.color)) ^ int_hash(static_cast<int>(x.type));
-	    }
+	    size_t operator()(const board::Piece& x) const;
 	};
 }
 

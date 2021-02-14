@@ -27,6 +27,24 @@ Square::Square(DimIndex row, DimIndex col) : row(row), col(col) {
     assert(col >= 0 && col < BOARD_WIDTH);
 }
 
+bool board::operator==(const Piece& lhs, const Piece& rhs) {
+	return (lhs.type == rhs.type) && (lhs.color == rhs.color);
+}
+
+bool board::operator==(const Square& lhs, const Square& rhs) {
+	return (lhs.row == rhs.row) && (lhs.col == rhs.col);
+}
+
+size_t std::hash<board::Piece>::operator()(const board::Piece& x) const {
+	hash<int> int_hash;
+	return int_hash(static_cast<int>(x.color)) ^ int_hash(static_cast<int>(x.type));
+}
+
+size_t std::hash<board::Square>::operator()(const board::Square& x) const {
+	hash<int> int_hash;
+	return int_hash(static_cast<int>(x.row)) ^ int_hash(static_cast<int>(x.col));
+}
+
 BitboardIndex squareToBitboardIndex(const Square& square) {
     BitboardIndex index = (square.row * BOARD_WIDTH) + square.col;
     assert(index >= 0 && index < board::BOARD_SIZE);
