@@ -23,8 +23,8 @@ Piece::Piece(PieceType type, PieceColor color) : type(type), color(color) {
 }
 
 Square::Square(DimIndex row, DimIndex col) : row(row), col(col) {
-    assert(row >= 0 && row < BOARD_WIDTH);
-    assert(col >= 0 && col < BOARD_WIDTH);
+    assert(row >= 0 && row < Board::WIDTH);
+    assert(col >= 0 && col < Board::WIDTH);
 }
 
 bool board::operator==(const Piece& lhs, const Piece& rhs) {
@@ -35,19 +35,19 @@ bool board::operator==(const Square& lhs, const Square& rhs) {
 	return (lhs.row == rhs.row) && (lhs.col == rhs.col);
 }
 
-size_t std::hash<board::Piece>::operator()(const board::Piece& x) const {
+size_t std::hash<Piece>::operator()(const Piece& x) const {
 	hash<int> int_hash;
 	return int_hash(static_cast<int>(x.color)) ^ int_hash(static_cast<int>(x.type));
 }
 
-size_t std::hash<board::Square>::operator()(const board::Square& x) const {
+size_t std::hash<Square>::operator()(const Square& x) const {
 	hash<int> int_hash;
 	return int_hash(static_cast<int>(x.row)) ^ int_hash(static_cast<int>(x.col));
 }
 
 BitboardIndex squareToBitboardIndex(const Square& square) {
-    BitboardIndex index = (square.row * BOARD_WIDTH) + square.col;
-    assert(index >= 0 && index < board::BOARD_SIZE);
+    BitboardIndex index = (square.row * Board::WIDTH) + square.col;
+    assert(index >= 0 && index < Board::SIZE);
     return index;
 }
 
@@ -97,7 +97,7 @@ Board::Board(const Board& copy_me) {
 }
 
 Board::Board(Board&& move_me) {
-	board::swapBoard(*this, move_me);
+	swapBoard(*this, move_me);
 }
 
 Board::~Board() {
@@ -106,12 +106,12 @@ Board::~Board() {
 
 Board& Board::operator=(const Board& copy_assign_me) {
 	Board copy(copy_assign_me);
-	board::swapBoard(*this, copy);
+	swapBoard(*this, copy);
 	return *this;
 }
 
 Board& Board::operator=(Board&& move_assign_me) {
-	board::swapBoard(*this, move_assign_me);
+	swapBoard(*this, move_assign_me);
 	return *this;
 }
 
@@ -125,6 +125,6 @@ bool Board::squareIsOccupied(const Square& square) const {
 void Board::setPiece(const Piece& piece, const Square& square) {
     assert(!this->squareIsOccupied(square));
     size_t index = squareToBitboardIndex(square);
-    bitops::set_bit(this->piece_bitboards_[static_cast<int>(piece.type)], index, 1);
-    bitops::set_bit(this->color_bitboards_[static_cast<int>(piece.color)], index, 1);
+    bitops::set_bit(this->piece_bitboards_[static_cast<int>(piece.type)], index, true);
+    bitops::set_bit(this->color_bitboards_[static_cast<int>(piece.color)], index, true);
 }

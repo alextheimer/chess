@@ -6,13 +6,10 @@
 
 namespace board {
 
-    const std::size_t BOARD_WIDTH = 8;
-    const std::size_t BOARD_SIZE = BOARD_WIDTH * BOARD_WIDTH;
-
     enum class PieceType { KING, PAWN, ROOK, KNIGHT, BISHOP, NUM_PIECE_TYPES };
     enum class PieceColor { BLACK, WHITE, NUM_PIECE_COLORS };
 
-    typedef uint8_t DimIndex;
+    typedef uint8_t DimIndex;  // row/col index
     typedef uint64_t Bitboard;
 
     struct Piece {
@@ -37,6 +34,9 @@ namespace board {
             std::array<Bitboard, static_cast<int>(PieceType::NUM_PIECE_TYPES)> piece_bitboards_ = { 0 };
             std::array<Bitboard, static_cast<int>(PieceColor::NUM_PIECE_COLORS)> color_bitboards_ = { 0 };
         public:
+            const static std::size_t WIDTH = 8;
+            const static std::size_t SIZE = WIDTH * WIDTH;
+
             Board(const std::unordered_map<Square, Piece>& piece_map);
             Board(const Board& copy_me);
             Board(Board&& move_me);
