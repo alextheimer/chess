@@ -51,6 +51,11 @@ BitboardIndex squareToBitboardIndex(const Square& square) {
     return index;
 }
 
+Square bitboardIndexToSquare(const BitboardIndex index) {
+	assert(index >= 0 && index < Board::SIZE);
+    return Square(index / Board::WIDTH, index % Board::WIDTH);
+}
+
 CompressedPiece compressPiece(const Piece& piece) {
     CompressedPiece compressed_piece = static_cast<CompressedPiece>(piece.color);
     compressed_piece <<= NUM_PIECE_TYPE_BITS;
@@ -127,4 +132,18 @@ void Board::setPiece(const Piece& piece, const Square& square) {
     size_t index = squareToBitboardIndex(square);
     bitops::set_bit(this->piece_bitboards_[static_cast<int>(piece.type)], index, true);
     bitops::set_bit(this->color_bitboards_[static_cast<int>(piece.color)], index, true);
+}
+
+
+Board::SquareGenerator::SquareGenerator(Bitboard bitboard) {
+	this->bitboard_ = bitboard;
+}
+
+bool Board::SquareGenerator::hasNext() {
+	return this->bitboard_ != 0;
+}
+Square Board::SquareGenerator::next() {
+	assert(this->hasNext());
+	size_t index = bitops::pop_highest_bit(this->bitboard_);
+	return bitboardIndexToSquare(index);
 }
