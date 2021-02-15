@@ -58,6 +58,8 @@ namespace board {
             const static std::size_t WIDTH = 8;
             const static std::size_t SIZE = WIDTH * WIDTH;
 
+            class SquareGenerator;
+
             /**
              * Constructs a Board instance from a Square->Piece mapping.
              * I.e. for each pair (square, piece), piece is stored at square.
@@ -71,7 +73,8 @@ namespace board {
             Board& operator=(const Board& copy_assign_me);
             Board& operator=(Board&& move_assign_me);
 
-            friend void swapBoard(Board& board1, Board& board2);
+            SquareGenerator generateMatchingSquares(PieceType type, PieceColor color);
+
             /**
              * Returns true iff `square` is occupied on the Board.
              */
@@ -80,6 +83,17 @@ namespace board {
              * Stores the piece described by `piece` at `square` on the Board.
              */
             void setPiece(const Piece& piece, const Square& square);
+
+            friend void swapBoard(Board& board1, Board& board2);
+    };
+
+    class Board::SquareGenerator {
+    	private:
+    		Bitboard bitboard_;
+    	public:
+    		SquareGenerator(Bitboard bitboard);
+    		bool hasNext();
+    		Square next();
     };
 
     /**
