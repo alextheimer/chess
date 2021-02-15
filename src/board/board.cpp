@@ -10,12 +10,12 @@
 using namespace board;
 
 typedef uint8_t CompressedPiece;
-const size_t NUM_PIECE_COLOR_BITS = math::log2Ceil(static_cast<int>(PieceColor::NUM_PIECE_COLORS));
-const size_t NUM_PIECE_TYPE_BITS = math::log2Ceil(static_cast<int>(PieceType::NUM_PIECE_TYPES));
+const size_t NUM_PIECE_COLOR_BITS = math::log2Ceil(1 + static_cast<int>(PieceColor::NUM_PIECE_COLORS));
+const size_t NUM_PIECE_TYPE_BITS = math::log2Ceil(1 + static_cast<int>(PieceType::NUM_PIECE_TYPES));
 const size_t PIECE_COLOR_MASK = ((size_t)1 << NUM_PIECE_COLOR_BITS) - 1;
 const size_t PIECE_TYPE_MASK = ((size_t)1 << NUM_PIECE_TYPE_BITS) - 1;
 
-typedef uint8_t BitboardIndex;
+typedef size_t BitboardIndex;
 
 Piece::Piece(PieceType type, PieceColor color) : type(type), color(color) {
     assert(type != PieceType::NUM_PIECE_TYPES);

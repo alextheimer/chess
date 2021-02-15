@@ -6,7 +6,7 @@
 
 namespace board {
 
-    enum class PieceType { KING, PAWN, ROOK, KNIGHT, BISHOP, NUM_PIECE_TYPES };
+    enum class PieceType { PAWN, KING, NUM_PIECE_TYPES };
     enum class PieceColor { BLACK, WHITE, NUM_PIECE_COLORS };
 
     // row/col Board indices
