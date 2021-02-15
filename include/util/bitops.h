@@ -10,6 +10,8 @@ namespace bitops {
 
     void set_bit(BitOpType& bits, std::size_t bit_index, bool bit);
     bool get_bit(BitOpType bits, std::size_t bit_index);
+    std::size_t pop_highest_bit(BitOpType& bits);
+
 }
 
 #endif  // BITOPS_H_
