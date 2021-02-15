@@ -134,6 +134,11 @@ void Board::setPiece(const Piece& piece, const Square& square) {
     bitops::set_bit(this->color_bitboards_[static_cast<int>(piece.color)], index, true);
 }
 
+Board::SquareGenerator Board::generateMatchingSquares(PieceType type, PieceColor color) {
+	Bitboard bitboard = this->piece_bitboards_[static_cast<int>(type)] & this->color_bitboards_[static_cast<int>(color)];
+	return Board::SquareGenerator(bitboard);
+}
+
 
 Board::SquareGenerator::SquareGenerator(Bitboard bitboard) {
 	this->bitboard_ = bitboard;
