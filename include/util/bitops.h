@@ -5,12 +5,15 @@
 
 namespace bitops {
 
+	// This is the datatype we perform bitops on
+    // (must be standardized to facilitate use of intrinsics).
 	typedef uint64_t BitOpType;
+	// The number of bits in the BitOpType.
 	const std::size_t NUM_BITS = 8 * sizeof(BitOpType);
 
-    void set_bit(BitOpType& bits, std::size_t bit_index, bool bit);
-    bool get_bit(BitOpType bits, std::size_t bit_index);
-    std::size_t pop_highest_bit(BitOpType& bits);
+    void setBit(BitOpType& bits, std::size_t bit_index, bool bit);
+    bool getBit(BitOpType bits, std::size_t bit_index);
+    std::size_t popHighestBit(BitOpType& bits);
 
 }
 

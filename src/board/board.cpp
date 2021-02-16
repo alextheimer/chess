@@ -124,14 +124,14 @@ bool Board::squareIsOccupied(const Square& square) const {
     size_t index = squareToBitboardIndex(square);
     Bitboard occupancy_board = (this->color_bitboards_[static_cast<int>(PieceColor::WHITE)] |
                                this->color_bitboards_[static_cast<int>(PieceColor::BLACK)]);
-    return static_cast<bool>(bitops::get_bit(occupancy_board, index));
+    return static_cast<bool>(bitops::getBit(occupancy_board, index));
 }
 
 void Board::setPiece(const Piece& piece, const Square& square) {
     assert(!this->squareIsOccupied(square));
     size_t index = squareToBitboardIndex(square);
-    bitops::set_bit(this->piece_bitboards_[static_cast<int>(piece.type)], index, true);
-    bitops::set_bit(this->color_bitboards_[static_cast<int>(piece.color)], index, true);
+    bitops::setBit(this->piece_bitboards_[static_cast<int>(piece.type)], index, true);
+    bitops::setBit(this->color_bitboards_[static_cast<int>(piece.color)], index, true);
 }
 
 Board::SquareGenerator Board::generateMatchingSquares(PieceType type, PieceColor color) {
@@ -149,6 +149,6 @@ bool Board::SquareGenerator::hasNext() {
 }
 Square Board::SquareGenerator::next() {
 	assert(this->hasNext());
-	size_t index = bitops::pop_highest_bit(this->bitboard_);
+	size_t index = bitops::popHighestBit(this->bitboard_);
 	return bitboardIndexToSquare(index);
 }
