@@ -10,12 +10,12 @@ bool math::isPow2(std::size_t val) {
 }
 
 std::size_t math::log2Ceil(std::size_t val) {
-	assert(val > 0);  // undefined for val == 0
+    assert(val > 0);  // undefined for val == 0
     int num_lead_zeros = __builtin_clzl(val);
     std::size_t result = NUM_SIZE_T_BITS - num_lead_zeros;
     if (isPow2(val)) {
-    	// Suppose val == 1. Then num_lead_zeros == 63, and result == 1.
-    	// Hence `result` overcounts by one unless we check for this condition.
+        // Suppose val == 1. Then num_lead_zeros == 63, and result == 1.
+        // Hence `result` overcounts by one unless we check for this condition.
         result -= 1;
     }
     return result;
