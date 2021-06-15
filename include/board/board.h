@@ -6,37 +6,41 @@
 
 namespace board {
 
-enum class PieceType { PAWN, KING, NUM_PIECE_TYPES };
+enum class PieceType { KING, QUEEN, PAWN, ROOK, KNIGHT, BISHOP, NUM_PIECE_TYPES };
 enum class PieceColor { BLACK, WHITE, NUM_PIECE_COLORS };
 
-// row/col Board indices
+// row/col Board index
 typedef uint8_t DimIndex;
-// Backend" type used only in Board definition and implementation file.
+
+// TODO(theimer): move this somewhere else?
+// "Backend" type used only in Board definition and implementation file.
 // Stores a single bit of data for each of the 64 spaces on a Board.
 typedef uint64_t Bitboard;
 
 typedef struct Piece {
     const PieceType type;
     const PieceColor color;
-    /**
-     * type and color cannot be a size-indicating enum value
-     * (i.e. any with the prefix "NUM_").
-     */
-    Piece(PieceType type, PieceColor color);
-    friend bool operator==(const Piece& lhs, const Piece& rhs);
 } Piece;
 
-typedef struct Square {
+bool operator==(const Piece& lhs, const Piece& rhs);
+
+class Square {
+ public:
+
+    // would make this POD, but want to enforce constructor initialization
+    //     to support row/col assertions.
+
     const DimIndex row;
     const DimIndex col;
+
     /**
      * row and col must each lie on [0, Board::WIDTH).
      */
     Square(DimIndex row, DimIndex col);
-    friend bool operator==(const Square& lhs, const Square& rhs);
-} Square;
 
-bool operator==(const Piece& lhs, const Piece& rhs);
+};
+
+// need non-member to support Square keys in maps
 bool operator==(const Square& lhs, const Square& rhs);
 
 /**
@@ -51,14 +55,12 @@ class Board {
      */
 
  private:
-    std::array<Bitboard, static_cast<int>(PieceType::NUM_PIECE_TYPES)> piece_bitboards_ = { 0 };
-    std::array<Bitboard, static_cast<int>(PieceColor::NUM_PIECE_COLORS)> color_bitboards_ = { 0 };
+    Bitboard piece_bitboards_[static_cast<int>(PieceType::NUM_PIECE_TYPES)] = { 0 };
+    Bitboard color_bitboards_[static_cast<int>(PieceColor::NUM_PIECE_COLORS)] = { 0 };
 
  public:
     static const std::size_t WIDTH = 8;
     static const std::size_t SIZE = WIDTH * WIDTH;
-
-    class SquareGenerator;
 
     /**
      * Constructs a Board instance from a Square->Piece mapping.
@@ -67,39 +69,17 @@ class Board {
      * TODO(theimer): expand.
      */
     explicit Board(const std::unordered_map<Square, Piece>& piece_map);
-    Board(const Board& copy_me);
-    Board(Board&& move_me);
-    ~Board();
-    Board& operator=(const Board& copy_assign_me);
-    Board& operator=(Board&& move_assign_me);
-
-    SquareGenerator generateMatchingSquares(PieceType type, PieceColor color);
 
     /**
      * Returns true iff `square` is occupied on the Board.
      */
     bool squareIsOccupied(const Square& square) const;
+
     /**
      * Stores the piece described by `piece` at `square` on the Board.
      */
     void setPiece(const Piece& piece, const Square& square);
-
-    friend void swapBoard(Board* board1, Board* board2);
 };
-
-class Board::SquareGenerator {
- private:
-    Bitboard bitboard_;
- public:
-    explicit SquareGenerator(Bitboard bitboard);
-    bool hasNext();
-    Square next();
-};
-
-/**
- * "Swaps" the state of board1 with the state of board2.
- */
-void swapBoard(Board* board1, Board* board2);
 
 }  // namespace board
 
@@ -108,10 +88,6 @@ namespace std {
 
 template <> struct hash<board::Square> {
     size_t operator()(const board::Square& x) const;
-};
-
-template <> struct hash<board::Piece> {
-    size_t operator()(const board::Piece& x) const;
 };
 
 }  // namespace std
