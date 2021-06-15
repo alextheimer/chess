@@ -1,7 +1,7 @@
 CC = g++
 CFLAGS = -Wall
 
-TARGET = checkers
+TARGET = chess
 
 TARGET_DEPS = $(shell find src -type f -not -name main.cpp)
 TEST_DEPS = $(shell find test -type f -not -name run)
