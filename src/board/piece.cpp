@@ -13,14 +13,14 @@ const std::size_t PIECE_COLOR_MASK =
 const std::size_t PIECE_TYPE_MASK =
         ((std::size_t)1 << NUM_PIECE_TYPE_BITS) - 1;
 
-CompressedPiece compressPiece(const Piece& piece) {
+CompressedPiece board::compressPiece(const Piece& piece) {
     CompressedPiece compressed_piece = static_cast<CompressedPiece>(piece.color);
     compressed_piece <<= NUM_PIECE_TYPE_BITS;
     compressed_piece |= static_cast<CompressedPiece>(piece.type);
     return compressed_piece;
 }
 
-Piece decompressPiece(CompressedPiece compressed_piece) {
+Piece board::decompressPiece(CompressedPiece compressed_piece) {
     PieceType type;
     PieceColor color;
 

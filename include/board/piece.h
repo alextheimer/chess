@@ -1,3 +1,6 @@
+#ifndef PIECE_H_
+#define PIECE_H_
+
 #include "util/math.h"
 
 namespace board {
@@ -18,3 +21,5 @@ CompressedPiece compressPiece(const Piece& piece);
 Piece decompressPiece(CompressedPiece compressed_piece);
 
 }
+
+#endif  // PIECE_H_
