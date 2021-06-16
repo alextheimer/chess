@@ -4,10 +4,9 @@
 #include <cstdint>
 #include <unordered_map>
 
-namespace board {
+#include "board/piece.h"
 
-enum class PieceType { KING, QUEEN, PAWN, ROOK, KNIGHT, BISHOP, NUM_PIECE_TYPES };
-enum class PieceColor { BLACK, WHITE, NUM_PIECE_COLORS };
+namespace board {
 
 // row/col Board index
 typedef uint8_t DimIndex;
@@ -16,13 +15,6 @@ typedef uint8_t DimIndex;
 // "Backend" type used only in Board definition and implementation file.
 // Stores a single bit of data for each of the 64 spaces on a Board.
 typedef uint64_t Bitboard;
-
-typedef struct Piece {
-    const PieceType type;
-    const PieceColor color;
-} Piece;
-
-bool operator==(const Piece& lhs, const Piece& rhs);
 
 class Square {
  public:
