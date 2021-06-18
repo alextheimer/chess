@@ -60,6 +60,8 @@ class Board {
     static const std::size_t WIDTH = 8;
     static const std::size_t SIZE = WIDTH * WIDTH;
 
+    Board();
+
     /**
      * Constructs a Board instance from a Square->Piece mapping.
      * I.e. for each pair (square, piece), piece is stored at square.
@@ -91,7 +93,7 @@ class Board {
     Piece getPiece(Square& square);
 
     // TODO(theimer): document
-    Piece removePiece(Square square);
+    void removePiece(Square& square);
 
     // TODO(theimer): document
     std::size_t getOccupiedSquares(PieceColor color, Square * buffer);

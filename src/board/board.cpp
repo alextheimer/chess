@@ -13,6 +13,10 @@ using namespace board;
 
 typedef size_t BitboardIndex;
 
+Board::Board() {
+    // intentionally blank
+}
+
 Square::Square(DimIndex row, DimIndex col) : row(row), col(col) {
     assert(row >= 0 && row < Board::WIDTH);
     assert(col >= 0 && col < Board::WIDTH);
@@ -113,10 +117,26 @@ std::size_t Board::getOccupiedSquares(PieceColor color, Square * buffer) {
     return ptr - buffer;
 }
 
+void Board::removePiece(Square& square) {
+    BitboardIndex index = squareToBitboardIndex(square);
+    for (int i = 0; i < static_cast<int>(PieceColor::NUM_PIECE_COLORS); ++i) {
+        bitops::setBit(&color_bitboards_[i], index, false);
+    }
+    for (int i = 0; i < static_cast<int>(PieceType::NUM_PIECE_TYPES); ++i) {
+        bitops::setBit(&piece_bitboards_[i], index, false);
+    }
+}
+
 void Board::movePiece(Move& move) {
     assert(squareIsOccupied(move.from));
     // TODO(theimer): square -> index recomputation!
-    PieceType type = getPieceType(move.from);
-    PieceColor color = getPieceColor(move.from);
-    setPiece((Piece){type, color}, move.to);
+    Piece from_piece = getPiece(move.from);
+    setPiece(from_piece, move.to);
+    removePiece(move.from);
+}
+
+Piece Board::getPiece(Square& square) {
+    PieceType type = getPieceType(square);
+    PieceColor color = getPieceColor(square);
+    return (Piece){ type, color };
 }
