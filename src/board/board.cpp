@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <algorithm>
 #include <utility>
+#include <stdexcept>
 
 #include "util/bitops.h"
 #include "util/math.h"
@@ -33,8 +34,14 @@ BitboardIndex squareToBitboardIndex(const Square& square) {
 }
 
 Square bitboardIndexToSquare(const BitboardIndex index) {
+    // TODO(theimer): just bit-shifts
     assert(index >= 0 && index < Board::SIZE);
     return Square(index / Board::WIDTH, index % Board::WIDTH);
+}
+
+bool getBitAtSquare(const Bitboard board, Square square) {
+    BitboardIndex index = squareToBitboardIndex(square);
+    return bitops::getBit(board, index);
 }
 
 Board::Board(const std::unordered_map<Square, Piece>& piece_map) {
@@ -61,4 +68,55 @@ void Board::setPiece(const Piece& piece, const Square& square) {
     size_t index = squareToBitboardIndex(square);
     bitops::setBit(&this->piece_bitboards_[static_cast<int>(piece.type)], index, true);
     bitops::setBit(&this->color_bitboards_[static_cast<int>(piece.color)], index, true);
+}
+
+bool Board::squareIsOccupiedColor(const Square& square, PieceColor color) {
+    Bitboard color_board = color_bitboards_[static_cast<std::size_t>(color)];
+    return getBitAtSquare(color_board, square);
+}
+
+PieceType Board::getPieceType(Square& square) {
+    for (int i = 0; i < static_cast<int>(PieceType::NUM_PIECE_TYPES); ++i) {
+        Bitboard board = piece_bitboards_[i];
+        // TODO(theimer): lots of square -> index recalculation!
+        if (getBitAtSquare(board, square)) {
+            return static_cast<PieceType>(i);
+        }
+    }
+    // TODO(theimer): make this work
+    throw std::invalid_argument("unoccupied square: TODO");
+}
+
+// TODO(theimer): basically copy-paste of the above
+PieceColor Board::getPieceColor(Square& square) {
+    for (int i = 0; i < static_cast<int>(PieceColor::NUM_PIECE_COLORS); ++i) {
+        Bitboard board = color_bitboards_[i];
+        // TODO(theimer): lots of square -> index recalculation!
+        if (getBitAtSquare(board, square)) {
+            return static_cast<PieceColor>(i);
+        }
+    }
+    // TODO(theimer): make this work
+    throw std::invalid_argument("unoccupied square: TODO");
+}
+
+
+std::size_t Board::getOccupiedSquares(PieceColor color, Square * buffer) {
+    Bitboard board = color_bitboards_[static_cast<size_t>(color)];
+    Square * ptr = buffer;
+    // TODO(theimer): might vectorize with popcount
+    while (board > 0) {
+        BitboardIndex index = bitops::popHighestBit(&board);
+        *ptr = bitboardIndexToSquare(index);
+        ++ptr;
+    }
+    return ptr - buffer;
+}
+
+void Board::movePiece(Move& move) {
+    assert(squareIsOccupied(move.from));
+    // TODO(theimer): square -> index recomputation!
+    PieceType type = getPieceType(move.from);
+    PieceColor color = getPieceColor(move.from);
+    setPiece((Piece){type, color}, move.to);
 }

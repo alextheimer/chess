@@ -4,6 +4,7 @@
 #include "util/math.h"
 
 namespace board {
+
 enum class PieceType { KING, QUEEN, PAWN, ROOK, KNIGHT, BISHOP, NUM_PIECE_TYPES };
 enum class PieceColor { BLACK, WHITE, NUM_PIECE_COLORS };
 

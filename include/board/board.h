@@ -16,14 +16,15 @@ typedef uint8_t DimIndex;
 // Stores a single bit of data for each of the 64 spaces on a Board.
 typedef uint64_t Bitboard;
 
+// TODO(theimer): make all structs immutable
 class Square {
  public:
 
     // would make this POD, but want to enforce constructor initialization
     //     to support row/col assertions.
 
-    const DimIndex row;
-    const DimIndex col;
+    DimIndex row;
+    DimIndex col;
 
     /**
      * row and col must each lie on [0, Board::WIDTH).
@@ -34,6 +35,11 @@ class Square {
 
 // need non-member to support Square keys in maps
 bool operator==(const Square& lhs, const Square& rhs);
+
+struct Move {
+    Square from;
+    Square to;
+};
 
 /**
  * Maintains an 8x8 chess board.
@@ -71,6 +77,27 @@ class Board {
      * Stores the piece described by `piece` at `square` on the Board.
      */
     void setPiece(const Piece& piece, const Square& square);
+
+    // TODO(theimer): document
+    void movePiece(Move& move);
+
+    // TODO(theimer): document
+    PieceType getPieceType(Square& square);
+
+    // TODO(theimer): document
+    PieceColor getPieceColor(Square& square);
+
+    //TODO(theimer): document
+    Piece getPiece(Square& square);
+
+    // TODO(theimer): document
+    Piece removePiece(Square square);
+
+    // TODO(theimer): document
+    std::size_t getOccupiedSquares(PieceColor color, Square * buffer);
+
+    // TODO(theimer): document
+    bool squareIsOccupiedColor(const Square& square, PieceColor color);
 };
 
 }  // namespace board
