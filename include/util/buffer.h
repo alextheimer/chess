@@ -13,9 +13,21 @@ class Buffer {
  private:
     uint8_t arr_[size * sizeof(T)];
  public:
-    T& get(std::size_t index);
-    void set(std::size_t index, T& elt);
-    T * __getPtr__();  // TODO(theimer): remove this when replaced all T* args
+    T& get(std::size_t index) {
+        assert(index < size);
+        T * ptr = reinterpret_cast<T*>(arr_);
+        return ptr[index];
+    }
+
+    void set(std::size_t index, T& elt) {
+        assert(index < size);
+        T * ptr = reinterpret_cast<T*>(arr_);
+        ptr[index] = elt;
+    }
+
+    T * __getPtr__() {  // TODO(theimer): remove this when replaced all T* args
+        return reinterpret_cast<T*>(arr_);
+    }
 };
 
 }
