@@ -17,3 +17,8 @@ void Buffer<T, count>::set(std::size_t index, T& elt) {
     T * ptr = reinterpret_cast<T*>(arr_);
     ptr[index] = elt;
 }
+
+template<typename T, std::size_t count>
+T* Buffer<T, count>::__getPtr__() {
+    return reinterpret_cast<T*>(arr_);
+}

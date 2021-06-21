@@ -27,8 +27,13 @@ bool board::operator==(const Square& lhs, const Square& rhs) {
 }
 
 size_t std::hash<Square>::operator()(const Square& x) const {
-    hash<DimIndex> dim_hash;
-    return dim_hash(x.row) ^ dim_hash(x.col);
+    static const size_t ROW_SHIFT = 10;
+    return (static_cast<size_t>(x.row) << ROW_SHIFT) | static_cast<size_t>(x.col);
+}
+
+size_t std::hash<Piece>::operator()(const board::Piece& x) const {
+    static const size_t TYPE_SHIFT = 10;
+    return (static_cast<size_t>(x.type) << TYPE_SHIFT) | static_cast<size_t>(x.color);
 }
 
 BitboardIndex squareToBitboardIndex(const Square& square) {

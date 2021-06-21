@@ -15,6 +15,7 @@ class Buffer {
  public:
     T& get(std::size_t index);
     void set(std::size_t index, T& elt);
+    T * __getPtr__();  // TODO(theimer): remove this when replaced all T* args
 };
 
 }

@@ -110,11 +110,14 @@ class Board {
 
 }  // namespace board
 
-// In the header file to support Board's map constructor.
 namespace std {
 
 template <> struct hash<board::Square> {
     size_t operator()(const board::Square& x) const;
+};
+
+template <> struct hash<board::Piece> {
+    size_t operator()(const board::Piece& x) const;
 };
 
 }  // namespace std
