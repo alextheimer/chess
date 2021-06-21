@@ -99,6 +99,12 @@ class Board {
     std::size_t getOccupiedSquares(PieceColor color, Square * buffer);
 
     // TODO(theimer): document
+    std::size_t getOccupiedSquares(PieceType type, Square * buffer);
+
+    // TODO(theimer): document
+    std::size_t getOccupiedSquares(Square * buffer);
+
+    // TODO(theimer): document
     bool squareIsOccupiedColor(const Square& square, PieceColor color);
 };
 

@@ -104,10 +104,8 @@ PieceColor Board::getPieceColor(Square& square) {
     throw std::invalid_argument("unoccupied square: TODO");
 }
 
-
-std::size_t Board::getOccupiedSquares(PieceColor color, Square * buffer) {
-    Bitboard board = color_bitboards_[static_cast<size_t>(color)];
-    Square * ptr = buffer;
+std::size_t bitboardToSquares(Bitboard board, Square* buffer) {
+     Square * ptr = buffer;
     // TODO(theimer): might vectorize with popcount
     while (board > 0) {
         BitboardIndex index = bitops::popHighestBit(&board);
@@ -115,6 +113,26 @@ std::size_t Board::getOccupiedSquares(PieceColor color, Square * buffer) {
         ++ptr;
     }
     return ptr - buffer;
+}
+
+std::size_t Board::getOccupiedSquares(PieceColor color, Square * buffer) {
+    Bitboard board = color_bitboards_[static_cast<size_t>(color)];
+    return bitboardToSquares(board, buffer);
+}
+
+
+std::size_t Board::getOccupiedSquares(PieceType type, Square * buffer) {
+    Bitboard board = piece_bitboards_[static_cast<size_t>(type)];
+    return bitboardToSquares(board, buffer);
+}
+
+// TODO(theimer): worth maintaining this?
+std::size_t Board::getOccupiedSquares(Square * buffer) {
+    Bitboard board = 0;
+    for (int i = 0; i < static_cast<int>(PieceColor::NUM_PIECE_COLORS); ++i) {
+        board |= color_bitboards_[i];
+    }
+    return bitboardToSquares(board, buffer);
 }
 
 void Board::removePiece(Square& square) {
