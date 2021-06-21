@@ -95,6 +95,7 @@ TEST(BoardTest, GetOccupiedSquaresTest) {
         for (int isquare = 0; isquare < num_squares; ++isquare) {
             Square square = occupied_buffer[isquare];
             ASSERT_NE(square_set.end(), square_set.find(square));
+            ASSERT_EQ(piece_map.at(square), board.getPiece(square));
             square_set.erase(square);
         }
     }
