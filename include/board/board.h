@@ -2,6 +2,7 @@
 #define BOARD_BOARD_H_
 
 #include <cstdint>
+#include <ostream>
 #include <unordered_map>
 
 #include "board/piece.h"
@@ -40,6 +41,12 @@ struct Move {
     Square from;
     Square to;
 };
+
+bool operator==(const Move& lhs, const Move& rhs);
+
+
+std::ostream& operator<<(std::ostream& out, Move& move);
+std::ostream& operator<<(std::ostream& out, Square& move);
 
 /**
  * Maintains an 8x8 chess board.

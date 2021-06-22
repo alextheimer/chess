@@ -26,6 +26,20 @@ bool board::operator==(const Square& lhs, const Square& rhs) {
     return (lhs.row == rhs.row) && (lhs.col == rhs.col);
 }
 
+std::ostream& board::operator<<(std::ostream& out, Move& move) {
+    out << "Move(from: " << move.from << ", to: " << move.to << ")";
+    return out;
+}
+
+std::ostream& board::operator<<(std::ostream& out, Square& square) {
+    out << "Square(row: " << square.row << ", col: " << square.col << ")";
+    return out;
+}
+
+bool board::operator==(const Move& lhs, const Move& rhs) {
+    return (lhs.from == rhs.from) && (lhs.to == rhs.to);
+}
+
 size_t std::hash<Square>::operator()(const Square& x) const {
     static const size_t ROW_SHIFT = 10;
     return (static_cast<size_t>(x.row) << ROW_SHIFT) | static_cast<size_t>(x.col);
