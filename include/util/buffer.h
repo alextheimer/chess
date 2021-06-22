@@ -1,4 +1,5 @@
 #include <cstdint>
+#include <cassert>
 
 namespace util {
 
@@ -25,7 +26,7 @@ class Buffer {
         ptr[index] = elt;
     }
 
-    T * __getPtr__() {  // TODO(theimer): remove this when replaced all T* args
+    T * start() {
         return reinterpret_cast<T*>(arr_);
     }
 };

@@ -69,14 +69,14 @@ void Game::runPly() {
 
 bool Game::isEnded() {
     util::Buffer<Square, 2> buffer;
-    std::size_t size = board_.getOccupiedSquares(PieceType::KING, buffer.__getPtr__());
+    std::size_t size = board_.getOccupiedSquares(PieceType::KING, buffer.start());
     return size < static_cast<int>(PieceColor::NUM_PIECE_COLORS);
 }
 
 Player& Game::getWinner() {
     assert(isEnded());
     util::Buffer<Square, 2> buffer;
-    std::size_t size = board_.getOccupiedSquares(PieceType::KING, buffer.__getPtr__());
+    std::size_t size = board_.getOccupiedSquares(PieceType::KING, buffer.start());
     assert(size == 1);
     switch (board_.getPiece(buffer.get(0)).color) {
     case PieceColor::BLACK:

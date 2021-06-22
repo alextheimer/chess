@@ -1,4 +1,5 @@
 #include "game/move.h"
+#include "util/buffer.h"
 
 #include <map>
 #include <vector>
@@ -59,14 +60,13 @@ std::size_t game::getPieceMoves(Board& board, PieceColor color, Square square, M
 
 std::size_t game::getAllMoves(Board& board, PieceColor color, Move * buffer) {
     // instantiate as a byte array so nothing is automatically constructed
-    uint8_t raw_buffer[Board::SIZE * sizeof(Square)];
-    Square* occupied_buffer = reinterpret_cast<Square*>(raw_buffer);
+    util::Buffer<Square, Board::SIZE> occupied_buffer;
 
-    std::size_t num_occupied = board.getOccupiedSquares(color, occupied_buffer);
+    std::size_t num_occupied = board.getOccupiedSquares(color, occupied_buffer.start());
     Move * nextMoveSlot = buffer;
     std::size_t num_moves = 0;
     for (int i = 0; i < num_occupied; ++i) {
-        nextMoveSlot += getPieceMoves(board, color, occupied_buffer[i], nextMoveSlot);
+        nextMoveSlot += getPieceMoves(board, color, occupied_buffer.get(i), nextMoveSlot);
     }
     return nextMoveSlot - buffer;
 }

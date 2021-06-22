@@ -5,6 +5,7 @@
 
 #include "gtest/gtest.h"
 #include "board/board.h"
+#include "util/buffer.h"
 
 using namespace board;
 
@@ -86,14 +87,13 @@ TEST(BoardTest, GetOccupiedSquaresTest) {
     }
 
     Board board(piece_map);
-    uint8_t buffer[SIZE * sizeof(Square)];
-    Square* occupied_buffer = reinterpret_cast<Square*>(buffer);
+    util::Buffer<Square, SIZE> occupied_buffer;
 
     for (int icolor = 0; icolor < static_cast<int>(PieceColor::NUM_PIECE_COLORS); ++icolor) {
         PieceColor color = static_cast<PieceColor>(icolor);
-        size_t num_squares = board.getOccupiedSquares(color, occupied_buffer);
+        size_t num_squares = board.getOccupiedSquares(color, occupied_buffer.start());
         for (int isquare = 0; isquare < num_squares; ++isquare) {
-            Square square = occupied_buffer[isquare];
+            Square square = occupied_buffer.get(isquare);
             ASSERT_NE(square_set.end(), square_set.find(square));
             ASSERT_EQ(piece_map.at(square), board.getPiece(square));
             square_set.erase(square);
