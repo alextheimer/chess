@@ -16,7 +16,7 @@ bool isInBounds(std::size_t row, std::size_t col) {
     return (row < Board::WIDTH) && (col < Board::WIDTH);
 }
 
-std::size_t getMovesPawn(Board& board, PieceColor color, Square square, Move* buffer) {
+std::size_t getMovesPawnKing(Board& board, PieceColor color, Square square, Move* buffer) {
     static const std::vector<Diff> diffs = {
             {  1, 0 },
             {  0, 1 },
@@ -51,7 +51,8 @@ std::size_t game::getPieceMoves(Board& board, PieceColor color, Square square, M
     PieceType type = board.getPieceType(square);
     switch (type) {
     case PieceType::PAWN:
-        return getMovesPawn(board, color, square, buffer);
+    case PieceType::KING:
+        return getMovesPawnKing(board, color, square, buffer);
     default:
         // TODO(theimer): add the others!
         throw std::invalid_argument("unhandled PieceType: " + toString(type));
