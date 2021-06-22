@@ -32,6 +32,8 @@ class Square {
      */
     Square(DimIndex row, DimIndex col);
 
+    std::string toString();
+
 };
 
 // need non-member to support Square keys in maps
@@ -40,10 +42,10 @@ bool operator==(const Square& lhs, const Square& rhs);
 struct Move {
     Square from;
     Square to;
+    std::string toString();
 };
 
 bool operator==(const Move& lhs, const Move& rhs);
-
 
 std::ostream& operator<<(std::ostream& out, Move& move);
 std::ostream& operator<<(std::ostream& out, Square& move);

@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <utility>
 #include <stdexcept>
+#include <sstream>
 
 #include "util/bitops.h"
 #include "util/math.h"
@@ -27,12 +28,12 @@ bool board::operator==(const Square& lhs, const Square& rhs) {
 }
 
 std::ostream& board::operator<<(std::ostream& out, Move& move) {
-    out << "Move(from: " << move.from << ", to: " << move.to << ")";
+    out << move.toString();
     return out;
 }
 
 std::ostream& board::operator<<(std::ostream& out, Square& square) {
-    out << "Square(row: " << square.row << ", col: " << square.col << ")";
+    out << square.toString();
     return out;
 }
 
@@ -176,4 +177,16 @@ Piece Board::getPiece(Square& square) {
     PieceType type = getPieceType(square);
     PieceColor color = getPieceColor(square);
     return (Piece){ type, color };
+}
+
+std::string Square::toString() {
+    std::stringstream sstr;
+    sstr << "Square(row: " << row << ", col: " << col << ")";
+    return sstr.str();
+}
+
+std::string Move::toString() {
+    std::stringstream sstr;
+    sstr << "Move(from: " << from << ", to: " << to << ")";
+    return sstr.str();
 }
