@@ -45,9 +45,11 @@ void Game::render(std::ostream& ostream) {
             if (board_.squareIsOccupied(square)) {
                 Piece piece = board_.getPiece(square);
                 ostream << PIECE_CHAR_MAP.at(piece) << ' ';
+            } else {
+                ostream << "- ";
             }
-            ostream << '\n';
         }
+        ostream << '\n';
     }
     ostream.flush();
 }
