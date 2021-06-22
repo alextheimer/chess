@@ -48,12 +48,12 @@ std::string board::toString(PieceColor color) {
 
 std::string board::toString(PieceType type) {
     switch (type) {
-    case PieceType::BISHOP: return "TODO";
-    case PieceType::ROOK: return "TODO";
-    case PieceType::KNIGHT: return "TODO";
-    case PieceType::PAWN: return "TODO";
-    case PieceType::QUEEN: return "TODO";
-    case PieceType::KING: return "TODO";
+    case PieceType::BISHOP: return "BISHOP";
+    case PieceType::ROOK: return "ROOK";
+    case PieceType::KNIGHT: return "KNIGHT";
+    case PieceType::PAWN: return "PAWN";
+    case PieceType::QUEEN: return "QUEEN";
+    case PieceType::KING: return "KING";
     default: throw std::invalid_argument("unhandled PieceType value: " + static_cast<int>(type));
     }
 }
