@@ -4,6 +4,7 @@
 #include <cstdio>
 #include <vector>
 #include <iostream>
+#include <sstream>
 
 #include "gtest/gtest.h"
 
@@ -24,10 +25,10 @@ TEST(BitOpsTest, GetBitTest) {
             { 1,                                    0,       false }
     };
 
-    char msg_buffer[100];
     for (TestSpec test_spec : spec_vec) {
-        sprintf(msg_buffer, "bits: %lu, index: %lu", test_spec.bits, test_spec.index);
-        ASSERT_EQ(test_spec.expected, getBit(test_spec.bits, test_spec.index)) << msg_buffer;
+        ASSERT_EQ(test_spec.expected, getBit(test_spec.bits, test_spec.index))
+            << "bits: " << test_spec.bits << ", "
+            << "index: " << test_spec.index;
     }
 }
 
@@ -47,14 +48,16 @@ TEST(BitOpsTest, SetBitTest) {
             { 1,                                    0,       false,    true }
     };
 
-    char msg_buffer[100];
     for (TestSpec test_spec : spec_vec) {
+        std::stringstream error_msg;
+        error_msg << "original bits: " << test_spec.bits << ", "
+                  << "index: " << test_spec.index << ", "
+                  << "set_bit: " << test_spec.set_bit;
+
         BitOpType bits = test_spec.bits;
-        sprintf(msg_buffer, "original bits: %lu, index: %lu, set_bit: %b",
-                test_spec.bits, test_spec.index, test_spec.set_bit);
         // sanity check
-        ASSERT_EQ(test_spec.expected_before, getBit(bits, test_spec.index)) << msg_buffer;
+        ASSERT_EQ(test_spec.expected_before, getBit(bits, test_spec.index)) << error_msg.str();
         setBit(&bits, test_spec.index, test_spec.set_bit);
-        ASSERT_EQ(test_spec.set_bit, getBit(bits, test_spec.index)) << msg_buffer;
+        ASSERT_EQ(test_spec.set_bit, getBit(bits, test_spec.index)) << error_msg.str();
     }
 }

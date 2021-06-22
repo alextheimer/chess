@@ -18,10 +18,8 @@ TEST(MathTest, IsPow2Test) {
             { 3,                                 false }
     };
 
-    char msg_buffer[100];
     for (auto pair : test_map) {
-        sprintf(msg_buffer, "value: %lu", pair.first);
-        ASSERT_EQ(pair.second, isPow2(pair.first)) << msg_buffer;
+        ASSERT_EQ(pair.second, isPow2(pair.first)) << "value: " << pair.first;
     }
 }
 
@@ -34,9 +32,7 @@ TEST(MathTest, Log2CeilTest) {
             { 3,                                 2 }
     };
 
-    char msg_buffer[100];
     for (auto pair : test_map) {
-        sprintf(msg_buffer, "value: %lu", pair.first);
-        ASSERT_EQ(pair.second, log2Ceil(pair.first)) << msg_buffer;
+        ASSERT_EQ(pair.second, log2Ceil(pair.first)) << "value: " << pair.first;
     }
 }
