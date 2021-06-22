@@ -1,6 +1,8 @@
 #ifndef BOARD_PIECE_H_
 #define BOARD_PIECE_H_
 
+#include <string>
+
 #include "util/math.h"
 
 namespace board {
@@ -20,6 +22,9 @@ bool operator==(const Piece& lhs, const Piece& rhs);
 CompressedPiece compressPiece(const Piece& piece);
 
 Piece decompressPiece(CompressedPiece compressed_piece);
+
+std::string toString(PieceColor color);
+std::string toString(PieceType type);
 
 }
 

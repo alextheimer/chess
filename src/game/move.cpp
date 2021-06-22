@@ -48,13 +48,13 @@ std::size_t getMovesPawn(Board& board, PieceColor color, Square square, Move* bu
 
 std::size_t game::getPieceMoves(Board& board, PieceColor color, Square square, Move * buffer) {
     // TODO(theimer): better to just map function pointers?
-    switch (board.getPieceType(square)) {
+    PieceType type = board.getPieceType(square);
+    switch (type) {
     case PieceType::PAWN:
         return getMovesPawn(board, color, square, buffer);
     default:
         // TODO(theimer): add the others!
-        // TODO(theimer): add piece type string
-        throw std::invalid_argument("unhandled PieceType: TODO");
+        throw std::invalid_argument("unhandled PieceType: " + toString(type));
     }
 }
 

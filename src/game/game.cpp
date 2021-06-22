@@ -65,8 +65,7 @@ void Game::runPly() {
         next_player_ = PieceColor::BLACK;
         break;
     default:
-        // TODO!!
-        throw std::invalid_argument("unhandled PieceColor TODO");
+        throw std::invalid_argument("unhandled PieceColor: " + toString(next_player_));
     }
     Move move = player->getMove(board_);
     Piece moved_piece = board_.getPiece(move.from);
@@ -96,12 +95,13 @@ Player& Game::getWinner() {
     util::Buffer<Square, 2> buffer;
     std::size_t size = board_.getOccupiedSquares(PieceType::KING, buffer.start());
     assert(size == 1);
-    switch (board_.getPiece(buffer.get(0)).color) {
+    PieceColor color = board_.getPiece(buffer.get(0)).color;
+    switch (color) {
     case PieceColor::BLACK:
         return black_player_;
     case PieceColor::WHITE:
         return white_player_;
     default:
-        throw std::invalid_argument("unhandled PieceColor TODO");
+        throw std::invalid_argument("unhandled PieceColor: " + toString(color));
     }
 }

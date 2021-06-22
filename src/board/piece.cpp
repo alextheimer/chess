@@ -1,6 +1,8 @@
 #include "board/piece.h"
 
 #include <cstdint>
+#include <string>
+#include <stdexcept>
 
 using namespace board;
 
@@ -34,4 +36,24 @@ Piece board::decompressPiece(CompressedPiece compressed_piece) {
 
 bool board::operator==(const Piece& lhs, const Piece& rhs) {
     return (lhs.type == rhs.type) && (lhs.color == rhs.color);
+}
+
+std::string board::toString(PieceColor color) {
+    switch (color) {
+    case PieceColor::BLACK: return "BLACK";
+    case PieceColor::WHITE: return "WHITE";
+    default: throw std::invalid_argument("unhandled PieceColor value: " + static_cast<int>(color));
+    }
+}
+
+std::string board::toString(PieceType type) {
+    switch (type) {
+    case PieceType::BISHOP: return "TODO";
+    case PieceType::ROOK: return "TODO";
+    case PieceType::KNIGHT: return "TODO";
+    case PieceType::PAWN: return "TODO";
+    case PieceType::QUEEN: return "TODO";
+    case PieceType::KING: return "TODO";
+    default: throw std::invalid_argument("unhandled PieceType value: " + static_cast<int>(type));
+    }
 }

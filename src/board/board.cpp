@@ -107,8 +107,7 @@ PieceType Board::getPieceType(Square& square) {
             return static_cast<PieceType>(i);
         }
     }
-    // TODO(theimer): make this work
-    throw std::invalid_argument("unoccupied square: TODO");
+    throw std::invalid_argument("unoccupied square: " + square.toString());
 }
 
 // TODO(theimer): basically copy-paste of the above
@@ -120,8 +119,7 @@ PieceColor Board::getPieceColor(Square& square) {
             return static_cast<PieceColor>(i);
         }
     }
-    // TODO(theimer): make this work
-    throw std::invalid_argument("unoccupied square: TODO");
+    throw std::invalid_argument("unoccupied square: " + square.toString());
 }
 
 std::size_t bitboardToSquares(Bitboard board, Square* buffer) {
