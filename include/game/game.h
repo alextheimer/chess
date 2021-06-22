@@ -1,3 +1,6 @@
+#ifndef GAME_GAME_H_
+#define GAME_GAME_H_
+
 #include <ostream>
 
 #include "game/player.h"
@@ -22,3 +25,5 @@ class Game {
 };
 
 }
+
+#endif  // GAME_GAME_H_

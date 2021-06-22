@@ -1,5 +1,5 @@
-#ifndef PIECE_H_
-#define PIECE_H_
+#ifndef BOARD_PIECE_H_
+#define BOARD_PIECE_H_
 
 #include "util/math.h"
 
@@ -23,4 +23,4 @@ Piece decompressPiece(CompressedPiece compressed_piece);
 
 }
 
-#endif  // PIECE_H_
+#endif  // BOARD_PIECE_H_

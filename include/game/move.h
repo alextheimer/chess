@@ -1,3 +1,6 @@
+#ifndef GAME_MOVE_H_
+#define GAME_MOVE_H_
+
 #include "board/board.h"
 
 #include <optional>
@@ -12,3 +15,5 @@ void makeMove(Board& board, Move& move);
 void unmakeMove(Board& board, Move& move, Piece replacement);
 
 }
+
+#endif  // GAME_MOVE_H_

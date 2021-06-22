@@ -1,5 +1,5 @@
-#ifndef BOARD_H_
-#define BOARD_H_
+#ifndef BOARD_BOARD_H_
+#define BOARD_BOARD_H_
 
 #include <cstdint>
 #include <unordered_map>
@@ -122,4 +122,4 @@ template <> struct hash<board::Piece> {
 
 }  // namespace std
 
-#endif  // BOARD_H_
+#endif  // BOARD_BOARD_H_

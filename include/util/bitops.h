@@ -1,5 +1,5 @@
-#ifndef BITOPS_H_
-#define BITOPS_H_
+#ifndef UTIL_BITOPS_H_
+#define UTIL_BITOPS_H_
 
 #include <cstdint>
 
@@ -17,4 +17,4 @@ std::size_t popHighestBit(BitOpType* bits);
 
 }  // namespace bitops
 
-#endif  // BITOPS_H_
+#endif  // UTIL_BITOPS_H_

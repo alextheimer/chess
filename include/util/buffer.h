@@ -1,3 +1,6 @@
+#ifndef UTIL_BUFFER_H_
+#define UTIL_BUFFER_H_
+
 #include <cstdint>
 #include <cassert>
 
@@ -32,3 +35,5 @@ class Buffer {
 };
 
 }
+
+#endif  // UTIL_BUFFER_H_

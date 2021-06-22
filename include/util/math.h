@@ -1,5 +1,5 @@
-#ifndef MATH_H_
-#define MATH_H_
+#ifndef UTIL_MATH_H_
+#define UTIL_MATH_H_
 
 #include <cstdint>
 
@@ -21,4 +21,4 @@ std::size_t log2Ceil(std::size_t val);
 
 }  // namespace math
 
-#endif  // MATH_H_
+#endif  // UTIL_MATH_H_

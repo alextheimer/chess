@@ -1,3 +1,6 @@
+#ifndef GAME_PLAYER_H_
+#define GAME_PLAYER_H_
+
 #include "board/board.h"
 
 using namespace board;
@@ -10,3 +13,5 @@ class Player {
 };
 
 }
+
+#endif  // GAME_PLAYER_H_
