@@ -2,7 +2,8 @@
 #define UTIL_BUFFER_H_
 
 #include <cstdint>
-#include <cassert>
+#include "util/assert.h"
+
 
 namespace util {
 
@@ -18,13 +19,15 @@ class Buffer {
     uint8_t arr_[size * sizeof(T)];
  public:
     T& get(std::size_t index) {
-        assert(index < size);
+        ASSERT(index < size, "index: " + std::to_string(index) + ", "
+                            + "size: " + std::to_string(size));
         T * ptr = reinterpret_cast<T*>(arr_);
         return ptr[index];
     }
 
     void set(std::size_t index, T& elt) {
-        assert(index < size);
+        ASSERT(index < size, "index: " + std::to_string(index) + ", "
+                            + "size: " + std::to_string(size));
         T * ptr = reinterpret_cast<T*>(arr_);
         ptr[index] = elt;
     }

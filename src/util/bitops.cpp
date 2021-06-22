@@ -1,7 +1,8 @@
-#include <cassert>
 #include <cstdint>
 #include "board/board.h"
 #include "util/bitops.h"
+
+#include "util/assert.h"
 
 using namespace bitops;
 
@@ -10,7 +11,7 @@ bool validBitIndex(std::size_t bit_index) {
 }
 
 void bitops::setBit(BitOpType* bits, std::size_t bit_index, bool bit) {
-    assert(validBitIndex(bit_index));
+    ASSERT(validBitIndex(bit_index), "index: " + std::to_string(bit_index));
     std::size_t shift_count = (NUM_BITS - bit_index - 1);
     BitOpType mask = ~((BitOpType)1 << shift_count);
     *bits &= mask;
@@ -18,11 +19,11 @@ void bitops::setBit(BitOpType* bits, std::size_t bit_index, bool bit) {
 }
 
 bool bitops::getBit(const BitOpType bits, size_t bit_index) {
-    assert(validBitIndex(bit_index));
+    ASSERT(validBitIndex(bit_index), "index: " + std::to_string(bit_index));
     std::size_t shift_count = (NUM_BITS - bit_index - 1);
     BitOpType mask = (BitOpType)1 << shift_count;
     BitOpType bitVal = (bits & mask) >> shift_count;
-    assert((bitVal == 0) || (bitVal == 1));
+    ASSERT((bitVal == 0) || (bitVal == 1), "bitVal: " + std::to_string(bitVal));
     return static_cast<bool>(bitVal);
 }
 

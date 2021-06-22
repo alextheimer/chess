@@ -1,12 +1,12 @@
 #include "game/game.h"
 
-#include <cassert>
 #include <string>
 #include <unordered_map>
 #include <sstream>
 
 #include "util/buffer.h"
 #include "game/move.h"
+#include "util/assert.h"
 
 using namespace game;
 using namespace board;
@@ -55,7 +55,7 @@ void Game::render(std::ostream& ostream) {
 }
 
 void Game::runPly() {
-    assert(!isEnded());
+    ASSERT(!isEnded(), "game already ended");
     Player* player;
     switch (next_player_) {
     case PieceColor::BLACK:
@@ -91,10 +91,10 @@ bool Game::isEnded() {
 }
 
 Player& Game::getWinner() {
-    assert(isEnded());
+    ASSERT(isEnded(), "game not yet ended");
     util::Buffer<Square, 2> buffer;
     std::size_t size = board_.getOccupiedSquares(PieceType::KING, buffer.start());
-    assert(size == 1);
+    ASSERT(size == 1, "size: " + std::to_string(1));
     PieceColor color = board_.getPiece(buffer.get(0)).color;
     switch (color) {
     case PieceColor::BLACK:

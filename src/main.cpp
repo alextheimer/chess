@@ -4,6 +4,7 @@
 #include "board/board.h"
 #include "game/game.h"
 #include "player/human.h"
+#include "util/assert.h"
 
 int main(int argc, char *argv[]) {
     board::Board board(std::unordered_map<board::Square, board::Piece>{
@@ -18,6 +19,8 @@ int main(int argc, char *argv[]) {
     game.render(std::cout);
 
     game.runPly();
+
+    ASSERT(false, "poop");
 
     game.render(std::cout);
 }

@@ -32,7 +32,7 @@ class Square {
      */
     Square(DimIndex row, DimIndex col);
 
-    std::string toString();
+    std::string toString() const;
 
 };
 
@@ -42,13 +42,13 @@ bool operator==(const Square& lhs, const Square& rhs);
 struct Move {
     Square from;
     Square to;
-    std::string toString();
+    std::string toString() const;
 };
 
 bool operator==(const Move& lhs, const Move& rhs);
 
-std::ostream& operator<<(std::ostream& out, Move& move);
-std::ostream& operator<<(std::ostream& out, Square& move);
+std::ostream& operator<<(std::ostream& out, const Move& move);
+std::ostream& operator<<(std::ostream& out, const Square& move);
 
 /**
  * Maintains an 8x8 chess board.

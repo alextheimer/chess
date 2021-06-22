@@ -1,11 +1,11 @@
 #include <vector>
 #include <unordered_map>
 #include <unordered_set>
-#include <cassert>
 
 #include "gtest/gtest.h"
 #include "board/board.h"
 #include "util/buffer.h"
+#include "util/assert.h"
 
 using namespace board;
 
@@ -79,7 +79,7 @@ TEST(BoardTest, GetOccupiedSquaresTest) {
             { Square(0, 1), (Piece){ PieceType::ROOK, PieceColor::WHITE } },
             { Square(1, 1), (Piece){ PieceType::KNIGHT, PieceColor::WHITE } }
     };
-    assert(SIZE == piece_map.size());
+    ASSERT(SIZE == piece_map.size(), "piece_map.size(): " + piece_map.size());
 
     std::unordered_set<Square> square_set;
     for (auto pair : piece_map) {

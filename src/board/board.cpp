@@ -1,12 +1,12 @@
 #include "board/board.h"
 
-#include <cassert>
 #include <unordered_map>
 #include <algorithm>
 #include <utility>
 #include <stdexcept>
 #include <sstream>
 
+#include "util/assert.h"
 #include "util/bitops.h"
 #include "util/math.h"
 
@@ -19,20 +19,20 @@ Board::Board() {
 }
 
 Square::Square(DimIndex row, DimIndex col) : row(row), col(col) {
-    assert(row >= 0 && row < Board::WIDTH);
-    assert(col >= 0 && col < Board::WIDTH);
+    ASSERT(row >= 0 && row < Board::WIDTH, "row: " + std::to_string(row));
+    ASSERT(col >= 0 && col < Board::WIDTH, "col: " + std::to_string(col));
 }
 
 bool board::operator==(const Square& lhs, const Square& rhs) {
     return (lhs.row == rhs.row) && (lhs.col == rhs.col);
 }
 
-std::ostream& board::operator<<(std::ostream& out, Move& move) {
+std::ostream& board::operator<<(std::ostream& out, const Move& move) {
     out << move.toString();
     return out;
 }
 
-std::ostream& board::operator<<(std::ostream& out, Square& square) {
+std::ostream& board::operator<<(std::ostream& out, const Square& square) {
     out << square.toString();
     return out;
 }
@@ -53,13 +53,13 @@ size_t std::hash<Piece>::operator()(const board::Piece& x) const {
 
 BitboardIndex squareToBitboardIndex(const Square& square) {
     BitboardIndex index = (square.row * Board::WIDTH) + square.col;
-    assert(index >= 0 && index < Board::SIZE);
+    ASSERT(index >= 0 && index < Board::SIZE, "index: " + std::to_string(index));
     return index;
 }
 
 Square bitboardIndexToSquare(const BitboardIndex index) {
     // TODO(theimer): just bit-shifts
-    assert(index >= 0 && index < Board::SIZE);
+    ASSERT(index >= 0 && index < Board::SIZE, "index: " + std::to_string(index));
     return Square(index / Board::WIDTH, index % Board::WIDTH);
 }
 
@@ -74,7 +74,7 @@ Board::Board(const std::unordered_map<Square, Piece>& piece_map) {
         const Square& square = iterator->first;
         const Piece& piece = iterator->second;
 
-        assert(!this->squareIsOccupied(square));
+        ASSERT(!this->squareIsOccupied(square), "square: " + square.toString());
 
         this->setPiece(piece, square);
     }
@@ -88,7 +88,7 @@ bool Board::squareIsOccupied(const Square& square) const {
 }
 
 void Board::setPiece(const Piece& piece, const Square& square) {
-    assert(!this->squareIsOccupied(square));
+    ASSERT(!this->squareIsOccupied(square), "square: " + square.toString());
     size_t index = squareToBitboardIndex(square);
     bitops::setBit(&this->piece_bitboards_[static_cast<int>(piece.type)], index, true);
     bitops::setBit(&this->color_bitboards_[static_cast<int>(piece.color)], index, true);
@@ -164,7 +164,7 @@ void Board::removePiece(Square& square) {
 }
 
 void Board::movePiece(Move& move) {
-    assert(squareIsOccupied(move.from));
+    ASSERT(squareIsOccupied(move.from), "from: " + move.from.toString());
     // TODO(theimer): square -> index recomputation!
     Piece from_piece = getPiece(move.from);
     setPiece(from_piece, move.to);
@@ -177,13 +177,13 @@ Piece Board::getPiece(Square& square) {
     return (Piece){ type, color };
 }
 
-std::string Square::toString() {
+std::string Square::toString() const {
     std::stringstream sstr;
     sstr << "Square(row: " << row << ", col: " << col << ")";
     return sstr.str();
 }
 
-std::string Move::toString() {
+std::string Move::toString() const {
     std::stringstream sstr;
     sstr << "Move(from: " << from << ", to: " << to << ")";
     return sstr.str();
