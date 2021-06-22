@@ -79,9 +79,7 @@ void Game::runPly() {
         }
     }
 
-    std::stringstream error_msg;
-    error_msg << "illegal Move: " << move;
-    throw std::invalid_argument(error_msg.str());
+    throw std::invalid_argument("illegal Move: " + move.toString());
 }
 
 bool Game::isEnded() {
