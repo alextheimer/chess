@@ -7,6 +7,7 @@
 #include "util/buffer.h"
 
 using namespace game;
+using namespace board;
 
 // TODO(theimer): move?
 static const PieceColor START_COLOR = PieceColor::BLACK;

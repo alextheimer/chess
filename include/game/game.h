@@ -3,12 +3,16 @@
 
 #include <ostream>
 
-#include "game/player.h"
 #include "board/board.h"
 
-using namespace game;
+using namespace board;
 
 namespace game {
+
+class Player {
+ public:
+    virtual void makeMove(const Board& board) = 0;
+};
 
 class Game {
  private:
