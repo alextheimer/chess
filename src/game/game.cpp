@@ -3,8 +3,10 @@
 #include <cassert>
 #include <string>
 #include <unordered_map>
+#include <sstream>
 
 #include "util/buffer.h"
+#include "game/move.h"
 
 using namespace game;
 using namespace board;
@@ -51,6 +53,7 @@ void Game::render(std::ostream& ostream) {
 }
 
 void Game::runPly() {
+    assert(!isEnded());
     Player* player;
     switch (next_player_) {
     case PieceColor::BLACK:
@@ -65,7 +68,21 @@ void Game::runPly() {
         // TODO!!
         throw std::invalid_argument("unhandled PieceColor TODO");
     }
-    player->makeMove(board_);
+    Move move = player->getMove(board_);
+    Piece moved_piece = board_.getPiece(move.from);
+
+    util::Buffer<Move, Board::SIZE> valid_moves;
+    size_t num_moves = game::getPieceMoves(board_, moved_piece.color, move.from, valid_moves.start());
+    for (int i = 0; i < num_moves; ++i) {
+        if (valid_moves.get(i) == move) {
+            game::makeMove(board_, move);
+            return;
+        }
+    }
+
+    std::stringstream error_msg;
+    error_msg << "illegal Move: " << move;
+    throw std::invalid_argument(error_msg.str());
 }
 
 bool Game::isEnded() {

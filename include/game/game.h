@@ -11,7 +11,7 @@ namespace game {
 
 class Player {
  public:
-    virtual void makeMove(const Board& board) = 0;
+    virtual Move getMove(const Board& board) = 0;
 };
 
 class Game {
