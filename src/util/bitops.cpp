@@ -28,6 +28,7 @@ bool bitops::getBit(const BitOpType bits, size_t bit_index) {
 }
 
 size_t bitops::popHighestBit(BitOpType* bits) {
+    ASSERT(*bits > 0, "cannot pop bits from 0");
     size_t bit_index = __builtin_clzl(static_cast<unsigned long>(*bits));
     setBit(bits, bit_index, 0);
     return bit_index;
