@@ -3,6 +3,8 @@
 #include <cstdint>
 #include <string>
 #include <stdexcept>
+#include <ostream>
+#include <sstream>
 
 using namespace board;
 
@@ -14,6 +16,18 @@ const std::size_t PIECE_COLOR_MASK =
         ((std::size_t)1 << NUM_PIECE_COLOR_BITS) - 1;
 const std::size_t PIECE_TYPE_MASK =
         ((std::size_t)1 << NUM_PIECE_TYPE_BITS) - 1;
+
+std::string board::toString(const Piece& piece) {
+    std::stringstream ss;
+    ss << "Piece(type: " << toString(piece.type) << ", "
+       << "color: " << toString(piece.color);
+    return ss.str();
+}
+
+std::ostream& board::operator<<(std::ostream& ostream, const Piece& piece) {
+    ostream << toString(piece);
+    return ostream;
+}
 
 CompressedPiece board::compressPiece(const Piece& piece) {
     CompressedPiece compressed_piece = static_cast<CompressedPiece>(piece.color);

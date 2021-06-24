@@ -25,6 +25,9 @@ Piece decompressPiece(CompressedPiece compressed_piece);
 
 std::string toString(PieceColor color);
 std::string toString(PieceType type);
+std::string toString(const Piece& piece);
+
+std::ostream& operator<<(std::ostream& ostream, const Piece& piece);
 
 }
 
