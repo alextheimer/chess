@@ -4,6 +4,7 @@
 #include <map>
 #include <vector>
 #include <stdexcept>
+#include <array>
 
 using namespace board;
 
@@ -16,18 +17,8 @@ bool isInBounds(std::size_t row, std::size_t col) {
     return (row < Board::WIDTH) && (col < Board::WIDTH);
 }
 
-std::size_t getMovesPawnKing(Board& board, PieceColor color, Square square, Move* buffer) {
-    static const std::vector<Diff> diffs = {
-            {  1, 0 },
-            {  0, 1 },
-            {  1, 1 },
-            { -1, 0 },
-            {  0, -1 },
-            { -1, -1 },
-            {  1, -1 },
-            { -1,  1 }
-    };
-
+template <std::size_t SIZE>
+std::size_t getMovesDiff(Board& board, PieceColor color, Square square, const std::array<Diff, SIZE>& diffs, Move* buffer) {
     std::size_t i = 0;
     for (Diff diff : diffs) {
         std::size_t row = square.row + diff.row_diff;
@@ -42,8 +33,37 @@ std::size_t getMovesPawnKing(Board& board, PieceColor color, Square square, Move
             }
         }
     }
-
     return i;
+}
+
+std::size_t getMovesPawnKing(Board& board, PieceColor color, Square square, Move* buffer) {
+    static const std::array<Diff, 8> diffs = {{
+            {  1,  0 },
+            {  0,  1 },
+            {  1,  1 },
+            { -1,  0 },
+            {  0, -1 },
+            { -1, -1 },
+            {  1, -1 },
+            { -1,  1 }
+    }};
+
+    return getMovesDiff(board, color, square, diffs, buffer);
+}
+
+std::size_t getMovesKnight(Board& board, PieceColor color, Square square, Move* buffer) {
+    static const std::array<Diff, 8> diffs = {{
+            {  3,  1 },
+            {  3, -1 },
+            { -3,  1 },
+            { -3, -1 },
+            {  1,  3 },
+            {  1, -3 },
+            { -1,  3 },
+            { -1, -3 }
+    }};
+
+    return getMovesDiff(board, color, square, diffs, buffer);
 }
 
 std::size_t game::getPieceMoves(Board& board, PieceColor color, Square square, Move * buffer) {
