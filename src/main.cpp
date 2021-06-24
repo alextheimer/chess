@@ -7,10 +7,7 @@
 #include "util/assert.h"
 
 int main(int argc, char *argv[]) {
-    board::Board board(std::unordered_map<board::Square, board::Piece>{
-        {board::Square(1, 1), (board::Piece){board::PieceType::KING, board::PieceColor::BLACK}},
-        {board::Square(5, 5), (board::Piece){board::PieceType::KING, board::PieceColor::WHITE}}
-    });
+    board::Board board(game::INIT_PIECE_MAP);
 
     player::Human player1, player2;
 
@@ -19,8 +16,6 @@ int main(int argc, char *argv[]) {
     game.render(std::cout);
 
     game.runPly();
-
-    ASSERT(false, "poop");
 
     game.render(std::cout);
 }

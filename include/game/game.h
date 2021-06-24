@@ -2,12 +2,15 @@
 #define GAME_GAME_H_
 
 #include <ostream>
+#include <unordered_map>
 
 #include "board/board.h"
 
 using namespace board;
 
 namespace game {
+
+extern const std::unordered_map<Square, Piece> INIT_PIECE_MAP;
 
 class Player {
  public:
