@@ -66,6 +66,79 @@ std::size_t getMovesKnight(Board& board, PieceColor color, Square square, Move* 
     return getMovesDiff(board, color, square, diffs, buffer);
 }
 
+
+template <std::size_t SIZE>
+std::size_t getMovesVector(Board& board, PieceColor color, Square square, const std::array<Diff, SIZE>& vectors, Move* buffer) {
+    Move* move_ptr = buffer;
+    for (Diff vec : vectors) {
+        Square curr_sq = square;
+        while (true) {
+            std::size_t new_row = curr_sq.row + vec.row_diff;
+            if (new_row >= Board::WIDTH) {
+                break;
+            }
+            std::size_t new_col = curr_sq.col + vec.col_diff;
+            if (new_col >= Board::WIDTH) {
+                break;
+            }
+            Square pend_sq(new_row, new_col);
+            // TODO(theimer): need a "getOppositeColor" to make this more clear
+            if (!board.squareIsOccupied(pend_sq)) {
+                // square is empty!
+                *move_ptr = (Move){ square, pend_sq };
+                ++move_ptr;
+            } else if (!board.squareIsOccupiedColor(pend_sq, color)) {
+                // square occupied by enemy
+                *move_ptr = (Move){ square, pend_sq };
+                ++move_ptr;
+                break;
+            } else {
+                // occupied by friendly; jumps not allowed, so we're done
+                break;
+            }
+        }
+    }
+
+    return move_ptr - buffer;
+}
+
+std::size_t getMovesRook(Board& board, PieceColor color, Square square, Move* buffer) {
+    static const std::array<Diff, 4> vectors = {{
+            (Diff){  0,  1 },
+            (Diff){  1,  0 },
+            (Diff){ -1,  0 },
+            (Diff){  0, -1 },
+    }};
+
+    return getMovesVector(board, color, square, vectors, buffer);
+}
+
+std::size_t getMovesBishop(Board& board, PieceColor color, Square square, Move* buffer) {
+    static const std::array<Diff, 4> vectors = {{
+            (Diff){  1,  1 },
+            (Diff){  1, -1 },
+            (Diff){ -1,  1 },
+            (Diff){ -1, -1 },
+    }};
+
+    return getMovesVector(board, color, square, vectors, buffer);
+}
+
+std::size_t getMovesQueen(Board& board, PieceColor color, Square square, Move* buffer) {
+    static const std::array<Diff, 8> vectors = {{
+            (Diff){  1,  1 },
+            (Diff){  1, -1 },
+            (Diff){ -1,  1 },
+            (Diff){ -1, -1 },
+            (Diff){  0,  1 },
+            (Diff){  1,  0 },
+            (Diff){ -1,  0 },
+            (Diff){  0, -1 },
+    }};
+
+    return getMovesVector(board, color, square, vectors, buffer);
+}
+
 std::size_t game::getPieceMoves(Board& board, PieceColor color, Square square, Move * buffer) {
     // TODO(theimer): better to just map function pointers?
     PieceType type = board.getPieceType(square);
@@ -73,8 +146,15 @@ std::size_t game::getPieceMoves(Board& board, PieceColor color, Square square, M
     case PieceType::PAWN:
     case PieceType::KING:
         return getMovesPawnKing(board, color, square, buffer);
+    case PieceType::BISHOP:
+        return getMovesBishop(board, color, square, buffer);
+    case PieceType::KNIGHT:
+        return getMovesKnight(board, color, square, buffer);
+    case PieceType::QUEEN:
+        return getMovesQueen(board, color, square, buffer);
+    case PieceType::ROOK:
+        return getMovesRook(board, color, square, buffer);
     default:
-        // TODO(theimer): add the others!
         throw std::invalid_argument("unhandled PieceType: " + toString(type));
     }
 }
