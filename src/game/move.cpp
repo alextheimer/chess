@@ -1,10 +1,12 @@
 #include "game/move.h"
 #include "util/buffer.h"
+#include "util/assert.h"
 
 #include <map>
 #include <vector>
 #include <stdexcept>
 #include <array>
+#include <cmath>
 
 using namespace board;
 
@@ -71,6 +73,9 @@ template <std::size_t SIZE>
 std::size_t getMovesVector(Board& board, PieceColor color, Square square, const std::array<Diff, SIZE>& vectors, Move* buffer) {
     Move* move_ptr = buffer;
     for (Diff vec : vectors) {
+        ASSERT((std::abs(vec.row_diff) <= 1) && (std::abs(vec.col_diff) <= 1),
+                "expected diffs <= 1; got: (" + std::to_string(vec.col_diff) + ", "
+                + std::to_string(vec.row_diff) +")");
         Square curr_sq = square;
         while (true) {
             std::size_t new_row = curr_sq.row + vec.row_diff;
