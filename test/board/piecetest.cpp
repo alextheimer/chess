@@ -14,6 +14,9 @@ compressPiece/decompressPiece
 */
 
 /*
+Compresses/decompresses Pieces of every possible combination of PieceType/PieceColor.
+Compares the decompression result against the expected result.
+
 Covers:
     compressPiece/decompressPiece
         type: { all piece types }
