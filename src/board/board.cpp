@@ -10,7 +10,12 @@
 #include "util/bitops.h"
 #include "util/math.h"
 
-using namespace board;
+using board::Board;
+using board::Square;
+using board::Piece;
+using board::Bitboard;
+using board::PieceType;
+using board::PieceColor;
 
 typedef size_t BitboardIndex;
 

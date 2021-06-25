@@ -9,8 +9,13 @@
 #include <cmath>
 #include <sstream>
 
-using namespace board;
-using namespace game;
+using board::Board;
+using board::PieceColor;
+using board::PieceType;
+using board::Square;
+using board::Piece;
+
+using game::Move;
 
 struct Diff {
     int row_diff;

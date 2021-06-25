@@ -9,7 +9,7 @@ class Human : public game::Player {
  private:
     // TODO(theimer): any state?
  public:
-    Move getMove(const Board& board);
+    game::Move getMove(const board::Board& board);
 };
 
 }

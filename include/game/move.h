@@ -5,23 +5,21 @@
 
 #include <optional>
 
-using namespace board;
-
 namespace game {
 
 struct Move {
-    Square from;
-    Square to;
+    board::Square from;
+    board::Square to;
     std::string toString() const;
 };
 
 bool operator==(const Move& lhs, const Move& rhs);
 
 std::ostream& operator<<(std::ostream& out, const Move& move);
-std::size_t getPieceMoves(Board& board, PieceColor color, Square square, Move * buffer);
-std::size_t getAllMoves(Board& board, PieceColor color, Move * buffer);
-void makeMove(Board& board, Move& move);
-void unmakeMove(Board& board, Move& move, Piece replacement);
+std::size_t getPieceMoves(board::Board& board, board::PieceColor color, board::Square square, Move * buffer);
+std::size_t getAllMoves(board::Board& board, board::PieceColor color, Move * buffer);
+void makeMove(board::Board& board, Move& move);
+void unmakeMove(board::Board& board, Move& move, board::Piece replacement);
 
 }
 

@@ -6,7 +6,10 @@
 #include <ostream>
 #include <sstream>
 
-using namespace board;
+using board::PieceType;
+using board::PieceColor;
+using board::Piece;
+using board::CompressedPiece;
 
 const std::size_t NUM_PIECE_COLOR_BITS =
         util::log2Ceil(1 + static_cast<std::size_t>(PieceColor::NUM_PIECE_COLORS));

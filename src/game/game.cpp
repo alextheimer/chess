@@ -8,8 +8,14 @@
 #include "game/move.h"
 #include "util/assert.h"
 
-using namespace game;
-using namespace board;
+using board::Square;
+using board::Piece;
+using board::PieceColor;
+using board::PieceType;
+using board::Board;
+
+using game::Game;
+using game::Player;
 
 // TODO(theimer): move?
 static const PieceColor START_COLOR = PieceColor::BLACK;

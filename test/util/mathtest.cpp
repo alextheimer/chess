@@ -7,8 +7,6 @@
 
 #include "gtest/gtest.h"
 
-using namespace util;
-
 /*
 ~~~ Test Partitions ~~~
 isPow2
@@ -37,7 +35,7 @@ TEST(MathTest, IsPow2Test) {
     };
 
     for (auto pair : test_map) {
-        ASSERT_EQ(pair.second, isPow2(pair.first)) << "value: " << pair.first;
+        ASSERT_EQ(pair.second, util::isPow2(pair.first)) << "value: " << pair.first;
     }
 }
 
@@ -58,6 +56,6 @@ TEST(MathTest, Log2CeilTest) {
     };
 
     for (auto pair : test_map) {
-        ASSERT_EQ(pair.second, log2Ceil(pair.first)) << "value: " << pair.first;
+        ASSERT_EQ(pair.second, util::log2Ceil(pair.first)) << "value: " << pair.first;
     }
 }

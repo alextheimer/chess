@@ -4,7 +4,9 @@
 #include "gtest/gtest.h"
 #include "board/piece.h"
 
-using namespace board;
+using board::Piece;
+using board::PieceColor;
+using board::PieceType;
 
 /*
 ~~~ Test Partitions ~~~
@@ -26,7 +28,7 @@ TEST(PieceTest, CompressDecompressTest) {
     for (int icolor = 0; icolor < static_cast<int>(PieceColor::NUM_PIECE_COLORS); ++icolor) {
         for (int itype = 0; itype < static_cast<int>(PieceType::NUM_PIECE_TYPES); ++itype) {
             Piece piece = { static_cast<PieceType>(itype), static_cast<PieceColor>(icolor) };
-            Piece decoded = decompressPiece(compressPiece(piece));
+            Piece decoded = board::decompressPiece(board::compressPiece(piece));
             ASSERT_EQ(piece, decoded);
         }
     }

@@ -8,7 +8,7 @@
 
 #include "gtest/gtest.h"
 
-using namespace util;
+using util::BitOpType;
 
 /*
 ~~~ Test Partitions ~~~
@@ -49,7 +49,7 @@ TEST(BitOpsTest, GetBitTest) {
     };
 
     for (TestSpec test_spec : spec_vec) {
-        ASSERT_EQ(test_spec.expected, getBit(test_spec.bits, test_spec.index))
+        ASSERT_EQ(test_spec.expected, util::getBit(test_spec.bits, test_spec.index))
             << "bits: " << test_spec.bits << ", "
             << "index: " << test_spec.index;
     }
@@ -92,9 +92,9 @@ TEST(BitOpsTest, SetBitTest) {
                   << "set_bit: " << test_spec.set_bit;
         BitOpType bits = test_spec.bits;
         // sanity check!
-        ASSERT_EQ(test_spec.expected_before, getBit(bits, test_spec.index)) << error_msg.str();
-        setBit(&bits, test_spec.index, test_spec.set_bit);
-        ASSERT_EQ(test_spec.set_bit, getBit(bits, test_spec.index)) << error_msg.str();
+        ASSERT_EQ(test_spec.expected_before, util::getBit(bits, test_spec.index)) << error_msg.str();
+        util::setBit(&bits, test_spec.index, test_spec.set_bit);
+        ASSERT_EQ(test_spec.set_bit, util::getBit(bits, test_spec.index)) << error_msg.str();
     }
 }
 
@@ -120,7 +120,7 @@ TEST(BitOpsTest, PopHighestBitTest) {
 
     for (TestSpec test_spec : spec_vec) {
         BitOpType bits = test_spec.bits;
-        ASSERT_EQ(test_spec.expected_index, popHighestBit(&bits))
+        ASSERT_EQ(test_spec.expected_index, util::popHighestBit(&bits))
             << "bits before: " << test_spec.bits << ", after: " << bits;
         ASSERT_EQ(test_spec.expected_bits, bits);
     }

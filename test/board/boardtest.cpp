@@ -8,7 +8,11 @@
 #include "util/buffer.h"
 #include "util/assert.h"
 
-using namespace board;
+using board::Square;
+using board::Piece;
+using board::Board;
+using board::PieceType;
+using board::PieceColor;
 
 /*
 ~~~ Test Partitions ~~~

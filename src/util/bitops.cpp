@@ -4,15 +4,13 @@
 
 #include "util/assert.h"
 
-using namespace util;
-
 bool validBitIndex(std::size_t bit_index) {
-    return (bit_index < NUM_BITOP_BITS) && (bit_index >= 0);
+    return (bit_index < util::NUM_BITOP_BITS) && (bit_index >= 0);
 }
 
 void util::setBit(BitOpType* bits, std::size_t bit_index, bool bit) {
     ASSERT(validBitIndex(bit_index), "index: " + std::to_string(bit_index));
-    std::size_t shift_count = (NUM_BITOP_BITS - bit_index - 1);
+    std::size_t shift_count = (util::NUM_BITOP_BITS - bit_index - 1);
     BitOpType mask = ~((BitOpType)1 << shift_count);
     *bits &= mask;
     *bits |= (static_cast<BitOpType>(bit) << shift_count);
@@ -20,7 +18,7 @@ void util::setBit(BitOpType* bits, std::size_t bit_index, bool bit) {
 
 bool util::getBit(const BitOpType bits, size_t bit_index) {
     ASSERT(validBitIndex(bit_index), "index: " + std::to_string(bit_index));
-    std::size_t shift_count = (NUM_BITOP_BITS - bit_index - 1);
+    std::size_t shift_count = (util::NUM_BITOP_BITS - bit_index - 1);
     BitOpType mask = (BitOpType)1 << shift_count;
     BitOpType bitVal = (bits & mask) >> shift_count;
     ASSERT((bitVal == 0) || (bitVal == 1), "bitVal: " + std::to_string(bitVal));

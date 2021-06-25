@@ -7,26 +7,23 @@
 #include "board/board.h"
 #include "game/move.h"
 
-using namespace board;
-using namespace game;
-
 namespace game {
 
-extern const std::unordered_map<Square, Piece> INIT_PIECE_MAP;
+extern const std::unordered_map<board::Square, board::Piece> INIT_PIECE_MAP;
 
 class Player {
  public:
-    virtual Move getMove(const Board& board) = 0;
+    virtual Move getMove(const board::Board& board) = 0;
 };
 
 class Game {
  private:
-    Board& board_;
+    board::Board& board_;
     Player& white_player_;
     Player& black_player_;
-    PieceColor next_player_;
+    board::PieceColor next_player_;
  public:
-    Game(Board& board, Player& white_player, Player& black_player);
+    Game(board::Board& board, Player& white_player, Player& black_player);
     void render(std::ostream& ostream);
     void runPly();
     bool isEnded();

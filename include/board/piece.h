@@ -5,6 +5,8 @@
 
 #include "util/math.h"
 
+// TODO(theimer): move all piece compression stuff to a different namespace
+
 namespace board {
 
 enum class PieceType { KING, QUEEN, PAWN, ROOK, KNIGHT, BISHOP, NUM_PIECE_TYPES };
