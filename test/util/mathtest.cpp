@@ -7,7 +7,7 @@
 
 #include "gtest/gtest.h"
 
-using namespace math;
+using namespace util;
 
 /*
 ~~~ Test Partitions ~~~

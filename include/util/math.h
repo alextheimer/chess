@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-namespace math {
+namespace util {
 
 /**
  * Returns true iff `val` is an exact power of two.
