@@ -7,8 +7,10 @@
 #include <stdexcept>
 #include <array>
 #include <cmath>
+#include <sstream>
 
 using namespace board;
+using namespace game;
 
 struct Diff {
     int row_diff;
@@ -144,6 +146,21 @@ std::size_t getMovesQueen(Board& board, PieceColor color, Square square, Move* b
     return getMovesVector(board, color, square, vectors, buffer);
 }
 
+bool game::operator==(const Move& lhs, const Move& rhs) {
+    return (lhs.from == rhs.from) && (lhs.to == rhs.to);
+}
+
+std::string Move::toString() const {
+    std::stringstream sstr;
+    sstr << "Move(from: " << from << ", to: " << to << ")";
+    return sstr.str();
+}
+
+std::ostream& game::operator<<(std::ostream& out, const Move& move) {
+    out << move.toString();
+    return out;
+}
+
 std::size_t game::getPieceMoves(Board& board, PieceColor color, Square square, Move * buffer) {
     // TODO(theimer): better to just map function pointers?
     PieceType type = board.getPieceType(square);
@@ -179,12 +196,11 @@ std::size_t game::getAllMoves(Board& board, PieceColor color, Move * buffer) {
 
 void game::makeMove(Board& board, Move& move) {
     // TODO(theimer): assertions / rule stuff
-    board.movePiece(move);
+    board.movePiece(move.from, move.to);
 }
 
 void game::unmakeMove(Board& board, Move& move, Piece replacement) {
     // TODO(theimer): assertions
-    Move backwards = { move.to, move.from };
-    board.movePiece(backwards);
+    board.movePiece(move.to, move.from);
     board.setPiece(replacement, move.to);
 }

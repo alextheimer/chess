@@ -5,8 +5,10 @@
 #include <unordered_map>
 
 #include "board/board.h"
+#include "game/move.h"
 
 using namespace board;
+using namespace game;
 
 namespace game {
 

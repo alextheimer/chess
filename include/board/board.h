@@ -39,15 +39,7 @@ class Square {
 // need non-member to support Square keys in maps
 bool operator==(const Square& lhs, const Square& rhs);
 
-struct Move {
-    Square from;
-    Square to;
-    std::string toString() const;
-};
 
-bool operator==(const Move& lhs, const Move& rhs);
-
-std::ostream& operator<<(std::ostream& out, const Move& move);
 std::ostream& operator<<(std::ostream& out, const Square& move);
 
 /**
@@ -90,7 +82,7 @@ class Board {
     void setPiece(const Piece& piece, const Square& square);
 
     // TODO(theimer): document
-    void movePiece(Move& move);
+    void movePiece(Square& from, Square& to);
 
     // TODO(theimer): document
     PieceType getPieceType(Square& square);

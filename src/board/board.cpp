@@ -27,18 +27,9 @@ bool board::operator==(const Square& lhs, const Square& rhs) {
     return (lhs.row == rhs.row) && (lhs.col == rhs.col);
 }
 
-std::ostream& board::operator<<(std::ostream& out, const Move& move) {
-    out << move.toString();
-    return out;
-}
-
 std::ostream& board::operator<<(std::ostream& out, const Square& square) {
     out << square.toString();
     return out;
-}
-
-bool board::operator==(const Move& lhs, const Move& rhs) {
-    return (lhs.from == rhs.from) && (lhs.to == rhs.to);
 }
 
 size_t std::hash<Square>::operator()(const Square& x) const {
@@ -164,12 +155,12 @@ void Board::removePiece(Square& square) {
     }
 }
 
-void Board::movePiece(Move& move) {
-    ASSERT(squareIsOccupied(move.from), "from: " + move.from.toString());
+void Board::movePiece(Square& from, Square& to) {
+    ASSERT(squareIsOccupied(from), "from: " + from.toString());
     // TODO(theimer): square -> index recomputation!
-    Piece from_piece = getPiece(move.from);
-    setPiece(from_piece, move.to);
-    removePiece(move.from);
+    Piece from_piece = getPiece(from);
+    setPiece(from_piece, to);
+    removePiece(from);
 }
 
 Piece Board::getPiece(Square& square) {
@@ -181,11 +172,5 @@ Piece Board::getPiece(Square& square) {
 std::string Square::toString() const {
     std::stringstream sstr;
     sstr << "Square(row: " << std::to_string(row) << ", col: " << std::to_string(col) << ")";
-    return sstr.str();
-}
-
-std::string Move::toString() const {
-    std::stringstream sstr;
-    sstr << "Move(from: " << from << ", to: " << to << ")";
     return sstr.str();
 }

@@ -171,6 +171,11 @@ Covers:
 */
 TEST(BoardTest, MoveTest) {
 
+    struct Move {
+        Square from;
+        Square to;
+    };
+
     struct TestSpec {
         std::unordered_map<Square, Piece> piece_map;
         std::vector<Move> moves;
@@ -225,7 +230,7 @@ TEST(BoardTest, MoveTest) {
             piece_tracker[move.to] = moved;
 
             // actually move Piece on the board
-            board.movePiece(move);
+            board.movePiece(move.from, move.to);
 
             // make sure tracker and board agree
             for (Square& square : *ALL_SQUARES) {
