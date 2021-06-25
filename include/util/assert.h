@@ -1,3 +1,6 @@
+#ifndef UTIL_ASSERT_H_
+#define UTIL_ASSERT_H_
+
 #include <iostream>
 
 // (mostly) stolen from: https://stackoverflow.com/a/3767883
@@ -15,3 +18,5 @@
 #else
 #   define ASSERT(condition, message) do { } while (false)
 #endif
+
+#endif  // UTIL_ASSERT_H_
