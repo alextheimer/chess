@@ -8,7 +8,7 @@
 
 #include "gtest/gtest.h"
 
-using namespace bitops;
+using namespace util;
 
 /*
 ~~~ Test Partitions ~~~

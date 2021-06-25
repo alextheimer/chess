@@ -65,7 +65,7 @@ Square bitboardIndexToSquare(const BitboardIndex index) {
 
 bool getBitAtSquare(const Bitboard board, Square square) {
     BitboardIndex index = squareToBitboardIndex(square);
-    return bitops::getBit(board, index);
+    return util::getBit(board, index);
 }
 
 Board::Board(const std::unordered_map<Square, Piece>& piece_map) {
@@ -84,15 +84,15 @@ bool Board::squareIsOccupied(const Square& square) const {
     size_t index = squareToBitboardIndex(square);
     Bitboard occupancy_board = (this->color_bitboards_[static_cast<int>(PieceColor::WHITE)] |
                                this->color_bitboards_[static_cast<int>(PieceColor::BLACK)]);
-    return static_cast<bool>(bitops::getBit(occupancy_board, index));
+    return static_cast<bool>(util::getBit(occupancy_board, index));
 }
 
 void Board::setPiece(const Piece& piece, const Square& square) {
     // TODO(theimer): make separate "overwritePiece"
 //    ASSERT(!this->squareIsOccupied(square), "square: " + square.toString());
     size_t index = squareToBitboardIndex(square);
-    bitops::setBit(&this->piece_bitboards_[static_cast<int>(piece.type)], index, true);
-    bitops::setBit(&this->color_bitboards_[static_cast<int>(piece.color)], index, true);
+    util::setBit(&this->piece_bitboards_[static_cast<int>(piece.type)], index, true);
+    util::setBit(&this->color_bitboards_[static_cast<int>(piece.color)], index, true);
 }
 
 bool Board::squareIsOccupiedColor(const Square& square, PieceColor color) {
@@ -127,7 +127,7 @@ std::size_t bitboardToSquares(Bitboard board, Square* buffer) {
      Square * ptr = buffer;
     // TODO(theimer): might vectorize with popcount
     while (board > 0) {
-        BitboardIndex index = bitops::popHighestBit(&board);
+        BitboardIndex index = util::popHighestBit(&board);
         *ptr = bitboardIndexToSquare(index);
         ++ptr;
     }
@@ -157,10 +157,10 @@ std::size_t Board::getOccupiedSquares(Square * buffer) {
 void Board::removePiece(Square& square) {
     BitboardIndex index = squareToBitboardIndex(square);
     for (int i = 0; i < static_cast<int>(PieceColor::NUM_PIECE_COLORS); ++i) {
-        bitops::setBit(&color_bitboards_[i], index, false);
+        util::setBit(&color_bitboards_[i], index, false);
     }
     for (int i = 0; i < static_cast<int>(PieceType::NUM_PIECE_TYPES); ++i) {
-        bitops::setBit(&piece_bitboards_[i], index, false);
+        util::setBit(&piece_bitboards_[i], index, false);
     }
 }
 
