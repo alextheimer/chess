@@ -13,8 +13,8 @@ enum class PieceColor { BLACK, WHITE, NUM_PIECE_COLORS };
 typedef uint8_t CompressedPiece;
 
 typedef struct Piece {
-    const PieceType type;
-    const PieceColor color;
+    PieceType type;
+    PieceColor color;
 } Piece;
 
 bool operator==(const Piece& lhs, const Piece& rhs);

@@ -88,7 +88,8 @@ bool Board::squareIsOccupied(const Square& square) const {
 }
 
 void Board::setPiece(const Piece& piece, const Square& square) {
-    ASSERT(!this->squareIsOccupied(square), "square: " + square.toString());
+    // TODO(theimer): make separate "overwritePiece"
+//    ASSERT(!this->squareIsOccupied(square), "square: " + square.toString());
     size_t index = squareToBitboardIndex(square);
     bitops::setBit(&this->piece_bitboards_[static_cast<int>(piece.type)], index, true);
     bitops::setBit(&this->color_bitboards_[static_cast<int>(piece.color)], index, true);
@@ -179,7 +180,7 @@ Piece Board::getPiece(Square& square) {
 
 std::string Square::toString() const {
     std::stringstream sstr;
-    sstr << "Square(row: " << row << ", col: " << col << ")";
+    sstr << "Square(row: " << std::to_string(row) << ", col: " << std::to_string(col) << ")";
     return sstr.str();
 }
 
