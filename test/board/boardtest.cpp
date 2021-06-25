@@ -41,6 +41,10 @@ getOccupiedSquares
     board: { contains various piecetypes/colors }
 */
 
+/*
+Returns a (heap-allocated) vector of all valid, unique Board Squares.
+(Used to instantiate ALL_SQUARES below.)
+*/
 std::unique_ptr<std::vector<Square>> getAllSquares() {
     auto squares = std::unique_ptr<std::vector<Square>>(new std::vector<Square>);
     for (int irow = 0; irow < Board::WIDTH; ++irow) {
@@ -51,9 +55,14 @@ std::unique_ptr<std::vector<Square>> getAllSquares() {
     return squares;
 }
 
+// TODO(theimer): move this to Board?
+// vector of all valid, unique Board Squares.
 static const std::unique_ptr<std::vector<Square>> ALL_SQUARES = getAllSquares();
 
 /*
+Instantiates Boards each with a set of Pieces, then confirms that
+Board::squareIsOccupied returns the expected result for every square.
+
 Covers:
     squareIsOccupied
         square: (0,0), (0,7) (7,0), (7,7), other
@@ -79,6 +88,8 @@ TEST(BoardTest, SquareIsOccupiedTest) {
             },
     };
 
+    // for each piece_map, make sure squareIsOccuped returns
+    //     the expected result for every square
     for (auto& piece_map : piece_maps) {
         Board board(piece_map);
         for (Square& square : *ALL_SQUARES) {
@@ -91,6 +102,11 @@ TEST(BoardTest, SquareIsOccupiedTest) {
 }
 
 /*
+Instantiates empty Boards, then sets Pieces (via Board::setPiece) onto each.
+Then, for each...
+    empty square: confirm the square is empty (via Board::squareIsOccupied)
+    nonempty square: confirm Board::getPiece returns the expected piece.
+
 Covers:
     getPiece
         square: (0,0), (0,7) (7,0), (7,7), other
@@ -103,7 +119,6 @@ Covers:
         board: single piece, no pieces, multiple pieces
 */
 TEST(BoardTest, GetSetTest) {
-
     std::vector<std::unordered_map<Square, Piece>> piece_maps = {
             {},
             {{Square(0, 0), (Piece){PieceType::KING, PieceColor::BLACK}}},
@@ -124,23 +139,29 @@ TEST(BoardTest, GetSetTest) {
 
     for (auto& piece_map : piece_maps) {
         Board board;
+        // set all the pieces from the map
         for (auto pair : piece_map) {
             board.setPiece(pair.second, pair.first);
         }
+        // step through all squares and confirm their state matches what we expect
         for (Square& square : *ALL_SQUARES) {
             auto piece_iter = piece_map.find(square);
             if (piece_iter != piece_map.end()) {
                 // square is occupied!
                 ASSERT_EQ(piece_iter->second, board.getPiece(square));
             } else {
+                // unoccupied
                 ASSERT_FALSE(board.squareIsOccupied(square));
             }
         }
     }
-
 }
 
 /*
+Instantiates Boards each with a set of Pieces, then repositions/overwrites
+some via Board::movePiece. For every Square, confirms Board::getPiece
+and Board::squareIsOccupied return the expected results.
+
 Covers:
     movePiece
         from: (0,0), (0,7) (7,0), (7,7), other
@@ -195,6 +216,7 @@ TEST(BoardTest, MoveTest) {
 
     for (TestSpec spec : specs) {
         Board board(spec.piece_map);
+        // copy of piece_map used to find the expected final Board setup
         std::unordered_map<Square, Piece> piece_tracker = spec.piece_map;
         for (Move& move : spec.moves) {
             // update the tracker
@@ -202,7 +224,7 @@ TEST(BoardTest, MoveTest) {
             piece_tracker.erase(move.from);
             piece_tracker[move.to] = moved;
 
-            // actually move on the board
+            // actually move Piece on the board
             board.movePiece(move);
 
             // make sure tracker and board agree
@@ -212,13 +234,18 @@ TEST(BoardTest, MoveTest) {
                     // square is occupied!
                     ASSERT_EQ(piece_iter->second, board.getPiece(square));
                 } else {
+                    // unoccupied
                     ASSERT_FALSE(board.squareIsOccupied(square));
                 }
             }
         }
     }
 }
+
 /*
+Instantiates Boards each with their own set of Pieces, then calls Board::getOccupiedSquares.
+Confirms result is expected.
+
 Covers:
     getOccupiedSquares
         board: single piece, no pieces, multiple pieces
@@ -245,12 +272,12 @@ TEST(BoardTest, GetOccupiedSquaresTest) {
             }
     };
 
-
     for (std::unordered_map<Square, Piece> piece_map : piece_maps) {
         Board board(piece_map);
         util::Buffer<Square, Board::SIZE> occupied_buffer;
         for (int icolor = 0; icolor < static_cast<int>(PieceColor::NUM_PIECE_COLORS); ++icolor) {
-            // store all pieces of the same color
+            // Store all pieces of the same color.
+            //     These are removed as we encounter them.
             std::unordered_set<Square> square_set;
             for (auto pair : piece_map) {
                 if (pair.second.color == static_cast<PieceColor>(icolor)) {
@@ -265,6 +292,7 @@ TEST(BoardTest, GetOccupiedSquaresTest) {
                 ASSERT_NE(square_set.end(), square_set.find(square));
                 // make sure it's occupied by the expected piece
                 ASSERT_EQ(piece_map.at(square), board.getPiece(square));
+                // essentially: mark this square as "visited"
                 square_set.erase(square);
             }
             // make sure all squares were accounted for
