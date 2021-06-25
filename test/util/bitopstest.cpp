@@ -71,10 +71,8 @@ TEST(BitOpsTest, SetBitTest) {
         bool set_bit;
     } TestSpec;
 
-    /*
-    Note: `before` is included only as a sanity check.
-    get_bit will "confirm" that we're setting the bit from an expected value.
-    */
+    // Note: `before` is included only as a sanity check.
+    //     get_bit will "confirm" that we're setting the bit from an expected value.
     std::vector<TestSpec> spec_vec = {
            // bits                                  index    before    set_bit
             { static_cast<BitOpType>(1) << 63,      0,       true,     false },
@@ -92,9 +90,8 @@ TEST(BitOpsTest, SetBitTest) {
         error_msg << "original bits: " << test_spec.bits << ", "
                   << "index: " << test_spec.index << ", "
                   << "set_bit: " << test_spec.set_bit;
-
         BitOpType bits = test_spec.bits;
-        // sanity check
+        // sanity check!
         ASSERT_EQ(test_spec.expected_before, getBit(bits, test_spec.index)) << error_msg.str();
         setBit(&bits, test_spec.index, test_spec.set_bit);
         ASSERT_EQ(test_spec.set_bit, getBit(bits, test_spec.index)) << error_msg.str();
