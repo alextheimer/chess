@@ -20,7 +20,7 @@ using board::PieceColor;
 // TODO(theimer): get rid of this; just use size_t
 typedef size_t BitboardIndex;
 
-BitboardIndex squareToBitboardIndex(const Square square) {
+BitboardIndex squareToBitboardIndex(Square square) {
     // TODO(theimer): just bit-shifts
     BitboardIndex index = (square.row * Board::WIDTH) + square.col;
     ASSERT(index >= 0 && index < Board::SIZE, "index: " + std::to_string(index));
@@ -60,16 +60,16 @@ Square::Square(DimIndex row, DimIndex col) : row(row), col(col) {
     ASSERT(col >= 0 && col < Board::WIDTH, "col: " + std::to_string(col));
 }
 
-bool board::operator==(const Square lhs, const Square rhs) {
+bool board::operator==(Square lhs, Square rhs) {
     return (lhs.row == rhs.row) && (lhs.col == rhs.col);
 }
 
-std::ostream& board::operator<<(std::ostream& out, const Square square) {
+std::ostream& board::operator<<(std::ostream& out, Square square) {
     out << square.toString();
     return out;
 }
 
-size_t std::hash<Square>::operator()(const Square square) const {
+size_t std::hash<Square>::operator()(Square square) const {
     return squareToBitboardIndex(square);
 }
 
@@ -93,14 +93,14 @@ Board::Board(const std::unordered_map<Square, Piece>& piece_map) {
     // Just step thru map elements and set each piece at its square.
     // Note: all field array indices are already initialized to zero.
     for (auto iterator = piece_map.begin(); iterator != piece_map.end(); ++iterator)  {
-        const Square square = iterator->first;
-        const Piece piece = iterator->second;
+        Square square = iterator->first;
+        Piece piece = iterator->second;
         ASSERT(!this->squareIsOccupied(square), "square occupied: " + square.toString());
         this->setPiece(piece, square);
     }
 }
 
-bool Board::squareIsOccupied(const Square square) const {
+bool Board::squareIsOccupied(Square square) const {
     // get the bit at the union of the two color bitboards
     // TODO(theimer): keep a separate "all-piece" bitboard?
     size_t index = squareToBitboardIndex(square);
@@ -109,14 +109,14 @@ bool Board::squareIsOccupied(const Square square) const {
     return static_cast<bool>(util::getBit(occupancy_board, index));
 }
 
-void Board::setPiece(const Piece piece, const Square square) {
+void Board::setPiece(Piece piece, Square square) {
     // TODO(theimer): assert square is unoccupied if/when "overwrite" variant is made
     size_t index = squareToBitboardIndex(square);
     util::setBit(&this->piece_bitboards_[static_cast<int>(piece.type)], index, true);
     util::setBit(&this->color_bitboards_[static_cast<int>(piece.color)], index, true);
 }
 
-bool Board::squareIsOccupiedColor(const Square square, PieceColor color) const {
+bool Board::squareIsOccupiedColor(Square square, PieceColor color) const {
     Bitboard color_board = color_bitboards_[static_cast<std::size_t>(color)];
     return getBitAtSquare(color_board, square);
 }

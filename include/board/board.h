@@ -37,9 +37,9 @@ class Square {
 };
 
 // Note: need non-member to support Square map keys
-bool operator==(const Square lhs, const Square rhs);
+bool operator==(Square lhs, Square rhs);
 
-std::ostream& operator<<(std::ostream& out, const Square move);
+std::ostream& operator<<(std::ostream& out, Square move);
 
 /*
 Maintains an 8x8 chess board.
@@ -75,18 +75,18 @@ class Board {
     /*
      Returns true iff `square` is occupied on the Board.
     */
-    bool squareIsOccupied(const Square square) const;
+    bool squareIsOccupied(Square square) const;
 
     /*
     Returns true iff `square` is occupied on the Board by a piece with the specified PieceColor.
     */
-    bool squareIsOccupiedColor(const Square square, PieceColor color) const;
+    bool squareIsOccupiedColor(Square square, PieceColor color) const;
 
     // TODO(theimer): add an "overwritePiece" member
     /*
     Sets the piece described by `piece` at `square` on the Board.
     */
-    void setPiece(const Piece piece, const Square square);
+    void setPiece(Piece piece, Square square);
 
     // TODO(theimer): add a "moveOverwritePiece" member
     /*

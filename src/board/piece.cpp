@@ -30,14 +30,14 @@ static const std::size_t PIECE_COLOR_MASK =
 static const std::size_t PIECE_TYPE_MASK =
         ((std::size_t)1 << NUM_PIECE_TYPE_BITS) - 1;
 
-std::string board::toString(const Piece piece) {
+std::string board::toString(Piece piece) {
     std::stringstream ss;
     ss << "Piece(type: " << toString(piece.type) << ", "
        << "color: " << toString(piece.color);
     return ss.str();
 }
 
-CompressedPiece board::compressPiece(const Piece piece) {
+CompressedPiece board::compressPiece(Piece piece) {
     CompressedPiece compressed_piece = static_cast<CompressedPiece>(piece.color);
     compressed_piece <<= NUM_PIECE_TYPE_BITS;
     compressed_piece |= static_cast<CompressedPiece>(piece.type);
@@ -53,11 +53,11 @@ Piece board::decompressPiece(CompressedPiece compressed_piece) {
     return (Piece){type, color};
 }
 
-bool board::operator==(const Piece lhs, const Piece rhs) {
+bool board::operator==(Piece lhs, Piece rhs) {
     return (lhs.type == rhs.type) && (lhs.color == rhs.color);
 }
 
-std::ostream& board::operator<<(std::ostream& ostream, const Piece piece) {
+std::ostream& board::operator<<(std::ostream& ostream, Piece piece) {
     ostream << toString(piece);
     return ostream;
 }

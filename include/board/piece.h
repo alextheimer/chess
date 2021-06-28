@@ -18,15 +18,15 @@ typedef struct Piece {
     PieceColor color;
 } Piece;
 
-bool operator==(const Piece lhs, const Piece rhs);
-std::ostream& operator<<(std::ostream& ostream, const Piece piece);
+bool operator==(Piece lhs, Piece rhs);
+std::ostream& operator<<(std::ostream& ostream, Piece piece);
 
-CompressedPiece compressPiece(const Piece piece);
+CompressedPiece compressPiece(Piece piece);
 Piece decompressPiece(CompressedPiece compressed_piece);
 
 std::string toString(PieceColor color);
 std::string toString(PieceType type);
-std::string toString(const Piece piece);
+std::string toString(Piece piece);
 
 }
 
