@@ -7,31 +7,33 @@
 
 namespace util {
 
-// TODO(theimer): overuse of this will bloat the binary, no?
-//    Do any better solutions exist in C++??
-
-/**
- * Array that does not initialize its elements at its own initialization.
- */
-template <typename T, std::size_t size>
+/*
+Array that does *not* initialize its elements at its own initialization.
+*/
+template <typename T, std::size_t SIZE>
 class Buffer {
  private:
-    uint8_t arr_[size * sizeof(T)];
+    // Just stores raw bytes of each element.
+    //    Note that initialization as a T array would construct every element.
+    uint8_t arr_[SIZE * sizeof(T)];
  public:
     T& get(std::size_t index) {
-        ASSERT(index < size, "index: " + std::to_string(index) + ", "
-                            + "size: " + std::to_string(size));
+        ASSERT(index < SIZE, "index: " + std::to_string(index) + ", "
+                            + "SIZE: " + std::to_string(SIZE));
         T * ptr = reinterpret_cast<T*>(arr_);
         return ptr[index];
     }
 
     void set(std::size_t index, T& elt) {
-        ASSERT(index < size, "index: " + std::to_string(index) + ", "
-                            + "size: " + std::to_string(size));
+        ASSERT(index < SIZE, "index: " + std::to_string(index) + ", "
+                            + "SIZE: " + std::to_string(SIZE));
         T * ptr = reinterpret_cast<T*>(arr_);
         ptr[index] = elt;
     }
 
+    /*
+    Returns an Iterator at the first index.
+    */
     T * start() {
         return reinterpret_cast<T*>(arr_);
     }
