@@ -202,11 +202,11 @@ std::string Move::toString() const {
     return sstr.str();
 }
 
-bool game::operator==(const Move& lhs, const Move& rhs) {
+bool game::operator==(Move lhs, Move rhs) {
     return (lhs.from == rhs.from) && (lhs.to == rhs.to);
 }
 
-std::ostream& game::operator<<(std::ostream& out, const Move& move) {
+std::ostream& game::operator<<(std::ostream& out, Move move) {
     out << move.toString();
     return out;
 }
@@ -243,11 +243,11 @@ std::size_t game::getAllMoves(const Board& board, PieceColor color, Move * buffe
     return next_move_slot - buffer;
 }
 
-void game::makeMove(Board& board, Move& move) {
+void game::makeMove(Board& board, Move move) {
     board.movePiece(move.from, move.to);
 }
 
-void game::unmakeMove(Board& board, Move& move, Piece replacement) {
+void game::unmakeMove(Board& board, Move move, Piece replacement) {
     board.movePiece(move.to, move.from);
     board.setPiece(replacement, move.to);
 }

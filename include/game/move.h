@@ -13,8 +13,8 @@ struct Move {
     std::string toString() const;
 };
 
-bool operator==(const Move& lhs, const Move& rhs);
-std::ostream& operator<<(std::ostream& out, const Move& move);
+bool operator==(Move lhs, Move rhs);
+std::ostream& operator<<(std::ostream& out, Move move);
 
 // TODO(theimer): movegen members that aren't explicitly built for performance
 
@@ -40,13 +40,13 @@ std::size_t getAllMoves(const board::Board& board, board::PieceColor color, Move
 /*
 Applies the specified move to the board. TODO
 */
-void makeMove(board::Board& board, Move& move);
+void makeMove(board::Board& board, Move move);
 
 /*
 Reverses a move, then sets a replacement Piece at the move's `to` Square.
 TODO: elaborate more when variants are more concrete.
 */
-void unmakeMove(board::Board& board, Move& move, board::Piece replacement);
+void unmakeMove(board::Board& board, Move move, board::Piece replacement);
 
 }
 
