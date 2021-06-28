@@ -20,21 +20,21 @@ class Buffer {
     T& get(std::size_t index) const {
         ASSERT(index < SIZE, "index: " + std::to_string(index) + ", "
                             + "SIZE: " + std::to_string(SIZE));
-        T * ptr = reinterpret_cast<T*>(const_cast<uint8_t*>(arr_));
+        T* ptr = reinterpret_cast<T*>(const_cast<uint8_t*>(arr_));
         return ptr[index];
     }
 
     void set(std::size_t index, T& elt) {
         ASSERT(index < SIZE, "index: " + std::to_string(index) + ", "
                             + "SIZE: " + std::to_string(SIZE));
-        T * ptr = reinterpret_cast<T*>(arr_);
+        T* ptr = reinterpret_cast<T*>(arr_);
         ptr[index] = elt;
     }
 
     /*
     Returns an Iterator at the first index.
     */
-    T * start() const {
+    T* start() const {
         return reinterpret_cast<T*>(const_cast<uint8_t*>(arr_));
     }
 };

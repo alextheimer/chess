@@ -211,7 +211,7 @@ std::ostream& game::operator<<(std::ostream& out, Move move) {
     return out;
 }
 
-std::size_t game::getPieceMoves(const Board& board, PieceColor color, Square square, Move * buffer) {
+std::size_t game::getPieceMoves(const Board& board, PieceColor color, Square square, Move* buffer) {
     // TODO(theimer): better to just map function pointers?
     PieceType type = board.getPieceType(square);
     switch (type) {
@@ -231,11 +231,11 @@ std::size_t game::getPieceMoves(const Board& board, PieceColor color, Square squ
     }
 }
 
-std::size_t game::getAllMoves(const Board& board, PieceColor color, Move * buffer) {
+std::size_t game::getAllMoves(const Board& board, PieceColor color, Move* buffer) {
     // get all occupied squares, then get the valid moves from those squares
     util::Buffer<Square, Board::SIZE> occupied_buffer;
     std::size_t num_occupied = board.getOccupiedSquares(color, occupied_buffer.start());
-    Move * next_move_slot = buffer;
+    Move* next_move_slot = buffer;
     std::size_t num_moves = 0;
     for (int i = 0; i < num_occupied; ++i) {
         next_move_slot += getPieceMoves(board, color, occupied_buffer.get(i), next_move_slot);

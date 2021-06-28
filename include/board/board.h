@@ -123,21 +123,21 @@ class Board {
     @param buffer: an Iterator at the beginning of the buffer.
     @return: the number of Squares added to the buffer.
     */
-    std::size_t getOccupiedSquares(PieceColor color, Square * buffer) const;
+    std::size_t getOccupiedSquares(PieceColor color, Square* buffer) const;
 
     /*
     Fills a buffer with all Squares that contain a piece with the specified PieceType.
     @param buffer: an Iterator at the beginning of the buffer.
     @return: the number of Squares added to the buffer.
     */
-    std::size_t getOccupiedSquares(PieceType type, Square * buffer) const;
+    std::size_t getOccupiedSquares(PieceType type, Square* buffer) const;
 
     /*
     Fills a buffer with all Squares that contain a piece.
     @param buffer: an Iterator at the beginning of the buffer.
     @return: the number of Squares added to the buffer.
     */
-    std::size_t getOccupiedSquares(Square * buffer) const;
+    std::size_t getOccupiedSquares(Square* buffer) const;
 };
 
 }  // namespace board

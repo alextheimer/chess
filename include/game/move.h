@@ -25,14 +25,14 @@ Fills a buffer with all possible moves for the Piece at the specified Square.
 @return: the number of Moves added to the buffer.
 */
 std::size_t getPieceMoves(const board::Board& board, board::PieceColor color,
-                          board::Square square, Move * buffer);
+                          board::Square square, Move* buffer);
 
 /*
 Fills a buffer with all possible moves for Pieces of the specified color.
 @param buffer: an Iterator at the start of the buffer.
 @return: the number of Moves added to the buffer.
 */
-std::size_t getAllMoves(const board::Board& board, board::PieceColor color, Move * buffer);
+std::size_t getAllMoves(const board::Board& board, board::PieceColor color, Move* buffer);
 
 // TODO(theimer): need "overwrite" variant of makeMove
 // TODO(theimer): need "pieceless" variant of unmakeMove
