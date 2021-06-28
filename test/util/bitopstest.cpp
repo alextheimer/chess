@@ -32,11 +32,11 @@ Covers:
         expected: 0, 1
 */
 TEST(BitOpsTest, GetBitTest) {
-    typedef struct TestSpec {
+    struct TestSpec {
         BitOpType bits;
         std::size_t index;
         bool expected;
-    } TestSpec;
+    };
 
     std::vector<TestSpec> spec_vec = {
            // bits                                  index    expected
@@ -64,12 +64,12 @@ Covers:
         original/set_big: same, different
 */
 TEST(BitOpsTest, SetBitTest) {
-    typedef struct TestSpec {
+    struct TestSpec {
         BitOpType bits;
         std::size_t index;
         bool expected_before;
         bool set_bit;
-    } TestSpec;
+    };
 
     // Note: `before` is included only as a sanity check.
     //     get_bit will "confirm" that we're setting the bit from an expected value.

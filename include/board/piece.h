@@ -13,10 +13,10 @@ enum class PieceColor { BLACK, WHITE, NUM_PIECE_COLORS };
 // TODO(theimer): move all piece compression stuff to a different namespace?
 typedef uint8_t CompressedPiece;
 
-typedef struct Piece {
+struct Piece {
     PieceType type;
     PieceColor color;
-} Piece;
+};
 
 bool operator==(Piece lhs, Piece rhs);
 std::ostream& operator<<(std::ostream& ostream, Piece piece);
