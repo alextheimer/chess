@@ -17,37 +17,11 @@ using board::Bitboard;
 using board::PieceType;
 using board::PieceColor;
 
+// TODO(theimer): get rid of this; just use size_t
 typedef size_t BitboardIndex;
 
-Board::Board() {
-    // intentionally blank
-}
-
-Square::Square(DimIndex row, DimIndex col) : row(row), col(col) {
-    ASSERT(row >= 0 && row < Board::WIDTH, "row: " + std::to_string(row));
-    ASSERT(col >= 0 && col < Board::WIDTH, "col: " + std::to_string(col));
-}
-
-bool board::operator==(const Square& lhs, const Square& rhs) {
-    return (lhs.row == rhs.row) && (lhs.col == rhs.col);
-}
-
-std::ostream& board::operator<<(std::ostream& out, const Square& square) {
-    out << square.toString();
-    return out;
-}
-
-size_t std::hash<Square>::operator()(const Square& x) const {
-    static const size_t ROW_SHIFT = 10;
-    return (static_cast<size_t>(x.row) << ROW_SHIFT) | static_cast<size_t>(x.col);
-}
-
-size_t std::hash<Piece>::operator()(const board::Piece& x) const {
-    static const size_t TYPE_SHIFT = 10;
-    return (static_cast<size_t>(x.type) << TYPE_SHIFT) | static_cast<size_t>(x.color);
-}
-
 BitboardIndex squareToBitboardIndex(const Square& square) {
+    // TODO(theimer): just bit-shifts
     BitboardIndex index = (square.row * Board::WIDTH) + square.col;
     ASSERT(index >= 0 && index < Board::SIZE, "index: " + std::to_string(index));
     return index;
@@ -64,19 +38,87 @@ bool getBitAtSquare(const Bitboard board, Square square) {
     return util::getBit(board, index);
 }
 
+/*
+Fills a buffer with all Squares such that each contains a 1 on the Bitboard.
+@param buffer: an Iterator at the first index of the buffer.
+@return: the number of Squares added to the buffer.
+*/
+std::size_t bitboardToSquares(Bitboard board, Square* buffer) {
+     Square * ptr = buffer;
+    // i.e. "while 1's exist on the board"
+    // TODO(theimer): might vectorize with popcount-based for loop
+    while (board > 0) {
+        BitboardIndex index = util::popHighestBit(&board);
+        *ptr = bitboardIndexToSquare(index);
+        ++ptr;
+    }
+    return ptr - buffer;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Square::Square(DimIndex row, DimIndex col) : row(row), col(col) {
+    ASSERT(row >= 0 && row < Board::WIDTH, "row: " + std::to_string(row));
+    ASSERT(col >= 0 && col < Board::WIDTH, "col: " + std::to_string(col));
+}
+
+bool board::operator==(const Square& lhs, const Square& rhs) {
+    return (lhs.row == rhs.row) && (lhs.col == rhs.col);
+}
+
+std::ostream& board::operator<<(std::ostream& out, const Square& square) {
+    out << square.toString();
+    return out;
+}
+
+size_t std::hash<Square>::operator()(const Square& square) const {
+    return squareToBitboardIndex(square);
+}
+
+std::string Square::toString() const {
+    std::stringstream sstr;
+    sstr << "Square(row: " << std::to_string(row) << ", col: " << std::to_string(col) << ")";
+    return sstr.str();
+}
+
+size_t std::hash<Piece>::operator()(const board::Piece& piece) const {
+    // TODO(theimer): use board::compressPiece?
+    static const size_t TYPE_SHIFT = 10;  // Arbitrary choice
+    return (static_cast<size_t>(piece.type) << TYPE_SHIFT) | static_cast<size_t>(piece.color);
+}
+
+Board::Board() {
+    // intentionally blank
+}
+
 Board::Board(const std::unordered_map<Square, Piece>& piece_map) {
-    // Note: all field array indices initialized to zero.
+    // Just step thru map elements and set each piece at its square.
+    // Note: all field array indices are already initialized to zero.
     for (auto iterator = piece_map.begin(); iterator != piece_map.end(); ++iterator)  {
         const Square& square = iterator->first;
         const Piece& piece = iterator->second;
-
-        ASSERT(!this->squareIsOccupied(square), "square: " + square.toString());
-
+        ASSERT(!this->squareIsOccupied(square), "square occupied: " + square.toString());
         this->setPiece(piece, square);
     }
 }
 
 bool Board::squareIsOccupied(const Square& square) const {
+    // get the bit at the union of the two color bitboards
+    // TODO(theimer): keep a separate "all-piece" bitboard?
     size_t index = squareToBitboardIndex(square);
     Bitboard occupancy_board = (this->color_bitboards_[static_cast<int>(PieceColor::WHITE)] |
                                this->color_bitboards_[static_cast<int>(PieceColor::BLACK)]);
@@ -84,8 +126,7 @@ bool Board::squareIsOccupied(const Square& square) const {
 }
 
 void Board::setPiece(const Piece& piece, const Square& square) {
-    // TODO(theimer): make separate "overwritePiece"
-//    ASSERT(!this->squareIsOccupied(square), "square: " + square.toString());
+    // TODO(theimer): assert square is unoccupied if/when "overwrite" variant is made
     size_t index = squareToBitboardIndex(square);
     util::setBit(&this->piece_bitboards_[static_cast<int>(piece.type)], index, true);
     util::setBit(&this->color_bitboards_[static_cast<int>(piece.color)], index, true);
@@ -97,6 +138,7 @@ bool Board::squareIsOccupiedColor(const Square& square, PieceColor color) {
 }
 
 PieceType Board::getPieceType(Square& square) {
+    // step thru all PieceType bitboards and check for occupancy at `square`
     for (int i = 0; i < static_cast<int>(PieceType::NUM_PIECE_TYPES); ++i) {
         Bitboard board = piece_bitboards_[i];
         // TODO(theimer): lots of square -> index recalculation!
@@ -109,6 +151,7 @@ PieceType Board::getPieceType(Square& square) {
 
 // TODO(theimer): basically copy-paste of the above
 PieceColor Board::getPieceColor(Square& square) {
+    // step thru all PieceColor bitboards and check for occupancy at `square`
     for (int i = 0; i < static_cast<int>(PieceColor::NUM_PIECE_COLORS); ++i) {
         Bitboard board = color_bitboards_[i];
         // TODO(theimer): lots of square -> index recalculation!
@@ -117,17 +160,6 @@ PieceColor Board::getPieceColor(Square& square) {
         }
     }
     throw std::invalid_argument("unoccupied square: " + square.toString());
-}
-
-std::size_t bitboardToSquares(Bitboard board, Square* buffer) {
-     Square * ptr = buffer;
-    // TODO(theimer): might vectorize with popcount
-    while (board > 0) {
-        BitboardIndex index = util::popHighestBit(&board);
-        *ptr = bitboardIndexToSquare(index);
-        ++ptr;
-    }
-    return ptr - buffer;
 }
 
 std::size_t Board::getOccupiedSquares(PieceColor color, Square * buffer) {
@@ -141,8 +173,8 @@ std::size_t Board::getOccupiedSquares(PieceType type, Square * buffer) {
     return bitboardToSquares(board, buffer);
 }
 
-// TODO(theimer): worth maintaining this?
 std::size_t Board::getOccupiedSquares(Square * buffer) {
+    // get the union of all color bitboards, then convert to squares.
     Bitboard board = 0;
     for (int i = 0; i < static_cast<int>(PieceColor::NUM_PIECE_COLORS); ++i) {
         board |= color_bitboards_[i];
@@ -151,6 +183,7 @@ std::size_t Board::getOccupiedSquares(Square * buffer) {
 }
 
 void Board::removePiece(Square& square) {
+    // set the color and piece bits to zero
     BitboardIndex index = squareToBitboardIndex(square);
     for (int i = 0; i < static_cast<int>(PieceColor::NUM_PIECE_COLORS); ++i) {
         util::setBit(&color_bitboards_[i], index, false);
@@ -172,10 +205,4 @@ Piece Board::getPiece(Square& square) {
     PieceType type = getPieceType(square);
     PieceColor color = getPieceColor(square);
     return (Piece){ type, color };
-}
-
-std::string Square::toString() const {
-    std::stringstream sstr;
-    sstr << "Square(row: " << std::to_string(row) << ", col: " << std::to_string(col) << ")";
-    return sstr.str();
 }

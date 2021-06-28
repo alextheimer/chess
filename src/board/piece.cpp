@@ -11,10 +11,19 @@ using board::PieceColor;
 using board::Piece;
 using board::CompressedPiece;
 
+/*
+Note: compressed pieces are built as follows:
+|-- color --|-- type --|
+*/
+
+// Number of bits used to represent each enum in a compressed Piece.
+// TODO(theimer): +1 is too many
 const std::size_t NUM_PIECE_COLOR_BITS =
         util::log2Ceil(1 + static_cast<std::size_t>(PieceColor::NUM_PIECE_COLORS));
 const std::size_t NUM_PIECE_TYPE_BITS =
         util::log2Ceil(1 + static_cast<std::size_t>(PieceType::NUM_PIECE_TYPES));
+
+// masks used to extract Piece data from its compressed format
 const std::size_t PIECE_COLOR_MASK =
         ((std::size_t)1 << NUM_PIECE_COLOR_BITS) - 1;
 const std::size_t PIECE_TYPE_MASK =
@@ -27,11 +36,6 @@ std::string board::toString(const Piece& piece) {
     return ss.str();
 }
 
-std::ostream& board::operator<<(std::ostream& ostream, const Piece& piece) {
-    ostream << toString(piece);
-    return ostream;
-}
-
 CompressedPiece board::compressPiece(const Piece& piece) {
     CompressedPiece compressed_piece = static_cast<CompressedPiece>(piece.color);
     compressed_piece <<= NUM_PIECE_TYPE_BITS;
@@ -40,19 +44,21 @@ CompressedPiece board::compressPiece(const Piece& piece) {
 }
 
 Piece board::decompressPiece(CompressedPiece compressed_piece) {
-    PieceType type;
-    PieceColor color;
-
-    type = static_cast<PieceType>(compressed_piece & PIECE_TYPE_MASK);
+    // extract from the least significant bits...
+    PieceType type = static_cast<PieceType>(compressed_piece & PIECE_TYPE_MASK);
     compressed_piece >>= NUM_PIECE_TYPE_BITS;
-    color = static_cast<PieceColor>(compressed_piece & PIECE_COLOR_MASK);
-
-    // TODO(theimer): this seems too C-ish
+    PieceColor color = static_cast<PieceColor>(compressed_piece & PIECE_COLOR_MASK);
+    // TODO(theimer): this syntax seems too C-ish
     return (Piece){type, color};
 }
 
 bool board::operator==(const Piece& lhs, const Piece& rhs) {
     return (lhs.type == rhs.type) && (lhs.color == rhs.color);
+}
+
+std::ostream& board::operator<<(std::ostream& ostream, const Piece& piece) {
+    ostream << toString(piece);
+    return ostream;
 }
 
 std::string board::toString(PieceColor color) {
