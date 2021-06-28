@@ -16,21 +16,27 @@ using board::Piece;
 using board::Bitboard;
 using board::PieceType;
 using board::PieceColor;
+using board::DimIndex;
 
 // TODO(theimer): get rid of this; just use std::size_t
 typedef std::size_t BitboardIndex;
 
+// TODO(theimer): make these constexpr
+const std::size_t NUM_WIDTH_BITS = util::log2Ceil(Board::WIDTH);
+const std::size_t WIDTH_MASK = (static_cast<std::size_t>(1) << NUM_WIDTH_BITS) - 1;
+
 BitboardIndex squareToBitboardIndex(Square square) {
-    // TODO(theimer): just bit-shifts
-    BitboardIndex index = (square.row * Board::WIDTH) + square.col;
+    BitboardIndex index = (static_cast<BitboardIndex>(square.row) << NUM_WIDTH_BITS)
+            | static_cast<BitboardIndex>(square.col);
     ASSERT(index >= 0 && index < Board::SIZE, "index: " + std::to_string(index));
     return index;
 }
 
 Square bitboardIndexToSquare(BitboardIndex index) {
-    // TODO(theimer): just bit-shifts
     ASSERT(index >= 0 && index < Board::SIZE, "index: " + std::to_string(index));
-    return Square(index / Board::WIDTH, index % Board::WIDTH);
+    DimIndex col = index & WIDTH_MASK;
+    DimIndex row = index >> NUM_WIDTH_BITS;
+    return Square(row, col);
 }
 
 bool getBitAtSquare(Bitboard board, Square square) {
