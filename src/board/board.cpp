@@ -17,8 +17,8 @@ using board::Bitboard;
 using board::PieceType;
 using board::PieceColor;
 
-// TODO(theimer): get rid of this; just use size_t
-typedef size_t BitboardIndex;
+// TODO(theimer): get rid of this; just use std::size_t
+typedef std::size_t BitboardIndex;
 
 BitboardIndex squareToBitboardIndex(Square square) {
     // TODO(theimer): just bit-shifts
@@ -81,7 +81,7 @@ std::string Square::toString() const {
 
 size_t std::hash<Piece>::operator()(const board::Piece piece) const {
     // TODO(theimer): use board::compressPiece?
-    static constexpr size_t TYPE_SHIFT = 10;  // Arbitrary choice
+    static constexpr std::size_t TYPE_SHIFT = 10;  // Arbitrary choice
     return (static_cast<size_t>(piece.type) << TYPE_SHIFT) | static_cast<size_t>(piece.color);
 }
 
@@ -103,7 +103,7 @@ Board::Board(const std::unordered_map<Square, Piece>& piece_map) {
 bool Board::squareIsOccupied(Square square) const {
     // get the bit at the union of the two color bitboards
     // TODO(theimer): keep a separate "all-piece" bitboard?
-    size_t index = squareToBitboardIndex(square);
+    std::size_t index = squareToBitboardIndex(square);
     Bitboard occupancy_board = (this->color_bitboards_[static_cast<int>(PieceColor::WHITE)] |
                                this->color_bitboards_[static_cast<int>(PieceColor::BLACK)]);
     return static_cast<bool>(util::getBit(occupancy_board, index));
@@ -111,7 +111,7 @@ bool Board::squareIsOccupied(Square square) const {
 
 void Board::setPiece(Piece piece, Square square) {
     // TODO(theimer): assert square is unoccupied if/when "overwrite" variant is made
-    size_t index = squareToBitboardIndex(square);
+    std::size_t index = squareToBitboardIndex(square);
     util::setBit(&this->piece_bitboards_[static_cast<int>(piece.type)], index, true);
     util::setBit(&this->color_bitboards_[static_cast<int>(piece.color)], index, true);
 }

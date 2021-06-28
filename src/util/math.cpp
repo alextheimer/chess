@@ -2,7 +2,7 @@
 
 #include "util/assert.h"
 
-// The number of bits in size_t.
+// The number of bits in std::size_t.
 static constexpr std::size_t NUM_SIZE_T_BITS = sizeof(std::size_t) * 8;
 
 bool util::isPow2(std::size_t val) {

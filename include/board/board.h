@@ -145,10 +145,10 @@ class Board {
 // these support use of these types as map keys
 namespace std {
 template <> struct hash<board::Square> {
-    size_t operator()(const board::Square x) const;
+    std::size_t operator()(const board::Square x) const;
 };
 template <> struct hash<board::Piece> {
-    size_t operator()(const board::Piece x) const;
+    std::size_t operator()(const board::Piece x) const;
 };
 
 }  // namespace std

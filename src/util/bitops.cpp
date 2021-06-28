@@ -21,7 +21,7 @@ void util::setBit(BitOpType* bits, std::size_t bit_index, bool bit) {
     *bits |= (static_cast<BitOpType>(bit) << shift_count);
 }
 
-bool util::getBit(BitOpType bits, size_t bit_index) {
+bool util::getBit(BitOpType bits, std::size_t bit_index) {
     ASSERT(isValidBitIndex(bit_index), "index: " + std::to_string(bit_index));
     // make a mast of all 0's except at the index
     std::size_t shift_count = (util::NUM_BITOP_BITS - bit_index - 1);
@@ -34,7 +34,7 @@ bool util::getBit(BitOpType bits, size_t bit_index) {
 
 size_t util::popHighestBit(BitOpType* bits) {
     ASSERT(*bits > 0, "cannot pop bits from 0");
-    size_t bit_index = __builtin_clzl(static_cast<unsigned long>(*bits));
+    std::size_t bit_index = __builtin_clzl(static_cast<unsigned long>(*bits));
     setBit(bits, bit_index, 0);
     return bit_index;
 }
