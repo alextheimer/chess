@@ -26,7 +26,7 @@ class Game {
     board::PieceColor next_player_;  // TODO(theimer): rename to next_player_color_
  public:
     Game(board::Board& board, Player& white_player, Player& black_player);
-    void render(std::ostream& ostream);  // TODO(theimer): should just be a toString
+    void render(std::ostream& ostream) const;  // TODO(theimer): should just be a toString
 
     /*
     Executes a player's turn.
@@ -36,13 +36,13 @@ class Game {
     /*
     Returns true iff the game is over.
     */
-    bool isEnded();
+    bool isEnded() const;
 
     /*
     Returns the winning Player instance.
     The game must be ended before this member is called.
     */
-    Player& getWinner();
+    Player& getWinner() const;
 };
 
 }

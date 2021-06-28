@@ -21,7 +21,7 @@ void util::setBit(BitOpType* bits, std::size_t bit_index, bool bit) {
     *bits |= (static_cast<BitOpType>(bit) << shift_count);
 }
 
-bool util::getBit(const BitOpType bits, size_t bit_index) {
+bool util::getBit(BitOpType bits, size_t bit_index) {
     ASSERT(isValidBitIndex(bit_index), "index: " + std::to_string(bit_index));
     // make a mast of all 0's except at the index
     std::size_t shift_count = (util::NUM_BITOP_BITS - bit_index - 1);

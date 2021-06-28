@@ -80,7 +80,7 @@ class Board {
     /*
     Returns true iff `square` is occupied on the Board by a piece with the specified PieceColor.
     */
-    bool squareIsOccupiedColor(const Square& square, PieceColor color);
+    bool squareIsOccupiedColor(const Square& square, PieceColor color) const;
 
     // TODO(theimer): add an "overwritePiece" member
     /*
@@ -99,19 +99,19 @@ class Board {
     @note: might allow the implementation to return a result faster than Board::getPiece.
     @param square: must be occupied
     */
-    PieceType getPieceType(Square& square);
+    PieceType getPieceType(Square& square) const;
 
     /*
     @note: might allow the implementation to return a result faster than Board::getPiece.
     @param square: must be occupied
     */
-    PieceColor getPieceColor(Square& square);
+    PieceColor getPieceColor(Square& square) const;
 
     /*
     @note: use Board::getPieceType/getPieceColor if only partial Piece info is needed.
     @param square: must be occupied
     */
-    Piece getPiece(Square& square);
+    Piece getPiece(Square& square) const;
 
     /*
     @param square: must be occupied
@@ -123,21 +123,21 @@ class Board {
     @param buffer: an Iterator at the beginning of the buffer.
     @return: the number of Squares added to the buffer.
     */
-    std::size_t getOccupiedSquares(PieceColor color, Square * buffer);
+    std::size_t getOccupiedSquares(PieceColor color, Square * buffer) const;
 
     /*
     Fills a buffer with all Squares that contain a piece with the specified PieceType.
     @param buffer: an Iterator at the beginning of the buffer.
     @return: the number of Squares added to the buffer.
     */
-    std::size_t getOccupiedSquares(PieceType type, Square * buffer);
+    std::size_t getOccupiedSquares(PieceType type, Square * buffer) const;
 
     /*
     Fills a buffer with all Squares that contain a piece.
     @param buffer: an Iterator at the beginning of the buffer.
     @return: the number of Squares added to the buffer.
     */
-    std::size_t getOccupiedSquares(Square * buffer);
+    std::size_t getOccupiedSquares(Square * buffer) const;
 };
 
 }  // namespace board

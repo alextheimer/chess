@@ -42,7 +42,7 @@ A valid Move is any such that the destination:
 @return: the number of Moves added to the buffer
 */
 template <std::size_t SIZE>
-std::size_t getMovesDiff(Board& board, PieceColor color, Square square,
+std::size_t getMovesDiff(const Board& board, PieceColor color, Square square,
                          const std::array<Diff, SIZE>& diffs, Move* buffer) {
     std::size_t i = 0;
     for (Diff diff : diffs) {
@@ -76,7 +76,7 @@ A valid Move is any such that the destination:
 @return: the number of Moves added to the buffer
 */
 template <std::size_t SIZE>
-std::size_t getMovesVector(Board& board, PieceColor color, Square square,
+std::size_t getMovesVector(const Board& board, PieceColor color, Square square,
                            const std::array<Diff, SIZE>& vectors, Move* buffer) {
     Move* move_ptr = buffer;
     for (Diff vec : vectors) {
@@ -117,7 +117,7 @@ std::size_t getMovesVector(Board& board, PieceColor color, Square square,
 /*
 Fills a buffer with all valid moves by a king or pawn.
 */
-std::size_t getMovesPawnKing(Board& board, PieceColor color, Square square, Move* buffer) {
+std::size_t getMovesPawnKing(const Board& board, PieceColor color, Square square, Move* buffer) {
     static const std::array<Diff, 8> diffs = {{
             {  1,  0 },
             {  0,  1 },
@@ -135,7 +135,7 @@ std::size_t getMovesPawnKing(Board& board, PieceColor color, Square square, Move
 /*
 Fills a buffer with all valid moves by a knight.
 */
-std::size_t getMovesKnight(Board& board, PieceColor color, Square square, Move* buffer) {
+std::size_t getMovesKnight(const Board& board, PieceColor color, Square square, Move* buffer) {
     static const std::array<Diff, 8> diffs = {{
             {  3,  1 },
             {  3, -1 },
@@ -153,7 +153,7 @@ std::size_t getMovesKnight(Board& board, PieceColor color, Square square, Move* 
 /*
 Fills a buffer with all valid moves by a rook.
 */
-std::size_t getMovesRook(Board& board, PieceColor color, Square square, Move* buffer) {
+std::size_t getMovesRook(const Board& board, PieceColor color, Square square, Move* buffer) {
     static const std::array<Diff, 4> vectors = {{
             (Diff){  0,  1 },
             (Diff){  1,  0 },
@@ -167,7 +167,7 @@ std::size_t getMovesRook(Board& board, PieceColor color, Square square, Move* bu
 /*
 Fills a buffer with all valid moves by a bishop.
 */
-std::size_t getMovesBishop(Board& board, PieceColor color, Square square, Move* buffer) {
+std::size_t getMovesBishop(const Board& board, PieceColor color, Square square, Move* buffer) {
     static const std::array<Diff, 4> vectors = {{
             (Diff){  1,  1 },
             (Diff){  1, -1 },
@@ -181,7 +181,7 @@ std::size_t getMovesBishop(Board& board, PieceColor color, Square square, Move* 
 /*
 Fills a buffer with all valid moves by a queen.
 */
-std::size_t getMovesQueen(Board& board, PieceColor color, Square square, Move* buffer) {
+std::size_t getMovesQueen(const Board& board, PieceColor color, Square square, Move* buffer) {
     static const std::array<Diff, 8> vectors = {{
             (Diff){  1,  1 },
             (Diff){  1, -1 },
@@ -211,7 +211,7 @@ std::ostream& game::operator<<(std::ostream& out, const Move& move) {
     return out;
 }
 
-std::size_t game::getPieceMoves(Board& board, PieceColor color, Square square, Move * buffer) {
+std::size_t game::getPieceMoves(const Board& board, PieceColor color, Square square, Move * buffer) {
     // TODO(theimer): better to just map function pointers?
     PieceType type = board.getPieceType(square);
     switch (type) {
@@ -231,7 +231,7 @@ std::size_t game::getPieceMoves(Board& board, PieceColor color, Square square, M
     }
 }
 
-std::size_t game::getAllMoves(Board& board, PieceColor color, Move * buffer) {
+std::size_t game::getAllMoves(const Board& board, PieceColor color, Move * buffer) {
     // get all occupied squares, then get the valid moves from those squares
     util::Buffer<Square, Board::SIZE> occupied_buffer;
     std::size_t num_occupied = board.getOccupiedSquares(color, occupied_buffer.start());

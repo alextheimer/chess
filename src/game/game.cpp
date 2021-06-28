@@ -81,7 +81,7 @@ Game::Game(Board& board, Player& white_player, Player& black_player) :
 }
 
 // TODO(theimer): should be a toString() member in Board
-void Game::render(std::ostream& ostream) {
+void Game::render(std::ostream& ostream) const {
     std::string col_header = "  0 1 2 3 4 5 6 7\n";
     ostream << col_header;
     for (int irow = 0; irow < Board::WIDTH; ++irow) {
@@ -130,14 +130,14 @@ void Game::runPly() {
     throw std::invalid_argument("illegal Move: " + move.toString());
 }
 
-bool Game::isEnded() {
+bool Game::isEnded() const {
     // game is over when fewer than two kings exist
     util::Buffer<Square, 2> buffer;
     std::size_t size = board_.getOccupiedSquares(PieceType::KING, buffer.start());
     return size < static_cast<int>(PieceColor::NUM_PIECE_COLORS);
 }
 
-Player& Game::getWinner() {
+Player& Game::getWinner() const {
     ASSERT(isEnded(), "game not yet ended");
     // get the color of the only remaining king; return that player.
     util::Buffer<Square, 2> buffer;

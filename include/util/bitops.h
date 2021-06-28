@@ -20,7 +20,7 @@ void setBit(BitOpType* bits, std::size_t bit_index, bool bit);
 /*
 @param bit_index: 0 is most-significant.
 */
-bool getBit(const BitOpType bits, std::size_t bit_index);
+bool getBit(BitOpType bits, std::size_t bit_index);
 
 /*
 Pops the most significant bit ***in-place*** and returns its index.
