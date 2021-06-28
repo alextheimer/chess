@@ -37,9 +37,9 @@ class Square {
 };
 
 // Note: need non-member to support Square map keys
-bool operator==(const Square& lhs, const Square& rhs);
+bool operator==(const Square lhs, const Square rhs);
 
-std::ostream& operator<<(std::ostream& out, const Square& move);
+std::ostream& operator<<(std::ostream& out, const Square move);
 
 /*
 Maintains an 8x8 chess board.
@@ -75,48 +75,48 @@ class Board {
     /*
      Returns true iff `square` is occupied on the Board.
     */
-    bool squareIsOccupied(const Square& square) const;
+    bool squareIsOccupied(const Square square) const;
 
     /*
     Returns true iff `square` is occupied on the Board by a piece with the specified PieceColor.
     */
-    bool squareIsOccupiedColor(const Square& square, PieceColor color) const;
+    bool squareIsOccupiedColor(const Square square, PieceColor color) const;
 
     // TODO(theimer): add an "overwritePiece" member
     /*
     Sets the piece described by `piece` at `square` on the Board.
     */
-    void setPiece(const Piece& piece, const Square& square);
+    void setPiece(const Piece piece, const Square square);
 
     // TODO(theimer): add a "moveOverwritePiece" member
     /*
     Moves a piece from one square to another.
     @param from: must be occupied
     */
-    void movePiece(Square& from, Square& to);
+    void movePiece(Square from, Square to);
 
     /*
     @note: might allow the implementation to return a result faster than Board::getPiece.
     @param square: must be occupied
     */
-    PieceType getPieceType(Square& square) const;
+    PieceType getPieceType(Square square) const;
 
     /*
     @note: might allow the implementation to return a result faster than Board::getPiece.
     @param square: must be occupied
     */
-    PieceColor getPieceColor(Square& square) const;
+    PieceColor getPieceColor(Square square) const;
 
     /*
     @note: use Board::getPieceType/getPieceColor if only partial Piece info is needed.
     @param square: must be occupied
     */
-    Piece getPiece(Square& square) const;
+    Piece getPiece(Square square) const;
 
     /*
     @param square: must be occupied
     */
-    void removePiece(Square& square);
+    void removePiece(Square square);
 
     /*
     Fills a buffer with all Squares that contain a piece with the specified PieceColor.
@@ -145,10 +145,10 @@ class Board {
 // these support use of these types as map keys
 namespace std {
 template <> struct hash<board::Square> {
-    size_t operator()(const board::Square& x) const;
+    size_t operator()(const board::Square x) const;
 };
 template <> struct hash<board::Piece> {
-    size_t operator()(const board::Piece& x) const;
+    size_t operator()(const board::Piece x) const;
 };
 
 }  // namespace std
