@@ -17,7 +17,7 @@ using board::Board;
 using game::Game;
 using game::Player;
 
-static const PieceColor START_COLOR = PieceColor::BLACK;
+constexpr PieceColor START_COLOR = PieceColor::BLACK;
 
 static const std::unordered_map<Piece, char> PIECE_CHAR_MAP = {
         { (Piece){ PieceType::BISHOP, PieceColor::BLACK }, 'B' },

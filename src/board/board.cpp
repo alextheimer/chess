@@ -97,7 +97,7 @@ std::string Square::toString() const {
 
 size_t std::hash<Piece>::operator()(const board::Piece& piece) const {
     // TODO(theimer): use board::compressPiece?
-    static const size_t TYPE_SHIFT = 10;  // Arbitrary choice
+    static constexpr size_t TYPE_SHIFT = 10;  // Arbitrary choice
     return (static_cast<size_t>(piece.type) << TYPE_SHIFT) | static_cast<size_t>(piece.color);
 }
 

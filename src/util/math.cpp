@@ -3,7 +3,7 @@
 #include "util/assert.h"
 
 // The number of bits in size_t.
-static const std::size_t NUM_SIZE_T_BITS = sizeof(std::size_t) * 8;
+static constexpr std::size_t NUM_SIZE_T_BITS = sizeof(std::size_t) * 8;
 
 bool util::isPow2(std::size_t val) {
     ASSERT(val >= 0, "val: " + std::to_string(val));  // just in case param type ever changes

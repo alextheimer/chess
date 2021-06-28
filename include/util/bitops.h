@@ -9,7 +9,7 @@ namespace util {
 typedef uint64_t BitOpType;
 
 // number of bits in BitOpType
-const std::size_t NUM_BITOP_BITS = 8 * sizeof(BitOpType);
+constexpr std::size_t NUM_BITOP_BITS = 8 * sizeof(BitOpType);
 
 /*
 Modifies a bit ***in-place*** at the specified index.
