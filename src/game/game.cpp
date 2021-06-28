@@ -17,7 +17,6 @@ using board::Board;
 using game::Game;
 using game::Player;
 
-// TODO(theimer): move?
 static const PieceColor START_COLOR = PieceColor::BLACK;
 
 static const std::unordered_map<Piece, char> PIECE_CHAR_MAP = {
@@ -81,6 +80,7 @@ Game::Game(Board& board, Player& white_player, Player& black_player) :
     // intentionally blank
 }
 
+// TODO(theimer): should be a toString() member in Board
 void Game::render(std::ostream& ostream) {
     std::string col_header = "  0 1 2 3 4 5 6 7\n";
     ostream << col_header;
@@ -115,9 +115,10 @@ void Game::runPly() {
     default:
         throw std::invalid_argument("unhandled PieceColor: " + toString(next_player_));
     }
+    // get the move the player wants to make
     Move move = player->getMove(board_);
     Piece moved_piece = board_.getPiece(move.from);
-
+    // make sure the move is valid
     util::Buffer<Move, Board::SIZE> valid_moves;
     size_t num_moves = game::getPieceMoves(board_, moved_piece.color, move.from, valid_moves.start());
     for (int i = 0; i < num_moves; ++i) {
@@ -126,11 +127,11 @@ void Game::runPly() {
             return;
         }
     }
-
     throw std::invalid_argument("illegal Move: " + move.toString());
 }
 
 bool Game::isEnded() {
+    // game is over when fewer than two kings exist
     util::Buffer<Square, 2> buffer;
     std::size_t size = board_.getOccupiedSquares(PieceType::KING, buffer.start());
     return size < static_cast<int>(PieceColor::NUM_PIECE_COLORS);
@@ -138,6 +139,7 @@ bool Game::isEnded() {
 
 Player& Game::getWinner() {
     ASSERT(isEnded(), "game not yet ended");
+    // get the color of the only remaining king; return that player.
     util::Buffer<Square, 2> buffer;
     std::size_t size = board_.getOccupiedSquares(PieceType::KING, buffer.start());
     ASSERT(size == 1, "size: " + std::to_string(1));

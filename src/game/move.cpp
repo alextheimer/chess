@@ -1,6 +1,4 @@
 #include "game/move.h"
-#include "util/buffer.h"
-#include "util/assert.h"
 
 #include <map>
 #include <vector>
@@ -8,6 +6,9 @@
 #include <array>
 #include <cmath>
 #include <sstream>
+
+#include "util/buffer.h"
+#include "util/assert.h"
 
 using board::Board;
 using board::PieceColor;
@@ -22,20 +23,35 @@ struct Diff {
     int col_diff;
 };
 
+// TODO(theimer): this should be a static function of Square
+/*
+Returns true iff (row, col) describes a valid Square.
+*/
 bool isInBounds(std::size_t row, std::size_t col) {
     return (row < Board::WIDTH) && (col < Board::WIDTH);
 }
 
+/*
+Given an initial Square and array of Diffs, fills a buffer with all *valid* moves
+such that each destination Square is the sum of the initial Square with the Diff.
+A valid Move is any such that the destination:
+    (1) is within the Board's bounds, and
+    (2) does not contain a piece of the same color
+@param color: the color of the piece at the Square
+@param buffer: an Iterator at the first index of the buffer
+@return: the number of Moves added to the buffer
+*/
 template <std::size_t SIZE>
-std::size_t getMovesDiff(Board& board, PieceColor color, Square square, const std::array<Diff, SIZE>& diffs, Move* buffer) {
+std::size_t getMovesDiff(Board& board, PieceColor color, Square square,
+                         const std::array<Diff, SIZE>& diffs, Move* buffer) {
     std::size_t i = 0;
     for (Diff diff : diffs) {
         std::size_t row = square.row + diff.row_diff;
         std::size_t col = square.col + diff.col_diff;
+        // add to the buffer if (1) in-bounds and (2) unoccupied by same color
         if (isInBounds(row, col)) {
             Square new_square(row, col);
             if (!board.squareIsOccupiedColor(new_square, color)) {
-                // TODO(theimer): should be an rvalue!!
                 Move move = { square, new_square };
                 buffer[i] = move;
                 ++i;
@@ -45,6 +61,62 @@ std::size_t getMovesDiff(Board& board, PieceColor color, Square square, const st
     return i;
 }
 
+/*
+Given an initial Square and array of Diffs, fills a buffer with all *valid* moves
+such that each destination Square is the sum of the initial Square with a positive
+multiple of a Diff in the array. For each Diff, Moves are generated with each coefficient
+[1, 2, 3...] in increasing order until the first invalid Move is generated.
+
+A valid Move is any such that the destination:
+    (1) is within the Board's bounds, and
+    (2) does not contain a piece of the same color
+
+@param color: the color of the piece at the Square
+@param buffer: an Iterator at the first index of the buffer
+@return: the number of Moves added to the buffer
+*/
+template <std::size_t SIZE>
+std::size_t getMovesVector(Board& board, PieceColor color, Square square,
+                           const std::array<Diff, SIZE>& vectors, Move* buffer) {
+    Move* move_ptr = buffer;
+    for (Diff vec : vectors) {
+        // TODO(theimer): worth changing the spec for this?
+//        ASSERT((std::abs(vec.row_diff) <= 1) && (std::abs(vec.col_diff) <= 1),
+//                "expected diffs <= 1; got: (" + std::to_string(vec.col_diff) + ", "
+//                + std::to_string(vec.row_diff) +")");
+        Square curr_sq = square;
+        // keep adding multiples to each vec until an invalid square is reached.
+        while (true) {
+            std::size_t new_row = curr_sq.row + vec.row_diff;
+            if (new_row >= Board::WIDTH) {
+                break;
+            }
+            std::size_t new_col = curr_sq.col + vec.col_diff;
+            if (new_col >= Board::WIDTH) {
+                break;
+            }
+            Square pend_sq(new_row, new_col);
+            if (!board.squareIsOccupied(pend_sq)) {
+                // square is empty!
+                *move_ptr = (Move){ square, pend_sq };
+                ++move_ptr;
+            } else if (!board.squareIsOccupiedColor(pend_sq, color)) {
+                // square occupied by enemy
+                *move_ptr = (Move){ square, pend_sq };
+                ++move_ptr;
+                break;
+            } else {
+                // occupied by friendly; jumps not allowed, so we're done with this Diff
+                break;
+            }
+        }
+    }
+    return move_ptr - buffer;
+}
+
+/*
+Fills a buffer with all valid moves by a king or pawn.
+*/
 std::size_t getMovesPawnKing(Board& board, PieceColor color, Square square, Move* buffer) {
     static const std::array<Diff, 8> diffs = {{
             {  1,  0 },
@@ -60,6 +132,9 @@ std::size_t getMovesPawnKing(Board& board, PieceColor color, Square square, Move
     return getMovesDiff(board, color, square, diffs, buffer);
 }
 
+/*
+Fills a buffer with all valid moves by a knight.
+*/
 std::size_t getMovesKnight(Board& board, PieceColor color, Square square, Move* buffer) {
     static const std::array<Diff, 8> diffs = {{
             {  3,  1 },
@@ -75,45 +150,9 @@ std::size_t getMovesKnight(Board& board, PieceColor color, Square square, Move* 
     return getMovesDiff(board, color, square, diffs, buffer);
 }
 
-
-template <std::size_t SIZE>
-std::size_t getMovesVector(Board& board, PieceColor color, Square square, const std::array<Diff, SIZE>& vectors, Move* buffer) {
-    Move* move_ptr = buffer;
-    for (Diff vec : vectors) {
-        ASSERT((std::abs(vec.row_diff) <= 1) && (std::abs(vec.col_diff) <= 1),
-                "expected diffs <= 1; got: (" + std::to_string(vec.col_diff) + ", "
-                + std::to_string(vec.row_diff) +")");
-        Square curr_sq = square;
-        while (true) {
-            std::size_t new_row = curr_sq.row + vec.row_diff;
-            if (new_row >= Board::WIDTH) {
-                break;
-            }
-            std::size_t new_col = curr_sq.col + vec.col_diff;
-            if (new_col >= Board::WIDTH) {
-                break;
-            }
-            Square pend_sq(new_row, new_col);
-            // TODO(theimer): need a "getOppositeColor" to make this more clear
-            if (!board.squareIsOccupied(pend_sq)) {
-                // square is empty!
-                *move_ptr = (Move){ square, pend_sq };
-                ++move_ptr;
-            } else if (!board.squareIsOccupiedColor(pend_sq, color)) {
-                // square occupied by enemy
-                *move_ptr = (Move){ square, pend_sq };
-                ++move_ptr;
-                break;
-            } else {
-                // occupied by friendly; jumps not allowed, so we're done
-                break;
-            }
-        }
-    }
-
-    return move_ptr - buffer;
-}
-
+/*
+Fills a buffer with all valid moves by a rook.
+*/
 std::size_t getMovesRook(Board& board, PieceColor color, Square square, Move* buffer) {
     static const std::array<Diff, 4> vectors = {{
             (Diff){  0,  1 },
@@ -125,6 +164,9 @@ std::size_t getMovesRook(Board& board, PieceColor color, Square square, Move* bu
     return getMovesVector(board, color, square, vectors, buffer);
 }
 
+/*
+Fills a buffer with all valid moves by a bishop.
+*/
 std::size_t getMovesBishop(Board& board, PieceColor color, Square square, Move* buffer) {
     static const std::array<Diff, 4> vectors = {{
             (Diff){  1,  1 },
@@ -136,6 +178,9 @@ std::size_t getMovesBishop(Board& board, PieceColor color, Square square, Move* 
     return getMovesVector(board, color, square, vectors, buffer);
 }
 
+/*
+Fills a buffer with all valid moves by a queen.
+*/
 std::size_t getMovesQueen(Board& board, PieceColor color, Square square, Move* buffer) {
     static const std::array<Diff, 8> vectors = {{
             (Diff){  1,  1 },
@@ -151,14 +196,14 @@ std::size_t getMovesQueen(Board& board, PieceColor color, Square square, Move* b
     return getMovesVector(board, color, square, vectors, buffer);
 }
 
-bool game::operator==(const Move& lhs, const Move& rhs) {
-    return (lhs.from == rhs.from) && (lhs.to == rhs.to);
-}
-
 std::string Move::toString() const {
     std::stringstream sstr;
     sstr << "Move(from: " << from << ", to: " << to << ")";
     return sstr.str();
+}
+
+bool game::operator==(const Move& lhs, const Move& rhs) {
+    return (lhs.from == rhs.from) && (lhs.to == rhs.to);
 }
 
 std::ostream& game::operator<<(std::ostream& out, const Move& move) {
@@ -187,25 +232,22 @@ std::size_t game::getPieceMoves(Board& board, PieceColor color, Square square, M
 }
 
 std::size_t game::getAllMoves(Board& board, PieceColor color, Move * buffer) {
-    // instantiate as a byte array so nothing is automatically constructed
+    // get all occupied squares, then get the valid moves from those squares
     util::Buffer<Square, Board::SIZE> occupied_buffer;
-
     std::size_t num_occupied = board.getOccupiedSquares(color, occupied_buffer.start());
-    Move * nextMoveSlot = buffer;
+    Move * next_move_slot = buffer;
     std::size_t num_moves = 0;
     for (int i = 0; i < num_occupied; ++i) {
-        nextMoveSlot += getPieceMoves(board, color, occupied_buffer.get(i), nextMoveSlot);
+        next_move_slot += getPieceMoves(board, color, occupied_buffer.get(i), next_move_slot);
     }
-    return nextMoveSlot - buffer;
+    return next_move_slot - buffer;
 }
 
 void game::makeMove(Board& board, Move& move) {
-    // TODO(theimer): assertions / rule stuff
     board.movePiece(move.from, move.to);
 }
 
 void game::unmakeMove(Board& board, Move& move, Piece replacement) {
-    // TODO(theimer): assertions
     board.movePiece(move.to, move.from);
     board.setPiece(replacement, move.to);
 }
