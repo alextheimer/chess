@@ -9,6 +9,7 @@
 
 namespace game {
 
+// Square->Piece map for initialization of a standard game of chess.
 extern const std::unordered_map<board::Square, board::Piece> INIT_PIECE_MAP;
 
 class Player {
@@ -16,17 +17,31 @@ class Player {
     virtual Move getMove(const board::Board& board) = 0;
 };
 
+// Manages a game of chess between two Players.
 class Game {
  private:
     board::Board& board_;
     Player& white_player_;
     Player& black_player_;
-    board::PieceColor next_player_;
+    board::PieceColor next_player_;  // TODO(theimer): rename to next_player_color_
  public:
     Game(board::Board& board, Player& white_player, Player& black_player);
-    void render(std::ostream& ostream);
+    void render(std::ostream& ostream);  // TODO(theimer): should just be a toString
+
+    /*
+    Executes a player's turn.
+    */
     void runPly();
+
+    /*
+    Returns true iff the game is over.
+    */
     bool isEnded();
+
+    /*
+    Returns the winning Player instance.
+    The game must be ended before this member is called.
+    */
     Player& getWinner();
 };
 
