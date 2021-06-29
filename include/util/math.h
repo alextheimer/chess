@@ -1,3 +1,5 @@
+// Copyright 2021 Alex Theimer
+
 #ifndef UTIL_MATH_H_
 #define UTIL_MATH_H_
 
@@ -17,6 +19,6 @@ Returns the ceiling of the log2 function.
 */
 std::size_t log2Ceil(std::size_t val);
 
-}  // namespace math
+}  // namespace util
 
 #endif  // UTIL_MATH_H_

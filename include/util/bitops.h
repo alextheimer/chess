@@ -1,3 +1,5 @@
+// Copyright 2021 Alex Theimer
+
 #ifndef UTIL_BITOPS_H_
 #define UTIL_BITOPS_H_
 
@@ -28,6 +30,6 @@ Pops the most significant bit ***in-place*** and returns its index.
 */
 std::size_t popHighestBit(BitOpType* bits);
 
-}  // namespace bitops
+}  // namespace util
 
 #endif  // UTIL_BITOPS_H_

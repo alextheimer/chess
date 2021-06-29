@@ -1,3 +1,5 @@
+// Copyright 2021 Alex Theimer
+
 #ifndef UTIL_ASSERT_H_
 #define UTIL_ASSERT_H_
 
@@ -7,7 +9,7 @@
 #ifdef DEBUG
 #   define ASSERT(condition, message) \
     do { \
-        if (! (condition)) { \
+        if (!(condition)) { \
             std::cerr << "assertion fail:" << std::endl \
                 << #condition << std::endl \
                 << "(" << __FILE__ << ", " << __LINE__ << "): " \

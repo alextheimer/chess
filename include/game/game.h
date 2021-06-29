@@ -1,3 +1,5 @@
+// Copyright 2021 Alex Theimer
+
 #ifndef GAME_GAME_H_
 #define GAME_GAME_H_
 
@@ -20,7 +22,13 @@ class Player {
 // Manages a game of chess between two Players.
 class Game {
  public:
-    Game(board::Board& board, Player& white_player, Player& black_player);
+    /*
+    Instantiates a game of standard chess.
+
+    Note: this intentionally accepts player pointers because there is no
+          explicit guarantee that the players will not be modified.
+    */
+    Game(board::Board* board, Player* white_player, Player* black_player);
 
     void renderBoard(std::ostream& ostream) const;
 
@@ -41,12 +49,12 @@ class Game {
     Player& getWinner() const;
 
  private:
-    board::Board& board_;
-    Player& white_player_;
-    Player& black_player_;
+    board::Board* board_;
+    Player* white_player_;
+    Player* black_player_;
     board::PieceColor next_player_color_;
 };
 
-}
+}  // namespace game
 
 #endif  // GAME_GAME_H_

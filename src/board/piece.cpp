@@ -1,3 +1,5 @@
+// Copyright 2021 Alex Theimer
+
 #include "board/piece.h"
 
 #include <cstdint>
@@ -37,7 +39,8 @@ std::string std::to_string(Piece piece) {
 }
 
 CompressedPiece board::compressPiece(Piece piece) {
-    CompressedPiece compressed_piece = static_cast<CompressedPiece>(piece.color);
+    CompressedPiece compressed_piece =
+            static_cast<CompressedPiece>(piece.color);
     compressed_piece <<= NUM_PIECE_TYPE_BITS;
     compressed_piece |= static_cast<CompressedPiece>(piece.type);
     return compressed_piece;
@@ -45,9 +48,11 @@ CompressedPiece board::compressPiece(Piece piece) {
 
 Piece board::decompressPiece(CompressedPiece compressed_piece) {
     // extract from the least significant bits...
-    PieceType type = static_cast<PieceType>(compressed_piece & PIECE_TYPE_MASK);
+    PieceType type =
+            static_cast<PieceType>(compressed_piece & PIECE_TYPE_MASK);
     compressed_piece >>= NUM_PIECE_TYPE_BITS;
-    PieceColor color = static_cast<PieceColor>(compressed_piece & PIECE_COLOR_MASK);
+    PieceColor color =
+            static_cast<PieceColor>(compressed_piece & PIECE_COLOR_MASK);
     // TODO(theimer): this syntax seems too C-ish
     return (Piece){type, color};
 }
@@ -65,7 +70,8 @@ std::string std::to_string(PieceColor color) {
     switch (color) {
     case PieceColor::BLACK: return "BLACK";
     case PieceColor::WHITE: return "WHITE";
-    default: throw std::invalid_argument("unhandled PieceColor value: " + static_cast<int>(color));
+    default: throw std::invalid_argument(
+            "unhandled PieceColor value: " + static_cast<int>(color));
     }
 }
 
@@ -77,6 +83,7 @@ std::string std::to_string(PieceType type) {
     case PieceType::PAWN: return "PAWN";
     case PieceType::QUEEN: return "QUEEN";
     case PieceType::KING: return "KING";
-    default: throw std::invalid_argument("unhandled PieceType value: " + static_cast<int>(type));
+    default: throw std::invalid_argument(
+            "unhandled PieceType value: " + static_cast<int>(type));
     }
 }

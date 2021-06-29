@@ -1,4 +1,4 @@
-#include "util/bitops.h"
+// Copyright 2021 Alex Theimer
 
 #include <cstdint>
 #include <cstdio>
@@ -6,6 +6,7 @@
 #include <iostream>
 #include <sstream>
 
+#include "util/bitops.h"
 #include "gtest/gtest.h"
 
 using util::BitOpType;
@@ -49,7 +50,8 @@ TEST(BitOpsTest, GetBitTest) {
     };
 
     for (TestSpec test_spec : spec_vec) {
-        ASSERT_EQ(test_spec.expected, util::getBit(test_spec.bits, test_spec.index))
+        ASSERT_EQ(test_spec.expected,
+                  util::getBit(test_spec.bits, test_spec.index))
             << "bits: " << test_spec.bits << ", "
             << "index: " << test_spec.index;
     }
@@ -72,7 +74,8 @@ TEST(BitOpsTest, SetBitTest) {
     };
 
     // Note: `before` is included only as a sanity check.
-    //     get_bit will "confirm" that we're setting the bit from an expected value.
+    //     get_bit will "confirm" that we're setting
+    //     the bit from an expected value.
     std::vector<TestSpec> spec_vec = {
            // bits                                  index    before    set_bit
             { static_cast<BitOpType>(1) << 63,      0,       true,     false },
@@ -92,9 +95,11 @@ TEST(BitOpsTest, SetBitTest) {
                   << "set_bit: " << test_spec.set_bit;
         BitOpType bits = test_spec.bits;
         // sanity check!
-        ASSERT_EQ(test_spec.expected_before, util::getBit(bits, test_spec.index)) << error_msg.str();
+        ASSERT_EQ(test_spec.expected_before,
+                  util::getBit(bits, test_spec.index)) << error_msg.str();
         util::setBit(&bits, test_spec.index, test_spec.set_bit);
-        ASSERT_EQ(test_spec.set_bit, util::getBit(bits, test_spec.index)) << error_msg.str();
+        ASSERT_EQ(test_spec.set_bit,
+                  util::getBit(bits, test_spec.index)) << error_msg.str();
     }
 }
 
@@ -112,10 +117,10 @@ TEST(BitOpsTest, PopHighestBitTest) {
     };
 
     std::vector<TestSpec> spec_vec = {
-           // bits                                expected_bits    expected_index
-            { static_cast<BitOpType>(1) << 63,    0,               0 },
-            { 1,                                  0,               63 },
-            { 7,                                  3,               61 }
+           // bits                               expected_bits   expected_index
+            { static_cast<BitOpType>(1) << 63,   0,              0 },
+            { 1,                                 0,              63 },
+            { 7,                                 3,              61 }
     };
 
     for (TestSpec test_spec : spec_vec) {

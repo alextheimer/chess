@@ -1,3 +1,5 @@
+// Copyright 2021 Alex Theimer
+
 #include "game/game.h"
 
 #include <string>
@@ -59,14 +61,14 @@ const std::unordered_map<Square, Piece> game::INIT_PIECE_MAP = {
         { Square(6, 7), (Piece){ PieceType::PAWN, PieceColor::WHITE } },
 };
 
-Game::Game(Board& board, Player& white_player, Player& black_player) :
+Game::Game(Board* board, Player* white_player, Player* black_player) :
         board_(board), white_player_(white_player),
         black_player_(black_player), next_player_color_(START_COLOR) {
     // intentionally blank
 }
 
 void Game::renderBoard(std::ostream& ostream) const {
-    ostream << board_.toString();
+    ostream << board_->toString();
 }
 
 void Game::runPly() {
@@ -74,22 +76,24 @@ void Game::runPly() {
     Player* player;
     switch (next_player_color_) {
     case PieceColor::BLACK:
-        player = &black_player_;
+        player = black_player_;
         next_player_color_ = PieceColor::WHITE;
         break;
     case PieceColor::WHITE:
-        player = &white_player_;
+        player = white_player_;
         next_player_color_ = PieceColor::BLACK;
         break;
     default:
-        throw std::invalid_argument("unhandled PieceColor: " + std::to_string(next_player_color_));
+        throw std::invalid_argument(
+                "unhandled PieceColor: " + std::to_string(next_player_color_));
     }
     // get the move the player wants to make
-    Move move = player->getMove(board_);
-    Piece moved_piece = board_.getPiece(move.from);
+    Move move = player->getMove(*board_);
+    Piece moved_piece = board_->getPiece(move.from);
     // make sure the move is valid
     util::Buffer<Move, Board::SIZE> valid_moves;
-    std::size_t num_moves = game::getPieceMoves(board_, moved_piece.color, move.from, valid_moves.start());
+    std::size_t num_moves = game::getPieceMoves(
+            *board_, moved_piece.color, move.from, valid_moves.start());
     for (int i = 0; i < static_cast<int>(num_moves); ++i) {
         if (valid_moves.get(i) == move) {
             game::makeMove(board_, move);
@@ -102,7 +106,8 @@ void Game::runPly() {
 bool Game::isEnded() const {
     // game is over when fewer than two kings exist
     util::Buffer<Square, 2> buffer;
-    std::size_t size = board_.getOccupiedSquares(PieceType::KING, buffer.start());
+    std::size_t size = board_->getOccupiedSquares(
+            PieceType::KING, buffer.start());
     return size < static_cast<int>(PieceColor::NUM_PIECE_COLORS);
 }
 
@@ -110,15 +115,17 @@ Player& Game::getWinner() const {
     ASSERT(isEnded(), "game not yet ended");
     // get the color of the only remaining king; return that player.
     util::Buffer<Square, 2> buffer;
-    std::size_t size = board_.getOccupiedSquares(PieceType::KING, buffer.start());
+    std::size_t size =
+            board_->getOccupiedSquares(PieceType::KING, buffer.start());
     ASSERT(size == 1, "size: " + std::to_string(1));
-    PieceColor color = board_.getPiece(buffer.get(0)).color;
+    PieceColor color = board_->getPiece(buffer.get(0)).color;
     switch (color) {
     case PieceColor::BLACK:
-        return black_player_;
+        return *black_player_;
     case PieceColor::WHITE:
-        return white_player_;
+        return *white_player_;
     default:
-        throw std::invalid_argument("unhandled PieceColor: " + std::to_string(color));
+        throw std::invalid_argument(
+                "unhandled PieceColor: " + std::to_string(color));
     }
 }

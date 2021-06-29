@@ -1,3 +1,5 @@
+// Copyright 2021 Alex Theimer
+
 #ifndef PLAYER_HUMAN_H_
 #define PLAYER_HUMAN_H_
 
@@ -13,6 +15,6 @@ class Human : public game::Player {
     // TODO(theimer): any state?
 };
 
-}
+}  // namespace player
 
 #endif  // PLAYER_HUMAN_H_

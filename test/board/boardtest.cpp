@@ -1,3 +1,5 @@
+// Copyright 2021 Alex Theimer
+
 #include <vector>
 #include <unordered_map>
 #include <unordered_set>
@@ -49,7 +51,8 @@ Returns a (heap-allocated) vector of all valid, unique Board Squares.
 (Used to instantiate ALL_SQUARES below.)
 */
 std::unique_ptr<std::vector<Square>> getAllSquares() {
-    auto squares = std::unique_ptr<std::vector<Square>>(new std::vector<Square>);
+    auto squares =
+            std::unique_ptr<std::vector<Square>>(new std::vector<Square>);
     for (int irow = 0; irow < static_cast<int>(Board::WIDTH); ++irow) {
         for (int icol = 0; icol < static_cast<int>(Board::WIDTH); ++icol) {
             squares->push_back(Square(irow, icol));
@@ -74,21 +77,21 @@ Covers:
 */
 TEST(BoardTest, SquareIsOccupiedTest) {
     std::vector<std::unordered_map<Square, Piece>> piece_maps = {
-            {},
-            {{Square(0, 0), (Piece){PieceType::KING, PieceColor::BLACK}}},
-            {{Square(7, 7), (Piece){PieceType::PAWN, PieceColor::WHITE}}},
-            {
-                    {Square(0, 0), (Piece){PieceType::QUEEN, PieceColor::WHITE}},
-                    {Square(0, 7), (Piece){PieceType::BISHOP, PieceColor::WHITE}},
-                    {Square(7, 0), (Piece){PieceType::ROOK, PieceColor::BLACK}},
-                    {Square(7, 7), (Piece){PieceType::KNIGHT, PieceColor::WHITE}},
-            },
-            {
-                    {Square(4, 5), (Piece){PieceType::QUEEN, PieceColor::BLACK}},
-                    {Square(0, 7), (Piece){PieceType::KING, PieceColor::WHITE}},
-                    {Square(6, 1), (Piece){PieceType::PAWN, PieceColor::BLACK}},
-                    {Square(3, 2), (Piece){PieceType::PAWN, PieceColor::BLACK}},
-            },
+        {},
+        {{Square(0, 0), (Piece){PieceType::KING, PieceColor::BLACK}}},
+        {{Square(7, 7), (Piece){PieceType::PAWN, PieceColor::WHITE}}},
+        {
+            {Square(0, 0), (Piece){PieceType::QUEEN, PieceColor::WHITE}},
+            {Square(0, 7), (Piece){PieceType::BISHOP, PieceColor::WHITE}},
+            {Square(7, 0), (Piece){PieceType::ROOK, PieceColor::BLACK}},
+            {Square(7, 7), (Piece){PieceType::KNIGHT, PieceColor::WHITE}},
+        },
+        {
+            {Square(4, 5), (Piece){PieceType::QUEEN, PieceColor::BLACK}},
+            {Square(0, 7), (Piece){PieceType::KING, PieceColor::WHITE}},
+            {Square(6, 1), (Piece){PieceType::PAWN, PieceColor::BLACK}},
+            {Square(3, 2), (Piece){PieceType::PAWN, PieceColor::BLACK}},
+        },
     };
 
     // for each piece_map, make sure squareIsOccuped returns
@@ -98,8 +101,7 @@ TEST(BoardTest, SquareIsOccupiedTest) {
         for (Square& square : *ALL_SQUARES) {
             ASSERT_EQ(
                 (piece_map.find(square) != piece_map.end()),
-                board.squareIsOccupied(square)
-            );
+                board.squareIsOccupied(square));
         }
     }
 }
@@ -122,21 +124,21 @@ Covers:
 */
 TEST(BoardTest, GetSetTest) {
     std::vector<std::unordered_map<Square, Piece>> piece_maps = {
-            {},
-            {{Square(0, 0), (Piece){PieceType::KING, PieceColor::BLACK}}},
-            {{Square(7, 7), (Piece){PieceType::PAWN, PieceColor::WHITE}}},
-            {
-                    {Square(0, 0), (Piece){PieceType::QUEEN, PieceColor::WHITE}},
-                    {Square(0, 7), (Piece){PieceType::BISHOP, PieceColor::WHITE}},
-                    {Square(7, 0), (Piece){PieceType::ROOK, PieceColor::BLACK}},
-                    {Square(7, 7), (Piece){PieceType::KNIGHT, PieceColor::WHITE}},
-            },
-            {
-                    {Square(4, 5), (Piece){PieceType::QUEEN, PieceColor::BLACK}},
-                    {Square(0, 7), (Piece){PieceType::KING, PieceColor::WHITE}},
-                    {Square(6, 1), (Piece){PieceType::PAWN, PieceColor::BLACK}},
-                    {Square(3, 2), (Piece){PieceType::PAWN, PieceColor::BLACK}},
-            },
+        {},
+        {{Square(0, 0), (Piece){PieceType::KING, PieceColor::BLACK}}},
+        {{Square(7, 7), (Piece){PieceType::PAWN, PieceColor::WHITE}}},
+        {
+            {Square(0, 0), (Piece){PieceType::QUEEN, PieceColor::WHITE}},
+            {Square(0, 7), (Piece){PieceType::BISHOP, PieceColor::WHITE}},
+            {Square(7, 0), (Piece){PieceType::ROOK, PieceColor::BLACK}},
+            {Square(7, 7), (Piece){PieceType::KNIGHT, PieceColor::WHITE}},
+        },
+        {
+            {Square(4, 5), (Piece){PieceType::QUEEN, PieceColor::BLACK}},
+            {Square(0, 7), (Piece){PieceType::KING, PieceColor::WHITE}},
+            {Square(6, 1), (Piece){PieceType::PAWN, PieceColor::BLACK}},
+            {Square(3, 2), (Piece){PieceType::PAWN, PieceColor::BLACK}},
+        },
     };
 
     for (auto& piece_map : piece_maps) {
@@ -145,7 +147,8 @@ TEST(BoardTest, GetSetTest) {
         for (auto pair : piece_map) {
             board.setPiece(pair.second, pair.first);
         }
-        // step through all squares and confirm their state matches what we expect
+        // step through all squares and confirm their state
+        //     matches what we expect
         for (Square& square : *ALL_SQUARES) {
             auto piece_iter = piece_map.find(square);
             if (piece_iter != piece_map.end()) {
@@ -171,7 +174,6 @@ Covers:
         board: single piece, multiple pieces
 */
 TEST(BoardTest, MoveTest) {
-
     struct Move {
         Square from;
         Square to;
@@ -183,40 +185,40 @@ TEST(BoardTest, MoveTest) {
     };
 
     std::vector<TestSpec> specs = {
+        {
+            {{Square(0, 0), (Piece){PieceType::KING, PieceColor::BLACK}}},
+            {(Move){Square(0, 0), Square(7, 7)}}
+        },
+        {
+            {{Square(7, 7), (Piece){PieceType::PAWN, PieceColor::WHITE}}},
+            {(Move){Square(7, 7), Square(0, 0)}}
+        },
+        {
             {
-                    {{Square(0, 0), (Piece){PieceType::KING, PieceColor::BLACK}}},
-                    {(Move){Square(0, 0), Square(7, 7)}}
+                {Square(0, 0), (Piece){PieceType::QUEEN, PieceColor::WHITE}},
+                {Square(0, 7), (Piece){PieceType::BISHOP, PieceColor::WHITE}},
+                {Square(7, 0), (Piece){PieceType::ROOK, PieceColor::BLACK}},
+                {Square(7, 7), (Piece){PieceType::KNIGHT, PieceColor::WHITE}},
             },
             {
-                    {{Square(7, 7), (Piece){PieceType::PAWN, PieceColor::WHITE}}},
-                    {(Move){Square(7, 7), Square(0, 0)}}
+                (Move){Square(0, 7), Square(3, 2)},
+                (Move){Square(7, 0), Square(2, 3)},
+            }
+        },
+        {
+            {
+                {Square(4, 5), (Piece){PieceType::QUEEN, PieceColor::BLACK}},
+                {Square(1, 6), (Piece){PieceType::KING, PieceColor::WHITE}},
+                {Square(6, 1), (Piece){PieceType::PAWN, PieceColor::BLACK}},
+                {Square(3, 2), (Piece){PieceType::PAWN, PieceColor::BLACK}},
             },
             {
-                    {
-                            {Square(0, 0), (Piece){PieceType::QUEEN, PieceColor::WHITE}},
-                            {Square(0, 7), (Piece){PieceType::BISHOP, PieceColor::WHITE}},
-                            {Square(7, 0), (Piece){PieceType::ROOK, PieceColor::BLACK}},
-                            {Square(7, 7), (Piece){PieceType::KNIGHT, PieceColor::WHITE}},
-                    },
-                    {
-                            (Move){Square(0, 7), Square(3, 2)},
-                            (Move){Square(7, 0), Square(2, 3)},
-                    }
-            },
-            {
-                    {
-                            {Square(4, 5), (Piece){PieceType::QUEEN, PieceColor::BLACK}},
-                            {Square(1, 6), (Piece){PieceType::KING, PieceColor::WHITE}},
-                            {Square(6, 1), (Piece){PieceType::PAWN, PieceColor::BLACK}},
-                            {Square(3, 2), (Piece){PieceType::PAWN, PieceColor::BLACK}},
-                    },
-                    {
-                            (Move){Square(4, 5), Square(2, 3)},
-                            (Move){Square(1, 6), Square(7, 0)},
-                            (Move){Square(6, 1), Square(0, 0)},
-                            (Move){Square(3, 2), Square(5, 5)},
-                    }
-            },
+                (Move){Square(4, 5), Square(2, 3)},
+                (Move){Square(1, 6), Square(7, 0)},
+                (Move){Square(6, 1), Square(0, 0)},
+                (Move){Square(3, 2), Square(5, 5)},
+            }
+        },
     };
 
     for (TestSpec spec : specs) {
@@ -259,28 +261,30 @@ Covers:
 */
 TEST(BoardTest, GetOccupiedSquaresTest) {
     std::vector<std::unordered_map<Square, Piece>> piece_maps = {
-            {/* intentionally empty */},
-            {
-                { Square(0, 0), (Piece){ PieceType::KING, PieceColor::BLACK } }
-            },
-            {
-                { Square(0, 0), (Piece){ PieceType::BISHOP, PieceColor::BLACK } },
-                { Square(0, 7), (Piece){ PieceType::QUEEN, PieceColor::WHITE } },
-                { Square(7, 0), (Piece){ PieceType::ROOK, PieceColor::BLACK } },
-                { Square(7, 7), (Piece){ PieceType::KNIGHT, PieceColor::WHITE } },
-            },
-            {
-                { Square(0, 4), (Piece){ PieceType::PAWN, PieceColor::BLACK } },
-                { Square(2, 3), (Piece){ PieceType::QUEEN, PieceColor::WHITE } },
-                { Square(7, 1), (Piece){ PieceType::ROOK, PieceColor::BLACK } },
-                { Square(1, 6), (Piece){ PieceType::PAWN, PieceColor::BLACK } },
-            }
+        {/* intentionally empty */},
+        {
+            { Square(0, 0), (Piece){ PieceType::KING, PieceColor::BLACK } }
+        },
+        {
+            { Square(0, 0), (Piece){ PieceType::BISHOP, PieceColor::BLACK } },
+            { Square(0, 7), (Piece){ PieceType::QUEEN, PieceColor::WHITE } },
+            { Square(7, 0), (Piece){ PieceType::ROOK, PieceColor::BLACK } },
+            { Square(7, 7), (Piece){ PieceType::KNIGHT, PieceColor::WHITE } },
+        },
+        {
+            { Square(0, 4), (Piece){ PieceType::PAWN, PieceColor::BLACK } },
+            { Square(2, 3), (Piece){ PieceType::QUEEN, PieceColor::WHITE } },
+            { Square(7, 1), (Piece){ PieceType::ROOK, PieceColor::BLACK } },
+            { Square(1, 6), (Piece){ PieceType::PAWN, PieceColor::BLACK } },
+        }
     };
 
     for (std::unordered_map<Square, Piece> piece_map : piece_maps) {
         Board board(piece_map);
         util::Buffer<Square, Board::SIZE> occupied_buffer;
-        for (int icolor = 0; icolor < static_cast<int>(PieceColor::NUM_PIECE_COLORS); ++icolor) {
+        for (int icolor = 0;
+                 icolor < static_cast<int>(PieceColor::NUM_PIECE_COLORS);
+                 ++icolor) {
             // Store all pieces of the same color.
             //     These are removed as we encounter them.
             std::unordered_set<Square> square_set;
@@ -290,8 +294,11 @@ TEST(BoardTest, GetOccupiedSquaresTest) {
                 }
             }
             PieceColor color = static_cast<PieceColor>(icolor);
-            size_t num_squares = board.getOccupiedSquares(color, occupied_buffer.start());
-            for (int isquare = 0; isquare < static_cast<int>(num_squares); ++isquare) {
+            size_t num_squares =
+                    board.getOccupiedSquares(color, occupied_buffer.start());
+            for (int isquare = 0;
+                     isquare < static_cast<int>(num_squares);
+                     ++isquare) {
                 Square square = occupied_buffer.get(isquare);
                 // make sure this square still exists in the set
                 ASSERT_NE(square_set.end(), square_set.find(square));

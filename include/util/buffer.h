@@ -1,3 +1,5 @@
+// Copyright 2021 Alex Theimer
+
 #ifndef UTIL_BUFFER_H_
 #define UTIL_BUFFER_H_
 
@@ -20,7 +22,7 @@ class Buffer {
         return ptr[index];
     }
 
-    void set(std::size_t index, T& elt) {
+    void set(std::size_t index, const T& elt) {
         ASSERT(index < SIZE, "index: " + std::to_string(index) + ", "
                             + "SIZE: " + std::to_string(SIZE));
         T* ptr = reinterpret_cast<T*>(arr_);
@@ -40,6 +42,6 @@ class Buffer {
     uint8_t arr_[SIZE * sizeof(T)];
 };
 
-}
+}  // namespace util
 
 #endif  // UTIL_BUFFER_H_

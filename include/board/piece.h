@@ -1,3 +1,5 @@
+// Copyright 2021 Alex Theimer
+
 #ifndef BOARD_PIECE_H_
 #define BOARD_PIECE_H_
 
@@ -7,7 +9,8 @@
 
 namespace board {
 
-enum class PieceType { KING, QUEEN, PAWN, ROOK, KNIGHT, BISHOP, NUM_PIECE_TYPES };
+enum class PieceType { KING, QUEEN, PAWN, ROOK, KNIGHT,
+                       BISHOP, NUM_PIECE_TYPES };
 enum class PieceColor { BLACK, WHITE, NUM_PIECE_COLORS };
 
 // TODO(theimer): move all piece compression stuff to a different namespace?

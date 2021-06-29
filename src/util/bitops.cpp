@@ -1,3 +1,5 @@
+// Copyright 2021 Alex Theimer
+
 #include <cstdint>
 #include "board/board.h"
 #include "util/bitops.h"
@@ -34,7 +36,7 @@ bool util::getBit(BitOpType bits, std::size_t bit_index) {
 
 size_t util::popHighestBit(BitOpType* bits) {
     ASSERT(*bits > 0, "cannot pop bits from 0");
-    std::size_t bit_index = __builtin_clzl(static_cast<unsigned long>(*bits));
+    std::size_t bit_index = __builtin_clzl(static_cast<std::size_t>(*bits));
     setBit(bits, bit_index, 0);
     return bit_index;
 }

@@ -1,9 +1,11 @@
+// Copyright 2021 Alex Theimer
+
 #ifndef GAME_MOVE_H_
 #define GAME_MOVE_H_
 
-#include "board/board.h"
+#include <string>
 
-#include <optional>
+#include "board/board.h"
 
 namespace game {
 
@@ -29,7 +31,8 @@ Fills a buffer with all possible moves for Pieces of the specified color.
 @param buffer: an Iterator at the start of the buffer.
 @return: the number of Moves added to the buffer.
 */
-std::size_t getAllMoves(const board::Board& board, board::PieceColor color, Move* buffer);
+std::size_t getAllMoves(const board::Board& board,
+                        board::PieceColor color, Move* buffer);
 
 /*
 Applies the specified move to the board.
@@ -37,7 +40,7 @@ Applies the specified move to the board.
              move.to must be unoccupied or occupied by a piece with a
                  different color than the piece at move.from.
 */
-void makeMove(board::Board& board, Move move);
+void makeMove(board::Board* board, Move move);
 
 /*
 Reverses a move, then sets a replacement Piece at the move's `to` Square.
@@ -45,7 +48,7 @@ Reverses a move, then sets a replacement Piece at the move's `to` Square.
              move.to must be occupied.
 @param replacement: must have color different from Piece at move.to
 */
-void unmakeMove(board::Board& board, Move move, board::Piece replacement);
+void unmakeMove(board::Board* board, Move move, board::Piece replacement);
 
 }  // namespace game
 

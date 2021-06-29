@@ -1,3 +1,5 @@
+// Copyright 2021 Alex Theimer
+
 #include "player/human.h"
 
 #include <iostream>

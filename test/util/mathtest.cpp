@@ -1,10 +1,11 @@
-#include "util/math.h"
+// Copyright 2021 Alex Theimer
 
 #include <cstdint>
 #include <cstdio>
 #include <unordered_map>
 #include <iostream>
 
+#include "util/math.h"
 #include "gtest/gtest.h"
 
 /*
@@ -35,7 +36,8 @@ TEST(MathTest, IsPow2Test) {
     };
 
     for (auto pair : test_map) {
-        ASSERT_EQ(pair.second, util::isPow2(pair.first)) << "value: " << pair.first;
+        ASSERT_EQ(pair.second, util::isPow2(pair.first))
+                << "value: " << pair.first;
     }
 }
 
@@ -56,6 +58,7 @@ TEST(MathTest, Log2CeilTest) {
     };
 
     for (auto pair : test_map) {
-        ASSERT_EQ(pair.second, util::log2Ceil(pair.first)) << "value: " << pair.first;
+        ASSERT_EQ(pair.second, util::log2Ceil(pair.first))
+                << "value: " << pair.first;
     }
 }

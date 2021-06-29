@@ -1,3 +1,5 @@
+// Copyright 2021 Alex Theimer
+
 #include "util/math.h"
 
 #include "util/assert.h"
@@ -6,7 +8,8 @@
 static constexpr std::size_t NUM_SIZE_T_BITS = sizeof(std::size_t) * 8;
 
 bool util::isPow2(std::size_t val) {
-    ASSERT(val >= 0, "val: " + std::to_string(val));  // just in case param type ever changes
+    // >= just in case param type ever changes
+    ASSERT(val >= 0, "val: " + std::to_string(val));
     return (1 == __builtin_popcountl(val));
 }
 
