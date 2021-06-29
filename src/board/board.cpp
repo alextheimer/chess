@@ -84,6 +84,10 @@ std::string makeIndexSquareString(std::size_t index) {
     return ss.str();
 }
 
+bool Square::isValidDims(std::size_t row, std::size_t col) {
+    return (row < Board::WIDTH) && (col < Board::WIDTH);
+}
+
 std::string Board::toString() const {
     std::stringstream ss;
     ss << "  0 1 2 3 4 5 6 7\n";

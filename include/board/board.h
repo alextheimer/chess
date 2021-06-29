@@ -31,6 +31,11 @@ struct Square {
     row and col must each lie on [0, Board::WIDTH).
     */
     Square(DimIndex row, DimIndex col);
+
+    /*
+    Returns true iff (row, col) describes a valid Square.
+    */
+    static bool isValidDims(std::size_t row, std::size_t col);
 };
 
 // Note: need non-member to support Square map keys
