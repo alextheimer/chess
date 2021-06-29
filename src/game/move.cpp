@@ -26,14 +26,6 @@ struct Diff {
     int col_diff;
 };
 
-// TODO(theimer): this should be a static function of Square
-/*
-Returns true iff (row, col) describes a valid Square.
-*/
-bool isInBounds(std::size_t row, std::size_t col) {
-    return (row < Board::WIDTH) && (col < Board::WIDTH);
-}
-
 /*
 Given an initial Square and array of Diffs, fills a buffer with all *valid*
 moves such that each destination Square is the sum of the initial Square
@@ -55,7 +47,7 @@ std::size_t getMovesDiff(const Board& board, PieceColor color, Square square,
         std::size_t row = square.row + diff.row_diff;
         std::size_t col = square.col + diff.col_diff;
         // add to the buffer if (1) in-bounds and (2) unoccupied by same color
-        if (isInBounds(row, col)) {
+        if (Square::isValidDims(row, col)) {
             Square new_square(row, col);
             if (!board.squareIsOccupiedColor(new_square, color)) {
                 Move move = { square, new_square };
@@ -282,4 +274,15 @@ void game::unmakeMove(Board* board, Move move, Piece replacement) {
             "piece has same color as replacement: " + std::to_string(move.to));
     board->movePiece(move.to, move.from);
     board->setPiece(replacement, move.to);
+}
+
+bool game::isValidMove(const Board& board, PieceColor color, Move move) {
+    util::Buffer<Move, MAX_NUM_MOVES_PLY> move_buffer;
+    std::size_t num_moves = getAllMoves(board, color, move_buffer.start());
+    for (int i = 0; i < static_cast<int>(num_moves); ++i) {
+        if (move == move_buffer.get(static_cast<std::size_t>(i))) {
+            return true;
+        }
+    }
+    return false;
 }

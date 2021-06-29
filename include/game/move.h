@@ -9,6 +9,11 @@
 
 namespace game {
 
+// Max number of moves per ply; roughly sourced from:
+// https://chess.stackexchange.com/
+//     questions/4490/maximum-possible-movement-in-a-turn
+constexpr std::size_t MAX_NUM_MOVES_PLY = 300;
+
 struct Move {
     board::Square from;
     board::Square to;
@@ -49,6 +54,11 @@ Reverses a move, then sets a replacement Piece at the move's `to` Square.
 @param replacement: must have color different from Piece at move.to
 */
 void unmakeMove(board::Board* board, Move move, board::Piece replacement);
+
+/*
+Returns true iff `move` is valid.
+*/
+bool isValidMove(const board::Board& board, board::PieceColor color, Move move);
 
 }  // namespace game
 
