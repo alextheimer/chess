@@ -18,21 +18,18 @@ using board::PieceType;
 using board::PieceColor;
 using board::DimIndex;
 
-// TODO(theimer): get rid of this; just use std::size_t
-typedef std::size_t BitboardIndex;
-
 // TODO(theimer): make these constexpr
 const std::size_t NUM_WIDTH_BITS = util::log2Ceil(Board::WIDTH);
 const std::size_t WIDTH_MASK = (static_cast<std::size_t>(1) << NUM_WIDTH_BITS) - 1;
 
-BitboardIndex squareToBitboardIndex(Square square) {
-    BitboardIndex index = (static_cast<BitboardIndex>(square.row) << NUM_WIDTH_BITS)
-            | static_cast<BitboardIndex>(square.col);
+std::size_t squareToBitboardIndex(Square square) {
+    std::size_t index = (static_cast<std::size_t>(square.row) << NUM_WIDTH_BITS)
+            | static_cast<std::size_t>(square.col);
     ASSERT(index >= 0 && index < Board::SIZE, "index: " + std::to_string(index));
     return index;
 }
 
-Square bitboardIndexToSquare(BitboardIndex index) {
+Square bitboardIndexToSquare(std::size_t index) {
     ASSERT(index >= 0 && index < Board::SIZE, "index: " + std::to_string(index));
     DimIndex col = index & WIDTH_MASK;
     DimIndex row = index >> NUM_WIDTH_BITS;
@@ -40,7 +37,7 @@ Square bitboardIndexToSquare(BitboardIndex index) {
 }
 
 bool getBitAtSquare(Bitboard board, Square square) {
-    BitboardIndex index = squareToBitboardIndex(square);
+    std::size_t index = squareToBitboardIndex(square);
     return util::getBit(board, index);
 }
 
@@ -54,7 +51,7 @@ std::size_t bitboardToSquares(Bitboard board, Square* buffer) {
     // i.e. "while 1's exist on the board"
     // TODO(theimer): might vectorize with popcount-based for loop
     while (board > 0) {
-        BitboardIndex index = util::popHighestBit(&board);
+        std::size_t index = util::popHighestBit(&board);
         *ptr = bitboardIndexToSquare(index);
         ++ptr;
     }
@@ -174,7 +171,7 @@ std::size_t Board::getOccupiedSquares(Square* buffer) const {
 
 void Board::removePiece(Square square) {
     // set the color and piece bits to zero
-    BitboardIndex index = squareToBitboardIndex(square);
+    std::size_t index = squareToBitboardIndex(square);
     for (int i = 0; i < static_cast<int>(PieceColor::NUM_PIECE_COLORS); ++i) {
         util::setBit(&color_bitboards_[i], index, false);
     }
