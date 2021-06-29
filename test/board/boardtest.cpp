@@ -23,13 +23,11 @@ squareIsOccupied
     square: {occupied by all piece types/colors}
 setPiece
     square: (0,0), (0,7) (7,0), (7,7), other
-    square: empty, nonempty
     piece: {all piece types/colors}
     board: single piece, no pieces, multiple pieces
 movePiece
     from: (0,0), (0,7) (7,0), (7,7), other
     to: (0,0), (0,7) (7,0), (7,7), other
-    to: empty, nonempty
     board: single piece, multiple pieces
 getPiece
     square: (0,0), (0,7) (7,0), (7,7), other
@@ -43,6 +41,7 @@ getOccupiedSquares
     board: single piece, no pieces, multiple pieces
     board: occupied squares at (0,0), (0,7) (7,0), (7,7), other
     board: { contains various piecetypes/colors }
+TODO(theimer): test overwrite variants of move/setPiece
 */
 
 /*
@@ -118,7 +117,6 @@ Covers:
         board: single piece, multiple pieces
     setPiece
         square: (0,0), (0,7) (7,0), (7,7), other
-        square: empty  // TODO(theimer): need nonempty tests!,
         piece: {all piece types/colors}
         board: single piece, no pieces, multiple pieces
 */
@@ -170,7 +168,6 @@ Covers:
     movePiece
         from: (0,0), (0,7) (7,0), (7,7), other
         to: (0,0), (0,7) (7,0), (7,7), other
-        to: empty, nonempty
         board: single piece, multiple pieces
 */
 TEST(BoardTest, MoveTest) {
@@ -202,8 +199,7 @@ TEST(BoardTest, MoveTest) {
                             {Square(7, 7), (Piece){PieceType::KNIGHT, PieceColor::WHITE}},
                     },
                     {
-                            (Move){Square(0, 0), Square(0, 7)},  // overwrite!
-                            (Move){Square(7, 7), Square(3, 2)},
+                            (Move){Square(0, 7), Square(3, 2)},
                             (Move){Square(7, 0), Square(2, 3)},
                     }
             },
