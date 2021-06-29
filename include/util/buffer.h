@@ -12,10 +12,6 @@ Array that does *not* initialize its elements at its own initialization.
 */
 template <typename T, std::size_t SIZE>
 class Buffer {
- private:
-    // Just stores raw bytes of each element.
-    //    Note that initialization as a T array would construct every element.
-    uint8_t arr_[SIZE * sizeof(T)];
  public:
     T& get(std::size_t index) const {
         ASSERT(index < SIZE, "index: " + std::to_string(index) + ", "
@@ -37,6 +33,11 @@ class Buffer {
     T* start() const {
         return reinterpret_cast<T*>(const_cast<uint8_t*>(arr_));
     }
+
+ private:
+    // Just stores raw bytes of each element.
+    //    Note that initialization as a T array would construct every element.
+    uint8_t arr_[SIZE * sizeof(T)];
 };
 
 }

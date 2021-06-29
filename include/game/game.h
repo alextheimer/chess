@@ -19,11 +19,6 @@ class Player {
 
 // Manages a game of chess between two Players.
 class Game {
- private:
-    board::Board& board_;
-    Player& white_player_;
-    Player& black_player_;
-    board::PieceColor next_player_;  // TODO(theimer): rename to next_player_color_
  public:
     Game(board::Board& board, Player& white_player, Player& black_player);
     void render(std::ostream& ostream) const;  // TODO(theimer): should just be a toString
@@ -43,6 +38,12 @@ class Game {
     The game must be ended before this member is called.
     */
     Player& getWinner() const;
+
+ private:
+    board::Board& board_;
+    Player& white_player_;
+    Player& black_player_;
+    board::PieceColor next_player_;  // TODO(theimer): rename to next_player_color_
 };
 
 }

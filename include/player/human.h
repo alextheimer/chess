@@ -6,10 +6,11 @@
 namespace player {
 
 class Human : public game::Player {
- private:
-    // TODO(theimer): any state?
  public:
     game::Move getMove(const board::Board& board);
+
+ private:
+    // TODO(theimer): any state?
 };
 
 }
