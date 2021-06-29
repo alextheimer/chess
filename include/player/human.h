@@ -3,16 +3,20 @@
 #ifndef PLAYER_HUMAN_H_
 #define PLAYER_HUMAN_H_
 
+#include <string>
+
 #include "game/game.h"
 
 namespace player {
 
 class Human : public game::Player {
  public:
-    game::Move getMove(const board::Board& board);
+    Human(std::string name);
+    std::string getName() const;
+    game::Move getMove(const board::Board& board, board::PieceColor color);
 
  private:
-    // TODO(theimer): any state?
+    std::string name_;
 };
 
 }  // namespace player
