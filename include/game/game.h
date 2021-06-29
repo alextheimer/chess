@@ -11,12 +11,24 @@
 
 namespace game {
 
+/*
+Thrown by Game when a Player attempts an invalid move.
+*/
+class InvalidMoveEx : public std::exception {
+ public:
+    InvalidMoveEx(Move move);
+    const char* what() const throw();
+    Move getMove() const;
+ private:
+    Move move_;
+};
+
 // Square->Piece map for initialization of a standard game of chess.
 extern const std::unordered_map<board::Square, board::Piece> INIT_PIECE_MAP;
 
 class Player {
  public:
-    virtual Move getMove(const board::Board& board) = 0;
+    virtual Move getMove(const board::Board& board, board::PieceColor) = 0;
 };
 
 // Manages a game of chess between two Players.
@@ -32,6 +44,7 @@ class Game {
 
     void renderBoard(std::ostream& ostream) const;
 
+    // TODO(theimer): C++ way to denote throws InvalidMoveEx?
     /*
     Executes a player's turn.
     */

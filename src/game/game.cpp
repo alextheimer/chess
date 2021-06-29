@@ -61,6 +61,21 @@ const std::unordered_map<Square, Piece> game::INIT_PIECE_MAP = {
         { Square(6, 7), (Piece){ PieceType::PAWN, PieceColor::WHITE } },
 };
 
+
+game::InvalidMoveEx::InvalidMoveEx(Move move) : move_(move) {
+    // intentionally blank
+}
+
+const char* game::InvalidMoveEx::what() const throw() {
+    std::stringstream ss;
+    ss << "invalid move: " << move_;
+    return ss.str().c_str();
+}
+
+game::Move game::InvalidMoveEx::getMove() const {
+    return move_;
+}
+
 Game::Game(Board* board, Player* white_player, Player* black_player) :
         board_(board), white_player_(white_player),
         black_player_(black_player), next_player_color_(START_COLOR) {
@@ -73,8 +88,9 @@ void Game::renderBoard(std::ostream& ostream) const {
 
 void Game::runPly() {
     ASSERT(!isEnded(), "game already ended");
+    PieceColor current_color = next_player_color_;
     Player* player;
-    switch (next_player_color_) {
+    switch (current_color) {
     case PieceColor::BLACK:
         player = black_player_;
         next_player_color_ = PieceColor::WHITE;
@@ -85,22 +101,16 @@ void Game::runPly() {
         break;
     default:
         throw std::invalid_argument(
-                "unhandled PieceColor: " + std::to_string(next_player_color_));
+                "unhandled PieceColor: " + std::to_string(current_color));
     }
     // get the move the player wants to make
-    Move move = player->getMove(*board_);
-    Piece moved_piece = board_->getPiece(move.from);
+    Move move = player->getMove(*board_, current_color);
     // make sure the move is valid
-    util::Buffer<Move, Board::SIZE> valid_moves;
-    std::size_t num_moves = game::getPieceMoves(
-            *board_, moved_piece.color, move.from, valid_moves.start());
-    for (int i = 0; i < static_cast<int>(num_moves); ++i) {
-        if (valid_moves.get(i) == move) {
-            game::makeMove(board_, move);
-            return;
-        }
+    if (game::isValidMove(*board_, current_color, move)) {
+        game::makeMove(board_, move);
+    } else {
+        throw InvalidMoveEx(move);
     }
-    throw std::invalid_argument("illegal Move: " + std::to_string(move));
 }
 
 bool Game::isEnded() const {
