@@ -16,8 +16,6 @@ struct Move {
 bool operator==(Move lhs, Move rhs);
 std::ostream& operator<<(std::ostream& out, Move move);
 
-// TODO(theimer): movegen members that aren't explicitly built for performance
-
 /*
 Fills a buffer with all possible moves for the Piece at the specified Square.
 @param square: must be occupied by a Piece of PieceColor `color`

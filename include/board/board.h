@@ -12,7 +12,6 @@ namespace board {
 // datatype used for Board row/col indices
 typedef uint8_t DimIndex;
 
-// TODO(theimer): move this to the implementation file
 // Stores a single bit of data for each of the 64 spaces on a Board.
 typedef uint64_t Bitboard;
 
