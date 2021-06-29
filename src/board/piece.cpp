@@ -17,12 +17,11 @@ Note: compressed pieces are built as follows:
 */
 
 // Number of bits used to represent each enum in a compressed Piece.
-// TODO(theimer): +1 is too many
 // TODO(theimer): make all of these constexpr
 static const std::size_t NUM_PIECE_COLOR_BITS =
-        util::log2Ceil(1 + static_cast<std::size_t>(PieceColor::NUM_PIECE_COLORS));
+        util::log2Ceil(static_cast<std::size_t>(PieceColor::NUM_PIECE_COLORS));
 static const std::size_t NUM_PIECE_TYPE_BITS =
-        util::log2Ceil(1 + static_cast<std::size_t>(PieceType::NUM_PIECE_TYPES));
+        util::log2Ceil(static_cast<std::size_t>(PieceType::NUM_PIECE_TYPES));
 
 // masks used to extract Piece data from its compressed format
 static const std::size_t PIECE_COLOR_MASK =
