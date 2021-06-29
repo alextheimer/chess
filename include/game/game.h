@@ -21,7 +21,8 @@ class Player {
 class Game {
  public:
     Game(board::Board& board, Player& white_player, Player& black_player);
-    void render(std::ostream& ostream) const;  // TODO(theimer): should just be a toString
+
+    void renderBoard(std::ostream& ostream) const;
 
     /*
     Executes a player's turn.

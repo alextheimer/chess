@@ -35,6 +35,21 @@ Note:
 const std::size_t NUM_WIDTH_BITS = util::log2Ceil(Board::WIDTH);
 const std::size_t WIDTH_MASK = (static_cast<std::size_t>(1) << NUM_WIDTH_BITS) - 1;
 
+static const std::unordered_map<Piece, char> PIECE_CHAR_MAP = {
+        { (Piece){ PieceType::BISHOP, PieceColor::BLACK }, 'B' },
+        { (Piece){ PieceType::BISHOP, PieceColor::WHITE }, 'b' },
+        { (Piece){ PieceType::KNIGHT, PieceColor::BLACK }, 'N' },
+        { (Piece){ PieceType::KNIGHT, PieceColor::WHITE }, 'n' },
+        { (Piece){ PieceType::ROOK,  PieceColor::BLACK }, 'R' },
+        { (Piece){ PieceType::ROOK, PieceColor::WHITE }, 'r' },
+        { (Piece){ PieceType::KING, PieceColor::BLACK }, 'K' },
+        { (Piece){ PieceType::KING, PieceColor::WHITE }, 'k' },
+        { (Piece){ PieceType::QUEEN, PieceColor::BLACK }, 'Q' },
+        { (Piece){ PieceType::QUEEN, PieceColor::WHITE }, 'q' },
+        { (Piece){ PieceType::PAWN, PieceColor::BLACK }, 'P' },
+        { (Piece){ PieceType::PAWN, PieceColor::WHITE }, 'p' }
+};
+
 std::size_t squareToBitboardIndex(Square square) {
     std::size_t index = (static_cast<std::size_t>(square.row) << NUM_WIDTH_BITS)
             | static_cast<std::size_t>(square.col);
@@ -59,6 +74,30 @@ std::string makeIndexSquareString(std::size_t index) {
     std::stringstream ss;
     ss << "index: " << std::to_string(index) << ", square: " << bitboardIndexToSquare(index);
     return ss.str();
+}
+
+std::string Board::toString() const {
+    std::stringstream ss;
+    ss << "  0 1 2 3 4 5 6 7\n";
+    for (int irow = 0; irow < Board::WIDTH; ++irow) {
+        ss << std::to_string(irow) << ' ';
+        for (int icol = 0; icol < Board::WIDTH; ++icol) {
+            Square square(irow, icol);
+            if (squareIsOccupied(square)) {
+                Piece piece = getPiece(square);
+                ss << PIECE_CHAR_MAP.at(piece) << ' ';
+            } else {
+                ss << "- ";
+            }
+        }
+        ss << '\n';
+    }
+    return ss.str();
+}
+
+std::ostream& Board::operator<<(std::ostream& ostream) const {
+    ostream << toString();
+    return ostream;
 }
 
 bool Board::squareIsOccupiedIndex(std::size_t index) const {

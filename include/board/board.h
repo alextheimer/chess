@@ -62,6 +62,9 @@ class Board {
    */
    explicit Board(const std::unordered_map<Square, Piece>& piece_map);
 
+   std::string toString() const;
+   std::ostream& operator<<(std::ostream& ostream) const;
+
    /*
     Returns true iff `square` is occupied on the Board.
    */

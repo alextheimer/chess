@@ -19,21 +19,6 @@ using game::Player;
 
 constexpr PieceColor START_COLOR = PieceColor::BLACK;
 
-static const std::unordered_map<Piece, char> PIECE_CHAR_MAP = {
-        { (Piece){ PieceType::BISHOP, PieceColor::BLACK }, 'B' },
-        { (Piece){ PieceType::BISHOP, PieceColor::WHITE }, 'b' },
-        { (Piece){ PieceType::KNIGHT, PieceColor::BLACK }, 'N' },
-        { (Piece){ PieceType::KNIGHT, PieceColor::WHITE }, 'n' },
-        { (Piece){ PieceType::ROOK,  PieceColor::BLACK }, 'R' },
-        { (Piece){ PieceType::ROOK, PieceColor::WHITE }, 'r' },
-        { (Piece){ PieceType::KING, PieceColor::BLACK }, 'K' },
-        { (Piece){ PieceType::KING, PieceColor::WHITE }, 'k' },
-        { (Piece){ PieceType::QUEEN, PieceColor::BLACK }, 'Q' },
-        { (Piece){ PieceType::QUEEN, PieceColor::WHITE }, 'q' },
-        { (Piece){ PieceType::PAWN, PieceColor::BLACK }, 'P' },
-        { (Piece){ PieceType::PAWN, PieceColor::WHITE }, 'p' }
-};
-
 const std::unordered_map<Square, Piece> game::INIT_PIECE_MAP = {
         { Square(0, 0), (Piece){ PieceType::ROOK, PieceColor::BLACK } },
         { Square(0, 1), (Piece){ PieceType::KNIGHT, PieceColor::BLACK } },
@@ -80,24 +65,8 @@ Game::Game(Board& board, Player& white_player, Player& black_player) :
     // intentionally blank
 }
 
-// TODO(theimer): should be a toString() member in Board
-void Game::render(std::ostream& ostream) const {
-    std::string col_header = "  0 1 2 3 4 5 6 7\n";
-    ostream << col_header;
-    for (int irow = 0; irow < Board::WIDTH; ++irow) {
-        ostream << irow << ' ';
-        for (int icol = 0; icol < Board::WIDTH; ++icol) {
-            Square square(irow, icol);
-            if (board_.squareIsOccupied(square)) {
-                Piece piece = board_.getPiece(square);
-                ostream << PIECE_CHAR_MAP.at(piece) << ' ';
-            } else {
-                ostream << "- ";
-            }
-        }
-        ostream << '\n';
-    }
-    ostream.flush();
+void Game::renderBoard(std::ostream& ostream) const {
+    ostream << board_.toString();
 }
 
 void Game::runPly() {

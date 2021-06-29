@@ -13,9 +13,9 @@ int main(int argc, char *argv[]) {
 
     game::Game game(board, player1, player2);
 
-    game.render(std::cout);
+    game.renderBoard(std::cout);
 
     game.runPly();
 
-    game.render(std::cout);
+    game.renderBoard(std::cout);
 }
