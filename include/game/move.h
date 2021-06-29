@@ -34,17 +34,19 @@ Fills a buffer with all possible moves for Pieces of the specified color.
 */
 std::size_t getAllMoves(const board::Board& board, board::PieceColor color, Move* buffer);
 
-// TODO(theimer): need "overwrite" variant of makeMove
-// TODO(theimer): need "pieceless" variant of unmakeMove
-
 /*
-Applies the specified move to the board. TODO
+Applies the specified move to the board.
+@param move: move.from must be occupied;
+             move.to must be unoccupied or occupied by a piece with a
+                 different color than the piece at move.from.
 */
 void makeMove(board::Board& board, Move move);
 
 /*
 Reverses a move, then sets a replacement Piece at the move's `to` Square.
-TODO: elaborate more when variants are more concrete.
+@param move: move.from must be unoccupied;
+             move.to must be occupied.
+@param replacement: must have color different from Piece at move.to
 */
 void unmakeMove(board::Board& board, Move move, board::Piece replacement);
 

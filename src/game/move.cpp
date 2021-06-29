@@ -244,10 +244,19 @@ std::size_t game::getAllMoves(const Board& board, PieceColor color, Move* buffer
 }
 
 void game::makeMove(Board& board, Move move) {
+    ASSERT(board.squareIsOccupied(move.from), "unoccupied square: " + move.from.toString());
+    // make sure move.to is unoccupied / occupied by a different color.
+    ASSERT(!board.squareIsOccupiedColor(
+                move.to, board.getPieceColor(move.from)),
+           "to square occupied by same color: " + move.toString());
     board.movePiece(move.from, move.to);
 }
 
 void game::unmakeMove(Board& board, Move move, Piece replacement) {
+    ASSERT(board.squareIsOccupied(move.to), "unoccupied square: " + move.to.toString());
+    ASSERT(!board.squareIsOccupied(move.from), "occupied square: " + move.from.toString());
+    ASSERT(board.getPieceColor(move.to) != replacement.color,
+            "piece has same color as replacement: " + move.to.toString());
     board.movePiece(move.to, move.from);
     board.setPiece(replacement, move.to);
 }
