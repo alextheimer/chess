@@ -82,18 +82,31 @@ class Board {
     */
     bool squareIsOccupiedColor(Square square, PieceColor color) const;
 
-    // TODO(theimer): add an "overwritePiece" member
     /*
     Sets the piece described by `piece` at `square` on the Board.
+    @param square: must be unoccupied.
     */
     void setPiece(Piece piece, Square square);
 
-    // TODO(theimer): add a "moveOverwritePiece" member
+    /*
+    Sets the piece described by `piece` at `square` on the Board.
+    Note: may give better performance than Board::removePiece and Board::setPiece.
+    */
+    void setPieceOverwrite(Piece piece, Square square);
+
     /*
     Moves a piece from one square to another.
     @param from: must be occupied
+    @param to: must be unoccupied
     */
     void movePiece(Square from, Square to);
+
+    /*
+    Moves a piece from one square to another.
+    Note: may give better performance than Board::removePiece and Board::movePiece.
+    @param from: must be occupied
+    */
+    void movePieceOverwrite(Square from, Square to);
 
     /*
     @note: might allow the implementation to return a result faster than Board::getPiece.

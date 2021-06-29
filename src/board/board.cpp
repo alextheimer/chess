@@ -113,8 +113,18 @@ bool Board::squareIsOccupied(Square square) const {
 }
 
 void Board::setPiece(Piece piece, Square square) {
-    // TODO(theimer): assert square is unoccupied if/when "overwrite" variant is made
+    ASSERT(!squareIsOccupied(square), "square occupied: " + square.toString());
     std::size_t index = squareToBitboardIndex(square);
+    util::setBit(&this->piece_bitboards_[static_cast<int>(piece.type)], index, true);
+    util::setBit(&this->color_bitboards_[static_cast<int>(piece.color)], index, true);
+}
+
+void Board::setPieceOverwrite(Piece piece, Square square) {
+    std::size_t index = squareToBitboardIndex(square);
+    // TODO(theimer): current impl is lazy and slow
+    if (squareIsOccupied(square)) {
+        removePiece(square);
+    }
     util::setBit(&this->piece_bitboards_[static_cast<int>(piece.type)], index, true);
     util::setBit(&this->color_bitboards_[static_cast<int>(piece.color)], index, true);
 }
@@ -182,9 +192,17 @@ void Board::removePiece(Square square) {
 
 void Board::movePiece(Square from, Square to) {
     ASSERT(squareIsOccupied(from), "from: " + from.toString());
+    ASSERT(!squareIsOccupied(to), "to: " + to.toString());
     // TODO(theimer): square -> index recomputation!
     Piece from_piece = getPiece(from);
     setPiece(from_piece, to);
+    removePiece(from);
+}
+
+void Board::movePieceOverwrite(Square from, Square to) {
+    ASSERT(squareIsOccupied(from), "from: " + from.toString());
+    Piece from_piece = getPiece(from);
+    setPieceOverwrite(from_piece, to);
     removePiece(from);
 }
 
