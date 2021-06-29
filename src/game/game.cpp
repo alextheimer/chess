@@ -90,7 +90,7 @@ void Game::runPly() {
     // make sure the move is valid
     util::Buffer<Move, Board::SIZE> valid_moves;
     std::size_t num_moves = game::getPieceMoves(board_, moved_piece.color, move.from, valid_moves.start());
-    for (int i = 0; i < num_moves; ++i) {
+    for (int i = 0; i < static_cast<int>(num_moves); ++i) {
         if (valid_moves.get(i) == move) {
             game::makeMove(board_, move);
             return;

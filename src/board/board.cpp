@@ -79,9 +79,9 @@ std::string makeIndexSquareString(std::size_t index) {
 std::string Board::toString() const {
     std::stringstream ss;
     ss << "  0 1 2 3 4 5 6 7\n";
-    for (int irow = 0; irow < Board::WIDTH; ++irow) {
+    for (int irow = 0; irow < static_cast<int>(Board::WIDTH); ++irow) {
         ss << std::to_string(irow) << ' ';
-        for (int icol = 0; icol < Board::WIDTH; ++icol) {
+        for (int icol = 0; icol < static_cast<int>(Board::WIDTH); ++icol) {
             Square square(irow, icol);
             if (squareIsOccupied(square)) {
                 Piece piece = getPiece(square);

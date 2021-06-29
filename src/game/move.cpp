@@ -236,8 +236,7 @@ std::size_t game::getAllMoves(const Board& board, PieceColor color, Move* buffer
     util::Buffer<Square, Board::SIZE> occupied_buffer;
     std::size_t num_occupied = board.getOccupiedSquares(color, occupied_buffer.start());
     Move* next_move_slot = buffer;
-    std::size_t num_moves = 0;
-    for (int i = 0; i < num_occupied; ++i) {
+    for (int i = 0; i < static_cast<int>(num_occupied); ++i) {
         next_move_slot += getPieceMoves(board, color, occupied_buffer.get(i), next_move_slot);
     }
     return next_move_slot - buffer;
