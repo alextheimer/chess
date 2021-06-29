@@ -24,10 +24,14 @@ std::ostream& operator<<(std::ostream& ostream, Piece piece);
 CompressedPiece compressPiece(Piece piece);
 Piece decompressPiece(CompressedPiece compressed_piece);
 
-std::string toString(PieceColor color);
-std::string toString(PieceType type);
-std::string toString(Piece piece);
+}  // namespace board
 
-}
+namespace std {
+
+std::string to_string(board::PieceColor color);
+std::string to_string(board::PieceType type);
+std::string to_string(board::Piece piece);
+
+}  // namespace std
 
 #endif  // BOARD_PIECE_H_

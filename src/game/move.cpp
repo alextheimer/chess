@@ -196,9 +196,9 @@ std::size_t getMovesQueen(const Board& board, PieceColor color, Square square, M
     return getMovesVector(board, color, square, vectors, buffer);
 }
 
-std::string Move::toString() const {
+std::string std::to_string(game::Move move) {
     std::stringstream sstr;
-    sstr << "Move(from: " << from << ", to: " << to << ")";
+    sstr << "Move(from: " << std::to_string(move.from) << ", to: " << std::to_string(move.to) << ")";
     return sstr.str();
 }
 
@@ -207,7 +207,7 @@ bool game::operator==(Move lhs, Move rhs) {
 }
 
 std::ostream& game::operator<<(std::ostream& out, Move move) {
-    out << move.toString();
+    out << std::to_string(move);
     return out;
 }
 
@@ -227,7 +227,7 @@ std::size_t game::getPieceMoves(const Board& board, PieceColor color, Square squ
     case PieceType::ROOK:
         return getMovesRook(board, color, square, buffer);
     default:
-        throw std::invalid_argument("unhandled PieceType: " + toString(type));
+        throw std::invalid_argument("unhandled PieceType: " + std::to_string(type));
     }
 }
 
@@ -243,19 +243,19 @@ std::size_t game::getAllMoves(const Board& board, PieceColor color, Move* buffer
 }
 
 void game::makeMove(Board& board, Move move) {
-    ASSERT(board.squareIsOccupied(move.from), "unoccupied square: " + move.from.toString());
+    ASSERT(board.squareIsOccupied(move.from), "unoccupied square: " + std::to_string(move.from));
     // make sure move.to is unoccupied / occupied by a different color.
     ASSERT(!board.squareIsOccupiedColor(
                 move.to, board.getPieceColor(move.from)),
-           "to square occupied by same color: " + move.toString());
+           "to square occupied by same color: " + std::to_string(move));
     board.movePiece(move.from, move.to);
 }
 
 void game::unmakeMove(Board& board, Move move, Piece replacement) {
-    ASSERT(board.squareIsOccupied(move.to), "unoccupied square: " + move.to.toString());
-    ASSERT(!board.squareIsOccupied(move.from), "occupied square: " + move.from.toString());
+    ASSERT(board.squareIsOccupied(move.to), "unoccupied square: " + std::to_string(move.to));
+    ASSERT(!board.squareIsOccupied(move.from), "occupied square: " + std::to_string(move.from));
     ASSERT(board.getPieceColor(move.to) != replacement.color,
-            "piece has same color as replacement: " + move.to.toString());
+            "piece has same color as replacement: " + std::to_string(move.to));
     board.movePiece(move.to, move.from);
     board.setPiece(replacement, move.to);
 }

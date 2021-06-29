@@ -15,12 +15,10 @@ typedef uint8_t DimIndex;
 // Stores a single bit of data for each of the 64 spaces on a Board.
 typedef uint64_t Bitboard;
 
-// TODO(theimer): make Square/Piece immutable
+// TODO(theimer): make Square/Piece/Move immutable
 
-class Square {
- public:
-
-    // this is really just a POD should-be-a-struct type, but I want to enforce
+struct Square {
+    // this is really just a POD type, but I want to enforce
     //     constructor initialization to support row/col assertions.
 
     DimIndex row;
@@ -30,9 +28,6 @@ class Square {
     row and col must each lie on [0, Board::WIDTH).
     */
     Square(DimIndex row, DimIndex col);
-
-    // TODO(theimer): why is this a member, but the Piece toString's are not?
-    std::string toString() const;
 };
 
 // Note: need non-member to support Square map keys
@@ -170,14 +165,17 @@ class Board {
 
 }  // namespace board
 
-// these support use of these types as map keys
 namespace std {
+
+// these support use of these types as map keys
 template <> struct hash<board::Square> {
     std::size_t operator()(const board::Square x) const;
 };
 template <> struct hash<board::Piece> {
     std::size_t operator()(const board::Piece x) const;
 };
+
+std::string to_string(board::Square square);
 
 }  // namespace std
 

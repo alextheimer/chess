@@ -10,7 +10,6 @@ namespace game {
 struct Move {
     board::Square from;
     board::Square to;
-    std::string toString() const;
 };
 
 bool operator==(Move lhs, Move rhs);
@@ -48,6 +47,12 @@ Reverses a move, then sets a replacement Piece at the move's `to` Square.
 */
 void unmakeMove(board::Board& board, Move move, board::Piece replacement);
 
-}
+}  // namespace game
+
+namespace std {
+
+    std::string to_string(game::Move move);
+
+}  // namespace std
 
 #endif  // GAME_MOVE_H_

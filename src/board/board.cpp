@@ -170,7 +170,7 @@ void Board::movePieceIndex(std::size_t from_index, std::size_t to_index) {
     #ifdef DEBUG
     Piece to_piece = getPieceIndex(to_index);
     ASSERT(to_piece == from_piece, std::string("incorrect piece at 'to' after set\n")
-            + "expected: " + board::toString(from_piece) + ", actual: " + board::toString(to_piece));
+            + "expected: " + std::to_string(from_piece) + ", actual: " + std::to_string(to_piece));
     ASSERT(!squareIsOccupiedIndex(from_index), "from index occupied after move: " + makeIndexSquareString(from_index));
     #endif  // DEBUG
 }
@@ -200,7 +200,7 @@ void Board::setPieceOverwriteIndex(Piece piece, std::size_t index) {
     #ifdef DEBUG
     Piece set_piece = getPieceIndex(index);
     ASSERT(set_piece == piece, std::string("incorrect piece at index after set\n")
-            + "expected: " + board::toString(piece) + ", actual: " + board::toString(set_piece));
+            + "expected: " + std::to_string(piece) + ", actual: " + std::to_string(set_piece));
     #endif  // DEBUG
 }
 
@@ -216,7 +216,7 @@ void Board::movePieceOverwriteIndex(std::size_t from_index, std::size_t to_index
     #ifdef DEBUG
     Piece to_piece = getPieceIndex(to_index);
     ASSERT(to_piece == from_piece, std::string("incorrect piece at 'to' after set\n")
-            + "expected: " + board::toString(from_piece) + ", actual: " + board::toString(to_piece));
+            + "expected: " + std::to_string(from_piece) + ", actual: " + std::to_string(to_piece));
     ASSERT(!squareIsOccupiedIndex(from_index), "from index occupied after move: " + makeIndexSquareString(from_index));
     #endif  // DEBUG
 }
@@ -248,7 +248,7 @@ bool board::operator==(Square lhs, Square rhs) {
 }
 
 std::ostream& board::operator<<(std::ostream& out, Square square) {
-    out << square.toString();
+    out << std::to_string(square);
     return out;
 }
 
@@ -256,9 +256,9 @@ size_t std::hash<Square>::operator()(Square square) const {
     return squareToBitboardIndex(square);
 }
 
-std::string Square::toString() const {
+std::string std::to_string(Square square) {
     std::stringstream sstr;
-    sstr << "Square(row: " << std::to_string(row) << ", col: " << std::to_string(col) << ")";
+    sstr << "Square(row: " << std::to_string(square.row) << ", col: " << std::to_string(square.col) << ")";
     return sstr.str();
 }
 
@@ -278,7 +278,7 @@ Board::Board(const std::unordered_map<Square, Piece>& piece_map) {
     for (auto iterator = piece_map.begin(); iterator != piece_map.end(); ++iterator)  {
         Square square = iterator->first;
         Piece piece = iterator->second;
-        ASSERT(!this->squareIsOccupied(square), "square occupied: " + square.toString());
+        ASSERT(!this->squareIsOccupied(square), "square occupied: " + std::to_string(square));
         this->setPiece(piece, square);
     }
 }

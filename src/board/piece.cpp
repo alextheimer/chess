@@ -29,10 +29,10 @@ static const std::size_t PIECE_COLOR_MASK =
 static const std::size_t PIECE_TYPE_MASK =
         ((std::size_t)1 << NUM_PIECE_TYPE_BITS) - 1;
 
-std::string board::toString(Piece piece) {
+std::string std::to_string(Piece piece) {
     std::stringstream ss;
-    ss << "Piece(type: " << toString(piece.type) << ", "
-       << "color: " << toString(piece.color);
+    ss << "Piece(type: " << std::to_string(piece.type) << ", "
+       << "color: " << std::to_string(piece.color);
     return ss.str();
 }
 
@@ -57,11 +57,11 @@ bool board::operator==(Piece lhs, Piece rhs) {
 }
 
 std::ostream& board::operator<<(std::ostream& ostream, Piece piece) {
-    ostream << toString(piece);
+    ostream << std::to_string(piece);
     return ostream;
 }
 
-std::string board::toString(PieceColor color) {
+std::string std::to_string(PieceColor color) {
     switch (color) {
     case PieceColor::BLACK: return "BLACK";
     case PieceColor::WHITE: return "WHITE";
@@ -69,7 +69,7 @@ std::string board::toString(PieceColor color) {
     }
 }
 
-std::string board::toString(PieceType type) {
+std::string std::to_string(PieceType type) {
     switch (type) {
     case PieceType::BISHOP: return "BISHOP";
     case PieceType::ROOK: return "ROOK";

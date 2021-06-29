@@ -82,7 +82,7 @@ void Game::runPly() {
         next_player_color_ = PieceColor::BLACK;
         break;
     default:
-        throw std::invalid_argument("unhandled PieceColor: " + toString(next_player_color_));
+        throw std::invalid_argument("unhandled PieceColor: " + std::to_string(next_player_color_));
     }
     // get the move the player wants to make
     Move move = player->getMove(board_);
@@ -96,7 +96,7 @@ void Game::runPly() {
             return;
         }
     }
-    throw std::invalid_argument("illegal Move: " + move.toString());
+    throw std::invalid_argument("illegal Move: " + std::to_string(move));
 }
 
 bool Game::isEnded() const {
@@ -119,6 +119,6 @@ Player& Game::getWinner() const {
     case PieceColor::WHITE:
         return white_player_;
     default:
-        throw std::invalid_argument("unhandled PieceColor: " + toString(color));
+        throw std::invalid_argument("unhandled PieceColor: " + std::to_string(color));
     }
 }
