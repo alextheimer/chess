@@ -61,7 +61,7 @@ const std::unordered_map<Square, Piece> game::INIT_PIECE_MAP = {
 
 Game::Game(Board& board, Player& white_player, Player& black_player) :
         board_(board), white_player_(white_player),
-        black_player_(black_player), next_player_(START_COLOR) {
+        black_player_(black_player), next_player_color_(START_COLOR) {
     // intentionally blank
 }
 
@@ -72,17 +72,17 @@ void Game::renderBoard(std::ostream& ostream) const {
 void Game::runPly() {
     ASSERT(!isEnded(), "game already ended");
     Player* player;
-    switch (next_player_) {
+    switch (next_player_color_) {
     case PieceColor::BLACK:
         player = &black_player_;
-        next_player_ = PieceColor::WHITE;
+        next_player_color_ = PieceColor::WHITE;
         break;
     case PieceColor::WHITE:
         player = &white_player_;
-        next_player_ = PieceColor::BLACK;
+        next_player_color_ = PieceColor::BLACK;
         break;
     default:
-        throw std::invalid_argument("unhandled PieceColor: " + toString(next_player_));
+        throw std::invalid_argument("unhandled PieceColor: " + toString(next_player_color_));
     }
     // get the move the player wants to make
     Move move = player->getMove(board_);

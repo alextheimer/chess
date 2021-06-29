@@ -44,7 +44,7 @@ class Game {
     board::Board& board_;
     Player& white_player_;
     Player& black_player_;
-    board::PieceColor next_player_;  // TODO(theimer): rename to next_player_color_
+    board::PieceColor next_player_color_;
 };
 
 }
