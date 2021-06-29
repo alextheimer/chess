@@ -55,6 +55,18 @@ class Board {
     Bitboard piece_bitboards_[static_cast<int>(PieceType::NUM_PIECE_TYPES)] = { 0 };
     Bitboard color_bitboards_[static_cast<int>(PieceColor::NUM_PIECE_COLORS)] = { 0 };
 
+    // TODO(theimer): this is super ugly; PIMPL if not too much overhead
+    bool squareIsOccupiedIndex(std::size_t index) const;
+    bool squareIsOccupiedColorIndex(std::size_t index, PieceColor color) const;
+    PieceColor getPieceColorIndex(std::size_t index) const;
+    PieceType getPieceTypeIndex(std::size_t index) const;
+    Piece getPieceIndex(std::size_t index) const;
+    void setPieceIndex(Piece piece, std::size_t index);
+    void movePieceIndex(std::size_t from_index, std::size_t to_index);
+    void removePieceIndex(std::size_t index);
+    void setPieceOverwriteIndex(Piece piece, std::size_t index);
+    void movePieceOverwriteIndex(std::size_t from_index, std::size_t to_index);
+
  public:
     // size of either dimension of the Board (i.e. WIDTH rows and WIDTH columns)
     static const std::size_t WIDTH = 8;
@@ -126,6 +138,7 @@ class Board {
     */
     Piece getPiece(Square square) const;
 
+    // TODO(theimer): worth making an overwrite variant?
     /*
     @param square: must be occupied
     */
