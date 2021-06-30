@@ -255,17 +255,27 @@ std::size_t game::getAllMoves(const Board& board, PieceColor color,
     return next_move_slot - buffer;
 }
 
-void game::makeMove(Board* board, Move move) {
+// TODO(theimer): board->index recomputation below!
+// TODO(theimer): these are super inefficient in-general
+
+std::optional<Piece> game::makeMove(Board* board, Move move) {
     ASSERT(board->squareIsOccupied(move.from),
             "unoccupied square: " + std::to_string(move.from));
     // make sure move.to is unoccupied / occupied by a different color.
     ASSERT(!board->squareIsOccupiedColor(
                 move.to, board->getPieceColor(move.from)),
            "to square occupied by same color: " + std::to_string(move));
+    // I really don't want an "empty" PieceType and PieceColor, but
+    //     those might be more efficient than optioanls...
+    std::optional<Piece> removed = board->squareIsOccupied(move.to)
+                                 ? std::make_optional(board->getPiece(move.to))
+                                 : std::optional<Piece>();
     board->movePiece(move.from, move.to);
+    return removed;
 }
 
-void game::unmakeMove(Board* board, Move move, Piece replacement) {
+void game::unmakeMove(Board* board, Move move,
+                      std::optional<Piece> replacement) {
     ASSERT(board->squareIsOccupied(move.to),
             "unoccupied square: " + std::to_string(move.to));
     ASSERT(!board->squareIsOccupied(move.from),
@@ -273,7 +283,9 @@ void game::unmakeMove(Board* board, Move move, Piece replacement) {
     ASSERT(board->getPieceColor(move.to) != replacement.color,
             "piece has same color as replacement: " + std::to_string(move.to));
     board->movePiece(move.to, move.from);
-    board->setPiece(replacement, move.to);
+    if (replacement.has_value()) {
+        board->setPiece(*replacement, move.to);
+    }
 }
 
 bool game::isValidMove(const Board& board, PieceColor color, Move move) {

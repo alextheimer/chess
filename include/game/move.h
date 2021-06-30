@@ -4,6 +4,7 @@
 #define GAME_MOVE_H_
 
 #include <string>
+#include <optional>
 
 #include "board/board.h"
 
@@ -44,16 +45,20 @@ Applies the specified move to the board.
 @param move: move.from must be occupied;
              move.to must be unoccupied or occupied by a piece with a
                  different color than the piece at move.from.
+@return: optional with overwritten piece (if applicable);
+         empty optional otherwise
 */
-void makeMove(board::Board* board, Move move);
+std::optional<board::Piece> makeMove(board::Board* board, Move move);
 
 /*
 Reverses a move, then sets a replacement Piece at the move's `to` Square.
 @param move: move.from must be unoccupied;
              move.to must be occupied.
-@param replacement: must have color different from Piece at move.to
+@param replacement: if non-empty, must have color different
+                    from Piece at move.to
 */
-void unmakeMove(board::Board* board, Move move, board::Piece replacement);
+void unmakeMove(board::Board* board, Move move,
+                std::optional<board::Piece> replacement);
 
 /*
 Returns true iff `move` is valid.
