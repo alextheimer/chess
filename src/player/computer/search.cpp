@@ -4,6 +4,7 @@
 
 #include <limits>
 #include <random>
+#include <cstdlib>
 
 #include "util/buffer.h"
 
@@ -124,20 +125,9 @@ Move player::computer::alphaBetaSearch(
     std::size_t num_moves =
             game::getAllMoves(board_copy, color, move_buffer.start());
 
-
-    Move best_move = move_buffer.get(0);
-    std::optional<Piece> overwritten_opt =
-            game::makeMove(&board_copy, best_move);
-    int64_t alpha = alphaBetaSearchMin(
-                        &board_copy, board::oppositeColor(color),
-                        depth - 1,
-                        std::numeric_limits<int64_t>::min(),  // alpha
-                        std::numeric_limits<int64_t>::max(),  // beta
-                        board_heuristic);
-    game::unmakeMove(&board_copy, best_move, overwritten_opt);
-
-    // Note: starting index 1
-    for (int i = 1; i < static_cast<int>(num_moves); ++i) {
+    std::vector<Move> best_moves;
+    int64_t alpha = std::numeric_limits<int64_t>::min();
+    for (int i = 0; i < static_cast<int>(num_moves); ++i) {
         Move move = move_buffer.get(i);
         std::optional<Piece> overwritten_opt =
                 game::makeMove(&board_copy, move);
@@ -150,11 +140,14 @@ Move player::computer::alphaBetaSearch(
         game::unmakeMove(&board_copy, move, overwritten_opt);
         if (score > alpha) {
             alpha = score;
-            best_move = move_buffer.get(i);
+            best_moves.clear();
+            best_moves.push_back(move);
+        } else if (score == alpha) {
+            best_moves.push_back(move);
         }
     }
 
-    return best_move;
+    return best_moves[RAND_MAX % best_moves.size()];
 }
 
 int64_t player::computer::basicBoardHeuristic(const Board& board,
