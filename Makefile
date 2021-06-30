@@ -9,7 +9,11 @@ TEST_DEPS = $(shell find test -type f -not -name run)
 ifeq ($(DEBUG), 1)
 	CFLAGS += -g -O0 -DDEBUG
 else
-	CFLAGS += -DNDEBUG -flto
+	CFLAGS += -O3 -DNDEBUG -flto
+endif
+
+ifeq ($(VECREP), 1)
+    CFLAGS += -fopt-info-vec-missed
 endif
 
 $(TARGET): src/main.cpp $(TARGET_DEPS)
