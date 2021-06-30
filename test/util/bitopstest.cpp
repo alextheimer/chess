@@ -41,12 +41,12 @@ TEST(BitOpsTest, GetBitTest) {
 
     std::vector<TestSpec> spec_vec = {
            // bits                                  index    expected
-            { static_cast<BitOpType>(1) << 63,      0,       true },
-            { static_cast<BitOpType>(1) << 63,      63,      false },
-            { 1,                                    63,      true },
-            { 1,                                    0,       false },
-            { 7,                                    62,      true  },
-            { 0b101101,                             59,      false }
+            { static_cast<BitOpType>(1) << 63,      63,      true },
+            { static_cast<BitOpType>(1) << 63,      0,       false },
+            { 1,                                    0,       true },
+            { 1,                                    63,      false },
+            { 7,                                    1,       true  },
+            { 0b101101,                             4,       false }
     };
 
     for (TestSpec test_spec : spec_vec) {
@@ -78,14 +78,14 @@ TEST(BitOpsTest, SetBitTest) {
     //     the bit from an expected value.
     std::vector<TestSpec> spec_vec = {
            // bits                                  index    before    set_bit
-            { static_cast<BitOpType>(1) << 63,      0,       true,     false },
-            { static_cast<BitOpType>(1) << 63,      63,      false,    true },
-            { 1,                                    63,      true,     false },
-            { 1,                                    0,       false,    true },
-            { 7,                                    62,      true,     false },
-            { 0b101101,                             59,      false,    true },
-            { 7,                                    62,      true,     true },
-            { 0b101101,                             59,      false,    false }
+            { static_cast<BitOpType>(1) << 63,      63,      true,     false },
+            { static_cast<BitOpType>(1) << 63,      0,       false,    true },
+            { 1,                                    0,       true,     false },
+            { 1,                                    63,      false,    true },
+            { 7,                                    1,       true,     false },
+            { 0b101101,                             4,       false,    true },
+            { 7,                                    1,       true,     true },
+            { 0b101101,                             4,       false,    false }
     };
 
     for (TestSpec test_spec : spec_vec) {
@@ -118,9 +118,9 @@ TEST(BitOpsTest, PopHighestBitTest) {
 
     std::vector<TestSpec> spec_vec = {
            // bits                               expected_bits   expected_index
-            { static_cast<BitOpType>(1) << 63,   0,              0 },
-            { 1,                                 0,              63 },
-            { 7,                                 3,              61 }
+            { static_cast<BitOpType>(1) << 63,   0,              63 },
+            { 1,                                 0,              0 },
+            { 7,                                 3,              2 }
     };
 
     for (TestSpec test_spec : spec_vec) {

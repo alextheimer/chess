@@ -15,18 +15,18 @@ constexpr std::size_t NUM_BITOP_BITS = 8 * sizeof(BitOpType);
 
 /*
 Modifies a bit ***in-place*** at the specified index.
-@param bit_index: 0 is most-significant
+@param bit_index: 0 is least-significant
 */
 void setBit(BitOpType* bits, std::size_t bit_index, bool bit);
 
 /*
-@param bit_index: 0 is most-significant.
+@param bit_index: 0 is least-significant.
 */
 bool getBit(BitOpType bits, std::size_t bit_index);
 
 /*
 Pops the most significant bit ***in-place*** and returns its index.
-@return: index of the popped bit, where 0 is most-significant.
+@return: index of the popped bit, where 0 is least-significant.
 */
 std::size_t popHighestBit(BitOpType* bits);
 
