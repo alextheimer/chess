@@ -15,6 +15,12 @@ using board::Square;
 
 using game::Move;
 
+/*
+################################################################################
+TODO(theimer): explain; also note how similar these are
+################################################################################
+*/
+
 // forward-declare both of these because their definitions
 //     reference each other
 int64_t alphaBetaSearchMax(Board* board, PieceColor color,
@@ -28,6 +34,11 @@ int64_t alphaBetaSearchMin(Board* board, PieceColor color,
                            int64_t (*board_heuristic)(const Board&,
                                                       PieceColor));
 
+/*
+Maximizer variant of the search.
+
+A "friendly" node in the tree.
+*/
 int64_t alphaBetaSearchMax(Board* board, PieceColor color,
                            std::size_t depth_remaining,
                            int64_t alpha, int64_t beta,
@@ -74,6 +85,11 @@ int64_t alphaBetaSearchMax(Board* board, PieceColor color,
     return score;
 }
 
+/*
+Minimizer variant of the search.
+
+An "opponent" node of the tree.
+*/
 int64_t alphaBetaSearchMin(Board* board, PieceColor color,
                            std::size_t depth_remaining,
                            int64_t alpha, int64_t beta,
@@ -112,6 +128,11 @@ int64_t alphaBetaSearchMin(Board* board, PieceColor color,
     return score;
 }
 
+/*
+Also see the documentation in the header file.
+
+This is the "root" call of the search tree (i.e. a "friendly" node).
+*/
 Move player::computer::alphaBetaSearch(
                            const Board& board, PieceColor color,
                            std::size_t depth,
@@ -152,7 +173,7 @@ Move player::computer::alphaBetaSearch(
 
 int64_t player::computer::basicBoardHeuristic(const Board& board,
                                               PieceColor color) {
-    // TODO(theimer)
+    // just the negative count of the opponent pieces
     util::Buffer<Square, Board::SIZE> dummy_buffer;
     return -board.getOccupiedSquares(board::oppositeColor(color),
                                      dummy_buffer.start());
