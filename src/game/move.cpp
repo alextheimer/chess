@@ -96,14 +96,14 @@ std::size_t getMovesVector(const Board& board, PieceColor color, Square square,
             if (new_col >= Board::WIDTH) {
                 break;
             }
-            Square pend_sq(new_row, new_col);
-            if (!board.squareIsOccupied(pend_sq)) {
+            curr_sq = Square(new_row, new_col);
+            if (!board.squareIsOccupied(curr_sq)) {
                 // square is empty!
-                *move_ptr = (Move){ square, pend_sq };
+                *move_ptr = (Move){ square, curr_sq };
                 ++move_ptr;
-            } else if (!board.squareIsOccupiedColor(pend_sq, color)) {
+            } else if (!board.squareIsOccupiedColor(curr_sq, color)) {
                 // square occupied by enemy
-                *move_ptr = (Move){ square, pend_sq };
+                *move_ptr = (Move){ square, curr_sq };
                 ++move_ptr;
                 break;
             } else {
@@ -280,7 +280,7 @@ void game::unmakeMove(Board* board, Move move,
             "unoccupied square: " + std::to_string(move.to));
     ASSERT(!board->squareIsOccupied(move.from),
             "occupied square: " + std::to_string(move.from));
-    ASSERT(board->getPieceColor(move.to) != replacement.color,
+    ASSERT(board->getPieceColor(move.to) != replacement->color,
             "piece has same color as replacement: " + std::to_string(move.to));
     board->movePiece(move.to, move.from);
     if (replacement.has_value()) {
