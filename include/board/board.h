@@ -59,6 +59,11 @@ class Board {
     Board();
 
     /*
+    Copy constructor.
+    */
+    explicit Board(const Board& other);
+
+    /*
     Constructs a Board instance from a Square->Piece mapping.
     I.e. for each pair (square, piece), `piece` is stored at `square`.
     */

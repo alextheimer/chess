@@ -326,6 +326,17 @@ Board::Board() {
     // intentionally blank
 }
 
+
+Board::Board(const Board& other) {
+    // TODO(theimer): C++ memmove?
+    for (int i = 0; i < static_cast<int>(PieceColor::NUM_PIECE_COLORS); ++i) {
+        color_bitboards_[i] = other.color_bitboards_[i];
+    }
+    for (int i = 0; i < static_cast<int>(PieceType::NUM_PIECE_TYPES); ++i) {
+        piece_bitboards_[i] = other.piece_bitboards_[i];
+    }
+}
+
 Board::Board(const std::unordered_map<Square, Piece>& piece_map) {
     // Just step thru map elements and set each piece at its square.
     // Note: all field array indices are already initialized to zero.
