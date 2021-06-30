@@ -112,41 +112,42 @@ int64_t alphaBetaSearchMin(Board* board, PieceColor color,
 }
 
 Move player::computer::alphaBetaSearch(
-                           Board* board, PieceColor color,
+                           const Board& board, PieceColor color,
                            std::size_t depth,
                            int64_t (*board_heuristic)(const Board&,
                                                       PieceColor)) {
     ASSERT(depth > 0,
             "must have positive depth; depth: " + std::to_string(depth));
 
+    Board board_copy(board);
     util::Buffer<Move, game::MAX_NUM_MOVES_PLY> move_buffer;
     std::size_t num_moves =
-            game::getAllMoves(*board, color, move_buffer.start());
+            game::getAllMoves(board_copy, color, move_buffer.start());
 
 
     Move best_move = move_buffer.get(0);
     std::optional<Piece> overwritten_opt =
-            game::makeMove(board, best_move);
+            game::makeMove(&board_copy, best_move);
     int64_t alpha = alphaBetaSearchMin(
-                        board, board::oppositeColor(color),
+                        &board_copy, board::oppositeColor(color),
                         depth - 1,
                         std::numeric_limits<int64_t>::min(),  // alpha
                         std::numeric_limits<int64_t>::max(),  // beta
                         board_heuristic);
-    game::unmakeMove(board, best_move, overwritten_opt);
+    game::unmakeMove(&board_copy, best_move, overwritten_opt);
 
     // Note: starting index 1
     for (int i = 1; i < static_cast<int>(num_moves); ++i) {
         Move move = move_buffer.get(i);
         std::optional<Piece> overwritten_opt =
-                game::makeMove(board, move);
+                game::makeMove(&board_copy, move);
         int64_t score = alphaBetaSearchMin(
-                             board, board::oppositeColor(color),
+                             &board_copy, board::oppositeColor(color),
                              depth - 1,
                              alpha,
                              std::numeric_limits<int64_t>::max(),  // beta
                              board_heuristic);
-        game::unmakeMove(board, move, overwritten_opt);
+        game::unmakeMove(&board_copy, move, overwritten_opt);
         if (score > alpha) {
             alpha = score;
             best_move = move_buffer.get(i);

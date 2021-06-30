@@ -9,7 +9,8 @@ namespace player {
 namespace computer {
 
 // TODO(theimer): document
-game::Move alphaBetaSearch(board::Board* board, board::PieceColor color,
+game::Move alphaBetaSearch(const board::Board& board,
+                           board::PieceColor color,
                            std::size_t depth,
                            int64_t (*board_heuristic)(const board::Board&,
                                                       board::PieceColor color));
