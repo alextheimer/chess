@@ -24,6 +24,8 @@ struct Piece {
 bool operator==(Piece lhs, Piece rhs);
 std::ostream& operator<<(std::ostream& ostream, Piece piece);
 
+PieceColor oppositeColor(PieceColor color);
+
 CompressedPiece compressPiece(Piece piece);
 Piece decompressPiece(CompressedPiece compressed_piece);
 
