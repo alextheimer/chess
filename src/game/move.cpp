@@ -141,14 +141,14 @@ Fills a buffer with all valid moves by a knight.
 std::size_t getMovesKnight(const Board& board, PieceColor color,
                            Square square, Move* buffer) {
     static const std::array<Diff, 8> diffs = {{
-            {  3,  1 },
-            {  3, -1 },
-            { -3,  1 },
-            { -3, -1 },
-            {  1,  3 },
-            {  1, -3 },
-            { -1,  3 },
-            { -1, -3 }
+            {  2,  1 },
+            {  2, -1 },
+            { -2,  1 },
+            { -2, -1 },
+            {  1,  2 },
+            {  1, -2 },
+            { -1,  2 },
+            { -1, -2 }
     }};
 
     return getMovesDiff(board, color, square, diffs, buffer);
@@ -270,7 +270,7 @@ std::optional<Piece> game::makeMove(Board* board, Move move) {
     std::optional<Piece> removed = board->squareIsOccupied(move.to)
                                  ? std::make_optional(board->getPiece(move.to))
                                  : std::optional<Piece>();
-    board->movePiece(move.from, move.to);
+    board->movePieceOverwrite(move.from, move.to);
     return removed;
 }
 
@@ -280,8 +280,17 @@ void game::unmakeMove(Board* board, Move move,
             "unoccupied square: " + std::to_string(move.to));
     ASSERT(!board->squareIsOccupied(move.from),
             "occupied square: " + std::to_string(move.from));
-    ASSERT(board->getPieceColor(move.to) != replacement->color,
-            "piece has same color as replacement: " + std::to_string(move.to));
+
+    // make sure no residual "if" left over in non-debug compilation
+    #ifdef DEBUG
+    if (replacement.has_value()) {
+        ASSERT(board->getPieceColor(move.to) != replacement->color,
+                "piece has same color as replacement: " + std::to_string(move.to));
+    }
+    # endif
+
+    // note: not "overwrite" because unmaking a move should move
+    //       a piece into an empty square
     board->movePiece(move.to, move.from);
     if (replacement.has_value()) {
         board->setPiece(*replacement, move.to);
