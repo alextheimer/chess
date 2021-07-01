@@ -168,7 +168,7 @@ Move player::computer::alphaBetaSearch(
         }
     }
 
-    return best_moves[RAND_MAX % best_moves.size()];
+    return best_moves[rand() % best_moves.size()];
 }
 
 int64_t player::computer::basicBoardHeuristic(const Board& board,
