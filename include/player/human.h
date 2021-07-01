@@ -12,11 +12,7 @@ namespace player {
 class Human : public game::Player {
  public:
     Human(std::string name);
-    std::string getName() const;
     game::Move getMove(const board::Board& board, board::PieceColor color);
-
- private:
-    std::string name_;
 };
 
 }  // namespace player

@@ -38,12 +38,8 @@ Move promptPlayerForMove() {
     }
 }
 
-player::Human::Human(std::string name) : name_(name) {
+player::Human::Human(std::string name) : Player(name) {
     // intentionally blank
-}
-
-std::string player::Human::getName() const {
-    return name_;
 }
 
 Move player::Human::getMove(const Board& board, board::PieceColor color) {

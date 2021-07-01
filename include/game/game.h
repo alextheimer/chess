@@ -28,7 +28,12 @@ extern const std::unordered_map<board::Square, board::Piece> INIT_PIECE_MAP;
 
 class Player {
  public:
+    Player(std::string name);
+    std::string getName();
     virtual Move getMove(const board::Board& board, board::PieceColor) = 0;
+ private:
+    std::string name_;
+
 };
 
 // Manages a game of chess between two Players.

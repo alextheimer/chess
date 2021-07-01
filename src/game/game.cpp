@@ -76,6 +76,14 @@ game::Move game::InvalidMoveEx::getMove() const {
     return move_;
 }
 
+game::Player::Player(std::string name) : name_(name) {
+    // intentionally blank
+}
+
+std::string game::Player::getName() {
+    return name_;
+}
+
 Game::Game(Board* board, Player* white_player, Player* black_player) :
         board_(board), white_player_(white_player),
         black_player_(black_player), next_player_color_(START_COLOR) {
