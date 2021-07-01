@@ -21,18 +21,77 @@ TODO(theimer): explain; also note how similar these are
 ################################################################################
 */
 
+typedef int64_t (*BoardHeuristicFunc)(const Board& board, PieceColor color);
+
+typedef int64_t (*AlphaBetaVariantFunc)(
+                           Board* board, PieceColor color,
+                           std::size_t depth_remaining,
+                           int64_t alpha, int64_t beta,
+                           BoardHeuristicFunc board_heuristic);
+
+typedef int64_t (*ScoreUpdateFunc)(int64_t score, int64_t child_score);
+
+typedef bool (*ExitCondFunc)(int64_t alpha, int64_t beta, int64_t score);
+
+typedef void (*BoundUpdateFunc)(int64_t* alpha, int64_t* beta, int64_t score);
+
 // forward-declare both of these because their definitions
 //     reference each other
 int64_t alphaBetaSearchMax(Board* board, PieceColor color,
                            std::size_t depth_remaining,
                            int64_t alpha, int64_t beta,
-                           int64_t (*board_heuristic)(const Board&,
-                                                      PieceColor));
+                           BoardHeuristicFunc board_heuristic);
 int64_t alphaBetaSearchMin(Board* board, PieceColor color,
                            std::size_t depth_remaining,
                            int64_t alpha, int64_t beta,
-                           int64_t (*board_heuristic)(const Board&,
-                                                      PieceColor));
+                           BoardHeuristicFunc board_heuristic);
+
+/* TODO(theimer) */
+int64_t alphaBetaSearchBase(Board* board, PieceColor color,
+                            std::size_t depth_remaining,
+                            int64_t alpha, int64_t beta,
+                            BoardHeuristicFunc board_heuristic,
+                            PieceColor heuristic_eval_color,
+                            int64_t score_init,
+                            AlphaBetaVariantFunc child_eval_variant,
+                            ScoreUpdateFunc score_update,
+                            ExitCondFunc exit_cond,
+                            BoundUpdateFunc bound_update) {
+    if (depth_remaining == 0) {
+        return board_heuristic(*board, heuristic_eval_color);
+    }
+
+    util::Buffer<Move, game::MAX_NUM_MOVES_PLY> move_buffer;
+    std::size_t num_moves =
+            game::getAllMoves(*board, color, move_buffer.start());
+
+    // note that this might happen if TODO
+    if (num_moves == 0) {
+        return board_heuristic(*board, heuristic_eval_color);
+    }
+
+    int64_t score = score_init;
+    for (int i = 0; i < static_cast<int>(num_moves); ++i) {
+        Move move = move_buffer.get(i);
+
+        std::optional<Piece> overwritten_opt =
+                game::makeMove(board, move);
+
+        int64_t child_score =
+                child_eval_variant(board, board::oppositeColor(color),
+                    depth_remaining - 1, alpha, beta, board_heuristic);
+        score = score_update(score, child_score);
+
+        game::unmakeMove(board, move, overwritten_opt);
+
+        if (exit_cond(alpha, beta, score)) {
+            break;
+        }
+
+        bound_update(&alpha, &beta, score);
+    }
+    return score;
+}
 
 /*
 Maximizer variant of the search.
@@ -42,47 +101,39 @@ A "friendly" node in the tree.
 int64_t alphaBetaSearchMax(Board* board, PieceColor color,
                            std::size_t depth_remaining,
                            int64_t alpha, int64_t beta,
-                           int64_t (*board_heuristic)(const Board&,
-                                                      PieceColor)) {
-    if (depth_remaining == 0) {
-        return board_heuristic(*board, color);
-    }
+                           BoardHeuristicFunc board_heuristic) {
 
-    util::Buffer<Move, game::MAX_NUM_MOVES_PLY> move_buffer;
-    std::size_t num_moves =
-            game::getAllMoves(*board, color, move_buffer.start());
+    int64_t score_init = std::numeric_limits<int64_t>::min();
 
-    if (num_moves == 0) {
-        return board_heuristic(*board, color);
-    }
+    AlphaBetaVariantFunc child_eval_variant = alphaBetaSearchMin;
 
-    int64_t score = std::numeric_limits<int64_t>::min();
-    for (int i = 0; i < static_cast<int>(num_moves); ++i) {
-        Move move = move_buffer.get(i);
+    ScoreUpdateFunc score_update = [](int64_t score, int64_t child_score){
+        return std::max(score, child_score);
+    };
 
-        std::optional<Piece> overwritten_opt =
-                game::makeMove(board, move);
+    ExitCondFunc exit_cond =  [](int64_t alpha, int64_t beta, int64_t score) {
+        return score >= beta;
+    };
 
-        score = std::max(score,
-                         alphaBetaSearchMin(board, board::oppositeColor(color),
-                            depth_remaining - 1, alpha, beta, board_heuristic));
+    BoundUpdateFunc bound_update =
+            [](int64_t* alpha, int64_t* beta, int64_t score) {
+        *alpha = std::max(*alpha, score);
+    };
 
-        game::unmakeMove(board, move, overwritten_opt);
+    PieceColor heuristic_eval_color = color;
 
-        /*
-        TODO(theimer): reword
-        If the current score is at least beta (i.e. the minimum at a parent
-        minimizing node), then additional children can be ignored. The
-        current node cannot improve the alpha because parent minimizers
-        would never select this node as a minimum.
-        */
-        if (score >= beta) {
-            break;
-        }
+    /*
+    TODO(theimer): reword
+    If the current score is at least beta (i.e. the minimum at a parent
+    minimizing node), then additional children can be ignored. The
+    current node cannot improve the alpha because parent minimizers
+    would never select this node as a minimum.
+    */
 
-        alpha = std::max(alpha, score);
-    }
-    return score;
+    return alphaBetaSearchBase(board, color, depth_remaining, alpha, beta,
+                               board_heuristic, heuristic_eval_color,
+                               score_init, child_eval_variant, score_update,
+                               exit_cond, bound_update);
 }
 
 /*
@@ -93,39 +144,36 @@ An "opponent" node of the tree.
 int64_t alphaBetaSearchMin(Board* board, PieceColor color,
                            std::size_t depth_remaining,
                            int64_t alpha, int64_t beta,
-                           int64_t (*board_heuristic)(const Board&,
-                                                      PieceColor)) {
-    if (depth_remaining == 0) {
-        return board_heuristic(*board, board::oppositeColor(color));
-    }
+                           BoardHeuristicFunc board_heuristic) {
 
-    util::Buffer<Move, game::MAX_NUM_MOVES_PLY> move_buffer;
-    std::size_t num_moves =
-            game::getAllMoves(*board, color, move_buffer.start());
 
-    if (num_moves == 0) {
-        return board_heuristic(*board, board::oppositeColor(color));
-    }
+    int64_t score_init = std::numeric_limits<int64_t>::max();
 
-    int64_t score = std::numeric_limits<int64_t>::max();
-    for (int i = 0; i < static_cast<int>(num_moves); ++i) {
-        Move move = move_buffer.get(i);
-        std::optional<Piece> overwritten_opt =
-                game::makeMove(board, move);
-        score = std::min(score,
-                         alphaBetaSearchMax(board, board::oppositeColor(color),
-                            depth_remaining - 1, alpha, beta, board_heuristic));
-        game::unmakeMove(board, move, overwritten_opt);
-        /*
-        TODO(theimer): describe
-        */
-        if (score <= alpha) {
-            break;
-        }
+    AlphaBetaVariantFunc child_eval_variant = alphaBetaSearchMax;
 
-        beta = std::min(beta, score);
-    }
-    return score;
+    ScoreUpdateFunc score_update = [](int64_t score, int64_t child_score){
+        return std::min(score, child_score);
+    };
+
+    ExitCondFunc exit_cond =  [](int64_t alpha, int64_t beta, int64_t score) {
+        return score <= alpha;
+    };
+
+    BoundUpdateFunc bound_update =
+            [](int64_t* alpha, int64_t* beta, int64_t score) {
+        *beta = std::min(*beta, score);
+    };
+
+    PieceColor heuristic_eval_color = board::oppositeColor(color);
+
+    /*
+    TODO(theimer)
+    */
+
+    return alphaBetaSearchBase(board, color, depth_remaining, alpha, beta,
+                               board_heuristic, heuristic_eval_color,
+                               score_init, child_eval_variant, score_update,
+                               exit_cond, bound_update);
 }
 
 /*
