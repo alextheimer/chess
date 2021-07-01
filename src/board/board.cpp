@@ -283,7 +283,7 @@ std::size_t bitboardToSquares(Bitboard board, Square* buffer) {
     // i.e. "while 1's exist on the board"
     // TODO(theimer): might vectorize with popcount-based for loop
     while (board > 0) {
-        std::size_t index = util::popHighestBit(&board);
+        std::size_t index = util::popLowestBit(&board);
         *ptr = bitboardIndexToSquare(index);
         ++ptr;
     }

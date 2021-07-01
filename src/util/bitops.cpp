@@ -26,11 +26,13 @@ bool util::getBit(BitOpType bits, std::size_t bit_index) {
     return static_cast<bool>(bitVal);
 }
 
-size_t util::popHighestBit(BitOpType* bits) {
+size_t util::popLowestBit(BitOpType* bits) {
     ASSERT(*bits > 0, "cannot pop bits from 0");
-    std::size_t num_lead_zeros =
-            __builtin_clzl(static_cast<std::size_t>(*bits));
-    std::size_t bit_index = util::NUM_BITOP_BITS - 1 - num_lead_zeros;
-    setBit(bits, bit_index, 0);
+    // mask of all 1's except least-significant bit
+    static constexpr BitOpType MASK = ~static_cast<std::size_t>(1);
+    std::size_t bit_index =
+            __builtin_ctzl(static_cast<std::size_t>(*bits));
+    // "extend the zeros" to include the index of the next 1 bit
+    *bits &= (MASK << bit_index);
     return bit_index;
 }

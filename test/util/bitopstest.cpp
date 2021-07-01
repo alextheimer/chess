@@ -21,7 +21,7 @@ setBit
     original: 0, 1
     set_bit: 0, 1
     original/set_big: same, different
-popHighestBit
+popLowestBit
     result: first, last, elsewhere
     bits (after pop): 0, other
 */
@@ -105,11 +105,11 @@ TEST(BitOpsTest, SetBitTest) {
 
 /*
 Covers:
-    popHighestBit
+    popLowestBit
         result: first, last, elsewhere
         bits (after pop): 0, other
 */
-TEST(BitOpsTest, PopHighestBitTest) {
+TEST(BitOpsTest, PopLowestBitTest) {
     struct TestSpec {
         BitOpType bits;
         BitOpType expected_bits;
@@ -120,12 +120,12 @@ TEST(BitOpsTest, PopHighestBitTest) {
            // bits                               expected_bits   expected_index
             { static_cast<BitOpType>(1) << 63,   0,              63 },
             { 1,                                 0,              0 },
-            { 7,                                 3,              2 }
+            { 6,                                 4,              1 }
     };
 
     for (TestSpec test_spec : spec_vec) {
         BitOpType bits = test_spec.bits;
-        ASSERT_EQ(test_spec.expected_index, util::popHighestBit(&bits))
+        ASSERT_EQ(test_spec.expected_index, util::popLowestBit(&bits))
             << "bits before: " << test_spec.bits << ", after: " << bits;
         ASSERT_EQ(test_spec.expected_bits, bits);
     }
