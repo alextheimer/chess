@@ -47,15 +47,14 @@ TODO(theimer): test overwrite variants of move/setPiece
 */
 
 /*
-Returns a (heap-allocated) vector of all valid, unique Board Squares.
+Returns a vector of all valid, unique Board Squares.
 (Used to instantiate ALL_SQUARES below.)
 */
-std::unique_ptr<std::vector<Square>> getAllSquares() {
-    auto squares =
-            std::unique_ptr<std::vector<Square>>(new std::vector<Square>);
+std::vector<Square> getAllSquares() {
+    std::vector<Square> squares;
     for (std::size_t irow = 0; irow < Board::WIDTH; ++irow) {
         for (std::size_t icol = 0; icol < Board::WIDTH; ++icol) {
-            squares->push_back(Square(irow, icol));
+            squares.push_back(Square(irow, icol));
         }
     }
     return squares;
@@ -63,7 +62,7 @@ std::unique_ptr<std::vector<Square>> getAllSquares() {
 
 // TODO(theimer): move this to Board?
 // vector of all valid, unique Board Squares.
-static const std::unique_ptr<std::vector<Square>> ALL_SQUARES = getAllSquares();
+static const std::vector<Square> ALL_SQUARES = getAllSquares();
 
 /*
 Instantiates Boards each with a set of Pieces, then confirms that
@@ -98,7 +97,7 @@ TEST(BoardTest, SquareIsOccupiedTest) {
     //     the expected result for every square
     for (auto& piece_map : piece_maps) {
         Board board(piece_map);
-        for (Square& square : *ALL_SQUARES) {
+        for (Square& square : ALL_SQUARES) {
             ASSERT_EQ(
                 (piece_map.find(square) != piece_map.end()),
                 board.squareIsOccupied(square));
@@ -149,7 +148,7 @@ TEST(BoardTest, GetSetTest) {
         }
         // step through all squares and confirm their state
         //     matches what we expect
-        for (Square& square : *ALL_SQUARES) {
+        for (Square& square : ALL_SQUARES) {
             auto piece_iter = piece_map.find(square);
             if (piece_iter != piece_map.end()) {
                 // square is occupied!
@@ -235,7 +234,7 @@ TEST(BoardTest, MoveTest) {
             board.movePiece(move.from, move.to);
 
             // make sure tracker and board agree
-            for (Square& square : *ALL_SQUARES) {
+            for (Square& square : ALL_SQUARES) {
                 auto piece_iter = piece_tracker.find(square);
                 if (piece_iter != piece_tracker.end()) {
                     // square is occupied!
