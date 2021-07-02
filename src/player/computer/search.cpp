@@ -177,7 +177,7 @@ int64_t alphaBetaSearchBase(Board* board, PieceColor color,
                             ScoreUpdateFunc score_update,
                             ExitCondFunc exit_cond,
                             BoundUpdateFunc bound_update) {
-    ASSERT(depth >= 0,
+    ASSERT(depth_remaining >= 0,
             "must have non-negative depth_remaining; depth_remaining: "
             + std::to_string(depth_remaining));
 
