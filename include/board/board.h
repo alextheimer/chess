@@ -160,10 +160,12 @@ class Board {
     
     One Bitboard is stored for each PieceColor and PieceType.
     */
-    Bitboard piece_bitboards_[static_cast<int>(PieceType::NUM_PIECE_TYPES)]
-                              = { 0 };
-    Bitboard color_bitboards_[static_cast<int>(PieceColor::NUM_PIECE_COLORS)]
-                              = { 0 };
+    Bitboard piece_bitboards_[
+                 static_cast<std::size_t>(PieceType::NUM_PIECE_TYPES)
+             ] = { 0 };
+    Bitboard color_bitboards_[
+                 static_cast<std::size_t>(PieceColor::NUM_PIECE_COLORS)
+             ] = { 0 };
 
     // TODO(theimer): this is super ugly; PIMPL if not too much overhead
     bool squareIsOccupiedIndex(std::size_t index) const;

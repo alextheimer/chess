@@ -53,8 +53,8 @@ Returns a (heap-allocated) vector of all valid, unique Board Squares.
 std::unique_ptr<std::vector<Square>> getAllSquares() {
     auto squares =
             std::unique_ptr<std::vector<Square>>(new std::vector<Square>);
-    for (int irow = 0; irow < static_cast<int>(Board::WIDTH); ++irow) {
-        for (int icol = 0; icol < static_cast<int>(Board::WIDTH); ++icol) {
+    for (std::size_t irow = 0; irow < Board::WIDTH; ++irow) {
+        for (std::size_t icol = 0; icol < Board::WIDTH; ++icol) {
             squares->push_back(Square(irow, icol));
         }
     }
@@ -282,9 +282,9 @@ TEST(BoardTest, GetOccupiedSquaresTest) {
     for (std::unordered_map<Square, Piece> piece_map : piece_maps) {
         Board board(piece_map);
         util::Buffer<Square, Board::SIZE> occupied_buffer;
-        for (int icolor = 0;
-                 icolor < static_cast<int>(PieceColor::NUM_PIECE_COLORS);
-                 ++icolor) {
+        for (std::size_t icolor = 0;
+                icolor < static_cast<std::size_t>(PieceColor::NUM_PIECE_COLORS);
+                ++icolor) {
             // Store all pieces of the same color.
             //     These are removed as we encounter them.
             std::unordered_set<Square> square_set;
@@ -296,8 +296,8 @@ TEST(BoardTest, GetOccupiedSquaresTest) {
             PieceColor color = static_cast<PieceColor>(icolor);
             size_t num_squares =
                     board.getOccupiedSquares(color, occupied_buffer.start());
-            for (int isquare = 0;
-                     isquare < static_cast<int>(num_squares);
+            for (std::size_t isquare = 0;
+                     isquare < num_squares;
                      ++isquare) {
                 Square square = occupied_buffer.get(isquare);
                 // make sure this square still exists in the set

@@ -248,7 +248,7 @@ std::size_t game::getAllMoves(const Board& board, PieceColor color,
     std::size_t num_occupied =
             board.getOccupiedSquares(color, occupied_buffer.start());
     Move* next_move_slot = buffer;
-    for (int i = 0; i < static_cast<int>(num_occupied); ++i) {
+    for (std::size_t i = 0; i < num_occupied; ++i) {
         next_move_slot += getPieceMoves(
                 board, color, occupied_buffer.get(i), next_move_slot);
     }
@@ -300,8 +300,8 @@ void game::unmakeMove(Board* board, Move move,
 bool game::isValidMove(const Board& board, PieceColor color, Move move) {
     util::Buffer<Move, MAX_NUM_MOVES_PLY> move_buffer;
     std::size_t num_moves = getAllMoves(board, color, move_buffer.start());
-    for (int i = 0; i < static_cast<int>(num_moves); ++i) {
-        if (move == move_buffer.get(static_cast<std::size_t>(i))) {
+    for (std::size_t i = 0; i < num_moves; ++i) {
+        if (move == move_buffer.get(i)) {
             return true;
         }
     }

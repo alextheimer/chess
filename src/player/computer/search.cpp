@@ -197,7 +197,7 @@ int64_t alphaBetaSearchBase(Board* board, PieceColor color,
 
     // start evaluating children...
     int64_t score = score_init;
-    for (int i = 0; i < static_cast<int>(num_moves); ++i) {
+    for (std::size_t i = 0; i < num_moves; ++i) {
         // Temporarily make a Move and store any "killed" opponent piece.
         Move move = move_buffer.get(i);
         std::optional<Piece> overwritten_piece_opt =
@@ -344,7 +344,7 @@ Move player::computer::alphaBetaSearch(
     //     but all highest-scoring moves are stored in a vector.
     std::vector<Move> best_moves;
     int64_t alpha = std::numeric_limits<int64_t>::min();
-    for (int i = 0; i < static_cast<int>(num_moves); ++i) {
+    for (std::size_t i = 0; i < num_moves; ++i) {
         Move move = move_buffer.get(i);
         std::optional<Piece> overwritten_opt =
                 game::makeMove(&board_copy, move);

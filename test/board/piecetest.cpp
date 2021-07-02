@@ -28,11 +28,11 @@ Covers:
         color:{ all piece colors }
 */
 TEST(PieceTest, CompressDecompressTest) {
-    for (int icolor = 0;
-             icolor < static_cast<int>(PieceColor::NUM_PIECE_COLORS);
+    for (std::size_t icolor = 0;
+             icolor < static_cast<std::size_t>(PieceColor::NUM_PIECE_COLORS);
              ++icolor) {
-        for (int itype = 0;
-                 itype < static_cast<int>(PieceType::NUM_PIECE_TYPES);
+        for (std::size_t itype = 0;
+                 itype < static_cast<std::size_t>(PieceType::NUM_PIECE_TYPES);
                  ++itype) {
             Piece piece = { static_cast<PieceType>(itype),
                             static_cast<PieceColor>(icolor) };

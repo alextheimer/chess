@@ -126,7 +126,7 @@ bool Game::isEnded() const {
     util::Buffer<Square, 2> buffer;
     std::size_t size = board_->getOccupiedSquares(
             PieceType::KING, buffer.start());
-    return size < static_cast<int>(PieceColor::NUM_PIECE_COLORS);
+    return size < static_cast<std::size_t>(PieceColor::NUM_PIECE_COLORS);
 }
 
 Player& Game::getWinner() const {

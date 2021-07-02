@@ -91,9 +91,9 @@ bool Square::isValidDims(std::size_t row, std::size_t col) {
 std::string Board::toString() const {
     std::stringstream ss;
     ss << "  0 1 2 3 4 5 6 7\n";
-    for (int irow = 0; irow < static_cast<int>(Board::WIDTH); ++irow) {
+    for (std::size_t irow = 0; irow < Board::WIDTH; ++irow) {
         ss << std::to_string(irow) << ' ';
-        for (int icol = 0; icol < static_cast<int>(Board::WIDTH); ++icol) {
+        for (std::size_t icol = 0; icol < Board::WIDTH; ++icol) {
             Square square(irow, icol);
             if (squareIsOccupied(square)) {
                 Piece piece = getPiece(square);
@@ -118,8 +118,8 @@ bool Board::squareIsOccupiedIndex(std::size_t index) const {
     // get the bit at the union of the two color bitboards
     // TODO(theimer): keep a separate "all-piece" bitboard?
     Bitboard occupancy_board =
-            (this->color_bitboards_[static_cast<int>(PieceColor::WHITE)] |
-             this->color_bitboards_[static_cast<int>(PieceColor::BLACK)]);
+          (this->color_bitboards_[static_cast<std::size_t>(PieceColor::WHITE)] |
+           this->color_bitboards_[static_cast<std::size_t>(PieceColor::BLACK)]);
     return static_cast<bool>(util::getBit(occupancy_board, index));
 }
 
@@ -137,7 +137,9 @@ PieceColor Board::getPieceColorIndex(std::size_t index) const {
     ASSERT(squareIsOccupiedIndex(index),
             "unoccupied index: " + makeIndexSquareString(index));
     // step thru all PieceColor bitboards and check for occupancy at `square`
-    for (int i = 0; i < static_cast<int>(PieceColor::NUM_PIECE_COLORS); ++i) {
+    for (std::size_t i = 0;
+           i < static_cast<std::size_t>(PieceColor::NUM_PIECE_COLORS);
+           ++i) {
         Bitboard board = color_bitboards_[i];
         if (util::getBit(board, index)) {
             return static_cast<PieceColor>(i);
@@ -153,7 +155,9 @@ PieceType Board::getPieceTypeIndex(std::size_t index) const {
     ASSERT(squareIsOccupiedIndex(index),
             "unoccupied index: " + makeIndexSquareString(index));
     // step thru all PieceType bitboards and check for occupancy at the index
-    for (int i = 0; i < static_cast<int>(PieceType::NUM_PIECE_TYPES); ++i) {
+    for (std::size_t i = 0;
+            i < static_cast<std::size_t>(PieceType::NUM_PIECE_TYPES);
+            ++i) {
         Bitboard board = piece_bitboards_[i];
         if (util::getBit(board, index)) {
             return static_cast<PieceType>(i);
@@ -175,9 +179,9 @@ void Board::setPieceIndex(Piece piece, std::size_t index) {
             "invalid index: " + std::to_string(index));
     ASSERT(!squareIsOccupiedIndex(index),
             "index occupied: " + makeIndexSquareString(index));
-    util::setBit(&this->piece_bitboards_[static_cast<int>(piece.type)],
+    util::setBit(&this->piece_bitboards_[static_cast<std::size_t>(piece.type)],
                  index, true);
-    util::setBit(&this->color_bitboards_[static_cast<int>(piece.color)],
+    util::setBit(&this->color_bitboards_[static_cast<std::size_t>(piece.color)],
                  index, true);
     ASSERT(squareIsOccupiedIndex(index),
             "index unoccupied after set: " + makeIndexSquareString(index));
@@ -214,10 +218,14 @@ void Board::removePieceIndex(std::size_t index) {
     ASSERT(isValidBitboardIndex(index),
             "invalid index: " + std::to_string(index));
     // set the color and piece bits to zero
-    for (int i = 0; i < static_cast<int>(PieceColor::NUM_PIECE_COLORS); ++i) {
+    for (std::size_t i = 0;
+            i < static_cast<std::size_t>(PieceColor::NUM_PIECE_COLORS);
+            ++i) {
         util::setBit(&color_bitboards_[i], index, false);
     }
-    for (int i = 0; i < static_cast<int>(PieceType::NUM_PIECE_TYPES); ++i) {
+    for (std::size_t i = 0;
+            i < static_cast<std::size_t>(PieceType::NUM_PIECE_TYPES);
+            ++i) {
         util::setBit(&piece_bitboards_[i], index, false);
     }
     ASSERT(!squareIsOccupiedIndex(index),
@@ -231,9 +239,9 @@ void Board::setPieceOverwriteIndex(Piece piece, std::size_t index) {
     if (squareIsOccupiedIndex(index)) {
         removePieceIndex(index);
     }
-    util::setBit(&this->piece_bitboards_[static_cast<int>(piece.type)],
+    util::setBit(&this->piece_bitboards_[static_cast<std::size_t>(piece.type)],
                  index, true);
-    util::setBit(&this->color_bitboards_[static_cast<int>(piece.color)],
+    util::setBit(&this->color_bitboards_[static_cast<std::size_t>(piece.color)],
                  index, true);
 
     // ifdef w/ named variable prevents different
@@ -329,10 +337,14 @@ Board::Board() {
 
 Board::Board(const Board& other) {
     // TODO(theimer): C++ memmove?
-    for (int i = 0; i < static_cast<int>(PieceColor::NUM_PIECE_COLORS); ++i) {
+    for (std::size_t i = 0;
+            i < static_cast<std::size_t>(PieceColor::NUM_PIECE_COLORS);
+            ++i) {
         color_bitboards_[i] = other.color_bitboards_[i];
     }
-    for (int i = 0; i < static_cast<int>(PieceType::NUM_PIECE_TYPES); ++i) {
+    for (std::size_t i = 0;
+            i < static_cast<std::size_t>(PieceType::NUM_PIECE_TYPES);
+            ++i) {
         piece_bitboards_[i] = other.piece_bitboards_[i];
     }
 }
@@ -394,7 +406,9 @@ std::size_t Board::getOccupiedSquares(PieceType type, Square* buffer) const {
 std::size_t Board::getOccupiedSquares(Square* buffer) const {
     // get the union of all color bitboards, then convert to squares.
     Bitboard board = 0;
-    for (int i = 0; i < static_cast<int>(PieceColor::NUM_PIECE_COLORS); ++i) {
+    for (std::size_t i = 0;
+            i < static_cast<std::size_t>(PieceColor::NUM_PIECE_COLORS);
+            ++i) {
         board |= color_bitboards_[i];
     }
     return bitboardToSquares(board, buffer);

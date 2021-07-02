@@ -81,7 +81,7 @@ std::string std::to_string(PieceColor color) {
     case PieceColor::BLACK: return "BLACK";
     case PieceColor::WHITE: return "WHITE";
     default: throw std::invalid_argument(
-            "unhandled PieceColor value: " + static_cast<int>(color));
+            "unhandled PieceColor value: " + static_cast<std::size_t>(color));
     }
 }
 
@@ -94,6 +94,6 @@ std::string std::to_string(PieceType type) {
     case PieceType::QUEEN: return "QUEEN";
     case PieceType::KING: return "KING";
     default: throw std::invalid_argument(
-            "unhandled PieceType value: " + static_cast<int>(type));
+            "unhandled PieceType value: " + static_cast<std::size_t>(type));
     }
 }
