@@ -8,40 +8,13 @@
 #include <unordered_map>
 #include <string>
 
+#include "board/square.h"
 #include "board/piece.h"
 
 namespace board {
 
-// datatype used for Board row/col indices
-typedef uint8_t DimIndex;
-
 // Stores a single bit of data for each of the 64 spaces on a Board.
 typedef uint64_t Bitboard;
-
-// TODO(theimer): make Square/Piece/Move immutable
-
-struct Square {
-    // this is really just a POD type, but I want to enforce
-    //     constructor initialization to support row/col assertions.
-
-    DimIndex row;
-    DimIndex col;
-
-    /*
-    row and col must each lie on [0, Board::WIDTH).
-    */
-    Square(DimIndex row, DimIndex col);
-
-    /*
-    Returns true iff (row, col) describes a valid Square.
-    */
-    static bool isValidDims(std::size_t row, std::size_t col);
-};
-
-// Note: need non-member to support Square map keys
-bool operator==(Square lhs, Square rhs);
-
-std::ostream& operator<<(std::ostream& out, Square move);
 
 /*
 Maintains an 8x8 chess board.
@@ -49,7 +22,7 @@ Maintains an 8x8 chess board.
 class Board {
  public:
     // size of either dimension of the Board (i.e. WIDTH rows and WIDTH columns)
-    static const std::size_t WIDTH = 8;
+    static const std::size_t WIDTH = Square::MAX_DIM_VALUE;
     // total number of spaces on the Board.
     static const std::size_t SIZE = WIDTH * WIDTH;
 
@@ -184,15 +157,10 @@ class Board {
 
 namespace std {
 
-// these support use of these types as map keys
-template <> struct hash<board::Square> {
-    std::size_t operator()(const board::Square x) const;
-};
+// TODO(theimer): move to piece.h
 template <> struct hash<board::Piece> {
     std::size_t operator()(const board::Piece x) const;
 };
-
-std::string to_string(board::Square square);
 
 }  // namespace std
 

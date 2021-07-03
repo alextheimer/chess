@@ -84,10 +84,6 @@ std::string makeIndexSquareString(std::size_t index) {
     return ss.str();
 }
 
-bool Square::isValidDims(std::size_t row, std::size_t col) {
-    return (row < Board::WIDTH) && (col < Board::WIDTH);
-}
-
 std::string Board::toString() const {
     std::stringstream ss;
     ss << "  0 1 2 3 4 5 6 7\n";
@@ -298,31 +294,6 @@ std::size_t bitboardToSquares(Bitboard board, Square* buffer) {
     return ptr - buffer;
 }
 
-Square::Square(DimIndex row, DimIndex col) : row(row), col(col) {
-    ASSERT(row >= 0 && row < Board::WIDTH, "row: " + std::to_string(row));
-    ASSERT(col >= 0 && col < Board::WIDTH, "col: " + std::to_string(col));
-}
-
-bool board::operator==(Square lhs, Square rhs) {
-    return (lhs.row == rhs.row) && (lhs.col == rhs.col);
-}
-
-std::ostream& board::operator<<(std::ostream& out, Square square) {
-    out << std::to_string(square);
-    return out;
-}
-
-size_t std::hash<Square>::operator()(Square square) const {
-    return squareToBitboardIndex(square);
-}
-
-std::string std::to_string(Square square) {
-    std::stringstream sstr;
-    sstr << "Square(row: " << std::to_string(square.row)
-         << ", col: " << std::to_string(square.col) << ")";
-    return sstr.str();
-}
-
 size_t std::hash<Piece>::operator()(const board::Piece piece) const {
     // TODO(theimer): use board::compressPiece?
     static constexpr std::size_t TYPE_SHIFT = 10;  // Arbitrary choice
@@ -333,7 +304,6 @@ size_t std::hash<Piece>::operator()(const board::Piece piece) const {
 Board::Board() {
     // intentionally blank
 }
-
 
 Board::Board(const Board& other) {
     // TODO(theimer): C++ memmove?
