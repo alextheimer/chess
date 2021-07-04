@@ -97,7 +97,7 @@ TEST(BoardTest, SquareIsOccupiedTest) {
     //     the expected result for every square
     for (auto& piece_map : piece_maps) {
         Board board(piece_map);
-        for (Square& square : ALL_SQUARES) {
+        for (Square square : ALL_SQUARES) {
             ASSERT_EQ(
                 (piece_map.find(square) != piece_map.end()),
                 board.squareIsOccupied(square));
@@ -148,7 +148,7 @@ TEST(BoardTest, GetSetTest) {
         }
         // step through all squares and confirm their state
         //     matches what we expect
-        for (Square& square : ALL_SQUARES) {
+        for (Square square : ALL_SQUARES) {
             auto piece_iter = piece_map.find(square);
             if (piece_iter != piece_map.end()) {
                 // square is occupied!
@@ -234,7 +234,7 @@ TEST(BoardTest, MoveTest) {
             board.movePiece(move.from, move.to);
 
             // make sure tracker and board agree
-            for (Square& square : ALL_SQUARES) {
+            for (Square square : ALL_SQUARES) {
                 auto piece_iter = piece_tracker.find(square);
                 if (piece_iter != piece_tracker.end()) {
                     // square is occupied!
