@@ -10,7 +10,6 @@ using board::Piece;
 using board::PieceColor;
 using board::PieceType;
 using board::Square;
-using board::Board;
 
 /*
 ################################################################################
@@ -38,10 +37,6 @@ Square/PieceColor/PieceType combination.
 */
 static std::vector<ZobHash> makeZobVec();
 
-// TODO(theimer): reconcile this with the same info in board.cpp?
-// TODO(theimer): make constexpr
-static const std::size_t NUM_SQUARE_DIM_BITS = util::log2Ceil(Board::WIDTH);
-
 // these only de-clutter the below code
 static constexpr std::size_t NUM_TYPES =
             static_cast<std::size_t>(PieceType::NUM_PIECE_TYPES);
@@ -51,15 +46,6 @@ static constexpr std::size_t NUM_COLORS =
 // TODO(theimer): just hard-code this.
 // Contains a random 64-bit value for every Square/PieceColor/PieceType combo.
 static const std::vector<ZobHash> ZOB_ARRAY = makeZobVec();
-
-/*
-Converts a Square to an index on [0, Board::SIZE).
-The Square->Index mapping given by this function is bijective.
-*/
-static std::size_t squareToIndex(Square square) {
-    return (static_cast<std::size_t>(square.row) << NUM_SQUARE_DIM_BITS)
-           | (static_cast<std::size_t>(square.col));
-}
 
 /*
 Returns an index into ZOB_ARRAY that's unique to a specific
@@ -78,8 +64,8 @@ static std::size_t getZobIndex(std::size_t square_index, Piece piece) {
 
 static std::vector<ZobHash> makeZobVec() {
     // just assigns a random 64-bit value to every index
-    std::vector<ZobHash> zob_vec(Board::SIZE * NUM_TYPES * NUM_COLORS);
-    for (std::size_t isquare = 0; isquare < Board::SIZE; ++isquare) {
+    std::vector<ZobHash> zob_vec(Square::NUM_SQUARES * NUM_TYPES * NUM_COLORS);
+    for (std::size_t isquare = 0; isquare < Square::NUM_SQUARES; ++isquare) {
         for (std::size_t itype = 0; itype < NUM_TYPES; ++itype) {
             for (std::size_t icolor = 0; icolor < NUM_COLORS; ++icolor) {
                 PieceType type = static_cast<PieceType>(itype);
@@ -96,19 +82,18 @@ static std::vector<ZobHash> makeZobVec() {
 Same as toggleZobPiece, but with "lower-level" parameters.
 Prevents zob_index (and/or square_index) recomputation.
 */
-ZobHash toggleZobIndex(ZobHash hash, std::size_t zob_index) {
+static ZobHash toggleZobIndex(ZobHash hash, std::size_t zob_index) {
     return hash ^ ZOB_ARRAY[zob_index];
 }
 
-ZobHash toggleZobPiece(ZobHash hash, Piece piece, Square square) {
-    std::size_t square_index = squareToIndex(square);
+ZobHash board::toggleZobPiece(ZobHash hash, Piece piece,
+                              SquareIndex square_index) {
     std::size_t zob_index = getZobIndex(square_index, piece);
     return toggleZobIndex(hash, zob_index);
 }
 
-ZobHash replaceZobPiece(ZobHash hash, Piece old_piece,
-                        Piece new_piece, Square square) {
-    std::size_t square_index = squareToIndex(square);
+ZobHash board::replaceZobPiece(ZobHash hash, Piece old_piece,
+                        Piece new_piece, SquareIndex square_index) {
     std::size_t zob_index_old = getZobIndex(square_index, old_piece);
     std::size_t zob_index_new = getZobIndex(square_index, new_piece);
     hash = toggleZobIndex(hash, zob_index_old);

@@ -2,16 +2,45 @@
 
 #include "board/square.h"
 #include "util/assert.h"
+#include "util/math.h"
 
 using board::Square;
+using board::SquareIndex;
+
+// TODO(theimer): make these constexpr
+const std::size_t NUM_DIM_BITS = util::log2Ceil(Square::MAX_DIM_VALUE);
+const std::size_t DIM_MASK =
+        (static_cast<std::size_t>(1) << NUM_DIM_BITS) - 1;
 
 Square::Square(DimIndex row, DimIndex col) : row(row), col(col) {
-    ASSERT(row >= 0 && row < Board::WIDTH, "row: " + std::to_string(row));
-    ASSERT(col >= 0 && col < Board::WIDTH, "col: " + std::to_string(col));
+    ASSERT(row >= 0 && row < Square::MAX_DIM_VALUE, "row: " + std::to_string(row));
+    ASSERT(col >= 0 && col < Square::MAX_DIM_VALUE, "col: " + std::to_string(col));
 }
 
 bool Square::isValidDims(std::size_t row, std::size_t col) {
     return (row < Square::MAX_DIM_VALUE) && (col < Square::MAX_DIM_VALUE);
+}
+
+bool Square::isValidIndex(std::size_t index) {
+    // >=0 just in case datatype changes
+    //    (this should only exist in assertions, anyways)
+    return (index < Square::NUM_SQUARES) && (index >= 0);
+}
+
+SquareIndex Square::squareToIndex(Square square) {
+    std::size_t index = (static_cast<std::size_t>(square.row) << NUM_DIM_BITS)
+            | static_cast<std::size_t>(square.col);
+    ASSERT(index >= 0 && index < Square::NUM_SQUARES,
+            "index: " + std::to_string(index));
+    return index;
+}
+
+Square Square::indexToSquare(SquareIndex index) {
+    ASSERT(index >= 0 && index < Square::NUM_SQUARES,
+            "index: " + std::to_string(index));
+    DimIndex col = index & DIM_MASK;
+    DimIndex row = index >> NUM_DIM_BITS;
+    return Square(row, col);
 }
 
 bool board::operator==(Square lhs, Square rhs) {
@@ -24,8 +53,7 @@ std::ostream& board::operator<<(std::ostream& out, Square square) {
 }
 
 std::size_t std::hash<Square>::operator()(Square square) const {
-    // TODO(theimer): make this concrete
-    return (square.row << 10) | square.col;
+    return Square::squareToIndex(square);
 }
 
 std::string std::to_string(Square square) {

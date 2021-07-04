@@ -33,11 +33,6 @@ Note:
 ################################################################################
 */
 
-// TODO(theimer): make these constexpr
-const std::size_t NUM_WIDTH_BITS = util::log2Ceil(Board::WIDTH);
-const std::size_t WIDTH_MASK =
-        (static_cast<std::size_t>(1) << NUM_WIDTH_BITS) - 1;
-
 static const std::unordered_map<Piece, char> PIECE_CHAR_MAP = {
         { (Piece){ PieceType::BISHOP, PieceColor::BLACK }, 'B' },
         { (Piece){ PieceType::BISHOP, PieceColor::WHITE }, 'b' },
@@ -53,34 +48,12 @@ static const std::unordered_map<Piece, char> PIECE_CHAR_MAP = {
         { (Piece){ PieceType::PAWN, PieceColor::WHITE }, 'p' }
 };
 
-std::size_t squareToBitboardIndex(Square square) {
-    std::size_t index = (static_cast<std::size_t>(square.row) << NUM_WIDTH_BITS)
-            | static_cast<std::size_t>(square.col);
-    ASSERT(index >= 0 && index < Board::SIZE,
-            "index: " + std::to_string(index));
-    return index;
-}
-
-Square bitboardIndexToSquare(std::size_t index) {
-    ASSERT(index >= 0 && index < Board::SIZE,
-            "index: " + std::to_string(index));
-    DimIndex col = index & WIDTH_MASK;
-    DimIndex row = index >> NUM_WIDTH_BITS;
-    return Square(row, col);
-}
-
-bool isValidBitboardIndex(std::size_t index) {
-    // >=0 just in case datatype changes
-    //    (this should only exist in assertions, anyways)
-    return (index < Board::SIZE) && (index >= 0);
-}
-
 std::string makeIndexSquareString(std::size_t index) {
-    ASSERT(isValidBitboardIndex(index),
+    ASSERT(Square::isValidIndex(index),
             "invalid index: " + std::to_string(index));
     std::stringstream ss;
     ss << "index: " << std::to_string(index)
-       << ", square: " << bitboardIndexToSquare(index);
+       << ", square: " << Square::indexToSquare(index);
     return ss.str();
 }
 
@@ -109,7 +82,7 @@ std::ostream& Board::operator<<(std::ostream& ostream) const {
 }
 
 bool Board::squareIsOccupiedIndex(std::size_t index) const {
-    ASSERT(isValidBitboardIndex(index),
+    ASSERT(Square::isValidIndex(index),
             "invalid index: " + std::to_string(index));
     // get the bit at the union of the two color bitboards
     // TODO(theimer): keep a separate "all-piece" bitboard?
@@ -121,14 +94,14 @@ bool Board::squareIsOccupiedIndex(std::size_t index) const {
 
 bool Board::squareIsOccupiedColorIndex(std::size_t index,
                                        PieceColor color) const {
-    ASSERT(isValidBitboardIndex(index),
+    ASSERT(Square::isValidIndex(index),
             "invalid index: " + std::to_string(index));
     Bitboard color_board = color_bitboards_[static_cast<std::size_t>(color)];
     return util::getBit(color_board, index);
 }
 
 PieceColor Board::getPieceColorIndex(std::size_t index) const {
-    ASSERT(isValidBitboardIndex(index),
+    ASSERT(Square::isValidIndex(index),
             "invalid index: " + std::to_string(index));
     ASSERT(squareIsOccupiedIndex(index),
             "unoccupied index: " + makeIndexSquareString(index));
@@ -146,7 +119,7 @@ PieceColor Board::getPieceColorIndex(std::size_t index) const {
 
 // TODO(theimer): basically a copy-pasted of getPieceColoIndex
 PieceType Board::getPieceTypeIndex(std::size_t index) const {
-    ASSERT(isValidBitboardIndex(index),
+    ASSERT(Square::isValidIndex(index),
             "invalid index: " + std::to_string(index));
     ASSERT(squareIsOccupiedIndex(index),
             "unoccupied index: " + makeIndexSquareString(index));
@@ -163,7 +136,7 @@ PieceType Board::getPieceTypeIndex(std::size_t index) const {
 }
 
 Piece Board::getPieceIndex(std::size_t index) const {
-    ASSERT(isValidBitboardIndex(index),
+    ASSERT(Square::isValidIndex(index),
             "invalid index: " + std::to_string(index));
     PieceType type = getPieceTypeIndex(index);
     PieceColor color = getPieceColorIndex(index);
@@ -171,7 +144,7 @@ Piece Board::getPieceIndex(std::size_t index) const {
 }
 
 void Board::setPieceIndex(Piece piece, std::size_t index) {
-    ASSERT(isValidBitboardIndex(index),
+    ASSERT(Square::isValidIndex(index),
             "invalid index: " + std::to_string(index));
     ASSERT(!squareIsOccupiedIndex(index),
             "index occupied: " + makeIndexSquareString(index));
@@ -179,14 +152,15 @@ void Board::setPieceIndex(Piece piece, std::size_t index) {
                  index, true);
     util::setBit(&this->color_bitboards_[static_cast<std::size_t>(piece.color)],
                  index, true);
+    hash_ = toggleZobPiece(hash_, piece, index);
     ASSERT(squareIsOccupiedIndex(index),
             "index unoccupied after set: " + makeIndexSquareString(index));
 }
 
 void Board::movePieceIndex(std::size_t from_index, std::size_t to_index) {
-    ASSERT(isValidBitboardIndex(from_index),
+    ASSERT(Square::isValidIndex(from_index),
             "invalid 'from' index: " + std::to_string(from_index));
-    ASSERT(isValidBitboardIndex(to_index),
+    ASSERT(Square::isValidIndex(to_index),
             "invalid 'to' index: " + std::to_string(to_index));
     ASSERT(squareIsOccupiedIndex(from_index),
             "from index unoccupied: " + makeIndexSquareString(from_index));
@@ -211,8 +185,15 @@ void Board::movePieceIndex(std::size_t from_index, std::size_t to_index) {
 }
 
 void Board::removePieceIndex(std::size_t index) {
-    ASSERT(isValidBitboardIndex(index),
+    ASSERT(Square::isValidIndex(index),
             "invalid index: " + std::to_string(index));
+
+    // deal with the hash (TODO(theimer): something better!)
+    if (squareIsOccupiedIndex(index)) {
+        Piece piece = getPieceIndex(index);
+        hash_ = toggleZobPiece(hash_, piece, index);
+    }
+
     // set the color and piece bits to zero
     for (std::size_t i = 0;
             i < static_cast<std::size_t>(PieceColor::NUM_PIECE_COLORS);
@@ -229,7 +210,7 @@ void Board::removePieceIndex(std::size_t index) {
 }
 
 void Board::setPieceOverwriteIndex(Piece piece, std::size_t index) {
-    ASSERT(isValidBitboardIndex(index),
+    ASSERT(Square::isValidIndex(index),
             "invalid index: " + std::to_string(index));
     // TODO(theimer): current impl is lazy and slow
     if (squareIsOccupiedIndex(index)) {
@@ -239,6 +220,9 @@ void Board::setPieceOverwriteIndex(Piece piece, std::size_t index) {
                  index, true);
     util::setBit(&this->color_bitboards_[static_cast<std::size_t>(piece.color)],
                  index, true);
+
+
+    hash_ = toggleZobPiece(hash_, piece, index);
 
     // ifdef w/ named variable prevents different
     //    getPiece results in the assertions
@@ -253,9 +237,9 @@ void Board::setPieceOverwriteIndex(Piece piece, std::size_t index) {
 
 void Board::movePieceOverwriteIndex(std::size_t from_index,
                                     std::size_t to_index) {
-    ASSERT(isValidBitboardIndex(from_index),
+    ASSERT(Square::isValidIndex(from_index),
             "invalid 'from' index: " + std::to_string(from_index));
-    ASSERT(isValidBitboardIndex(to_index),
+    ASSERT(Square::isValidIndex(to_index),
             "invalid 'to' index: " + std::to_string(to_index));
     ASSERT(squareIsOccupiedIndex(from_index),
             "from index unoccupied: " + makeIndexSquareString(from_index));
@@ -288,7 +272,7 @@ std::size_t bitboardToSquares(Bitboard board, Square* buffer) {
     // TODO(theimer): might vectorize with popcount-based for loop
     while (board > 0) {
         std::size_t index = util::popLowestBit(&board);
-        *ptr = bitboardIndexToSquare(index);
+        *ptr = Square::indexToSquare(index);
         ++ptr;
     }
     return ptr - buffer;
@@ -301,11 +285,11 @@ size_t std::hash<Piece>::operator()(const board::Piece piece) const {
           | static_cast<size_t>(piece.color);
 }
 
-Board::Board() {
+Board::Board() : hash_(board::ZOB_INIT) {
     // intentionally blank
 }
 
-Board::Board(const Board& other) {
+Board::Board(const Board& other) : hash_(other.hash_) {
     // TODO(theimer): C++ memmove?
     for (std::size_t i = 0;
             i < static_cast<std::size_t>(PieceColor::NUM_PIECE_COLORS);
@@ -322,6 +306,7 @@ Board::Board(const Board& other) {
 Board::Board(const std::unordered_map<Square, Piece>& piece_map) {
     // Just step thru map elements and set each piece at its square.
     // Note: all field array indices are already initialized to zero.
+    ZobHash hash = board::ZOB_INIT;
     for (auto iterator = piece_map.begin();
              iterator != piece_map.end();
              ++iterator)  {
@@ -329,37 +314,40 @@ Board::Board(const std::unordered_map<Square, Piece>& piece_map) {
         Piece piece = iterator->second;
         ASSERT(!this->squareIsOccupied(square),
                 "square occupied: " + std::to_string(square));
-        this->setPiece(piece, square);
+        SquareIndex square_index = Square::squareToIndex(square);
+        this->setPieceIndex(piece, square_index);
+        hash = toggleZobPiece(hash, piece, square_index);
     }
+    hash_ = hash;
 }
 
 bool Board::squareIsOccupied(Square square) const {
-    std::size_t index = squareToBitboardIndex(square);
+    std::size_t index = Square::squareToIndex(square);
     return squareIsOccupiedIndex(index);
 }
 
 bool Board::squareIsOccupiedColor(Square square, PieceColor color) const {
-    std::size_t index = squareToBitboardIndex(square);
+    std::size_t index = Square::squareToIndex(square);
     return squareIsOccupiedColorIndex(index, color);
 }
 
 void Board::setPiece(Piece piece, Square square) {
-    std::size_t index = squareToBitboardIndex(square);
+    std::size_t index = Square::squareToIndex(square);
     setPieceIndex(piece, index);
 }
 
 void Board::setPieceOverwrite(Piece piece, Square square) {
-    std::size_t index = squareToBitboardIndex(square);
+    std::size_t index = Square::squareToIndex(square);
     setPieceOverwriteIndex(piece, index);
 }
 
 PieceType Board::getPieceType(Square square) const {
-    std::size_t index = squareToBitboardIndex(square);
+    std::size_t index = Square::squareToIndex(square);
     return getPieceTypeIndex(index);
 }
 
 PieceColor Board::getPieceColor(Square square) const {
-    std::size_t index = squareToBitboardIndex(square);
+    std::size_t index = Square::squareToIndex(square);
     return getPieceColorIndex(index);
 }
 
@@ -385,23 +373,31 @@ std::size_t Board::getOccupiedSquares(Square* buffer) const {
 }
 
 void Board::removePiece(Square square) {
-    std::size_t index = squareToBitboardIndex(square);
+    std::size_t index = Square::squareToIndex(square);
     removePieceIndex(index);
 }
 
 void Board::movePiece(Square from, Square to) {
-    std::size_t from_index = squareToBitboardIndex(from);
-    std::size_t to_index = squareToBitboardIndex(to);
+    std::size_t from_index = Square::squareToIndex(from);
+    std::size_t to_index = Square::squareToIndex(to);
     movePieceIndex(from_index, to_index);
 }
 
 void Board::movePieceOverwrite(Square from, Square to) {
-    std::size_t from_index = squareToBitboardIndex(from);
-    std::size_t to_index = squareToBitboardIndex(to);
+    std::size_t from_index = Square::squareToIndex(from);
+    std::size_t to_index = Square::squareToIndex(to);
     movePieceOverwriteIndex(from_index, to_index);
 }
 
 Piece Board::getPiece(Square square) const {
-    std::size_t index = squareToBitboardIndex(square);
+    std::size_t index = Square::squareToIndex(square);
     return getPieceIndex(index);
+}
+
+board::ZobHash Board::getZobHash() const {
+    return hash_;
+}
+
+std::size_t std::hash<Board>::operator()(const board::Board& board) const {
+    return board.getZobHash();
 }

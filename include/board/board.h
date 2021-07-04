@@ -10,6 +10,7 @@
 
 #include "board/square.h"
 #include "board/piece.h"
+#include "board/zobhash.h"
 
 namespace board {
 
@@ -21,10 +22,11 @@ Maintains an 8x8 chess board.
 */
 class Board {
  public:
+    // TODO(themer): do away with these in favor of just the Square constants?
     // size of either dimension of the Board (i.e. WIDTH rows and WIDTH columns)
     static const std::size_t WIDTH = Square::MAX_DIM_VALUE;
     // total number of spaces on the Board.
-    static const std::size_t SIZE = WIDTH * WIDTH;
+    static const std::size_t SIZE = Square::NUM_SQUARES;
 
     /*
     Constructs an empty board.
@@ -126,6 +128,11 @@ class Board {
     */
     std::size_t getOccupiedSquares(Square* buffer) const;
 
+    /*
+    Returns the Zobrist Hash of the board.
+    */
+    ZobHash getZobHash() const;
+
  private:
     /*
     Each Board is maintained by a series of "Bitboards", where each Bitboard
@@ -139,6 +146,9 @@ class Board {
     Bitboard color_bitboards_[
                  static_cast<std::size_t>(PieceColor::NUM_PIECE_COLORS)
              ] = { 0 };
+
+    // Zobrist Hash value.
+    ZobHash hash_;
 
     // TODO(theimer): this is super ugly; PIMPL if not too much overhead
     bool squareIsOccupiedIndex(std::size_t index) const;
@@ -159,7 +169,12 @@ namespace std {
 
 // TODO(theimer): move to piece.h
 template <> struct hash<board::Piece> {
-    std::size_t operator()(const board::Piece x) const;
+    std::size_t operator()(const board::Piece piece) const;
+};
+
+//TODO(theimer): make friends with Board and remove getZobHash()
+template <> struct hash<board::Board> {
+    std::size_t operator()(const board::Board& board) const;
 };
 
 }  // namespace std

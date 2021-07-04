@@ -3,7 +3,8 @@
 #ifndef BOARD_ZOBHASH_H_
 #define BOARD_ZOBHASH_H_
 
-#include "board/board.h"
+#include "board/square.h"
+#include "board/piece.h"
 
 /*
 ################################################################################
@@ -27,14 +28,15 @@ constexpr ZobHash ZOB_INIT = 0;
 /*
 Includes/Excludes a Piece/Square pair from a hash value.
 */
-ZobHash toggleZobPiece(ZobHash hash, Piece piece, Square square);
+ZobHash toggleZobPiece(ZobHash hash, Piece piece, SquareIndex square_index);
 
+// TODO(theimer): use this!
 /*
 Excludes a Piece/Square pair from a hash value, and includes
 a Piece/Square pair where the second Square is identical to the first.
 */
 ZobHash replaceZobPiece(ZobHash hash, Piece old_piece,
-                        Piece new_piece, Square square);
+                        Piece new_piece, SquareIndex square_index);
 
 }  // namespace board
 
