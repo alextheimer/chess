@@ -2,8 +2,10 @@
 
 #include <random>
 
-static std::mt19937_64 RAND_GEN(std::random_device{}());
-
 std::uint64_t util::getRand64() {
-    return RAND_GEN();
+    // one random generator per "instance" of this function.
+    // TODO(theimer): does this mean two inlined versions of this
+    //     function would give the same sequence of values?
+    static std::mt19937_64 rand_gen(std::random_device{}());
+    return rand_gen();
 }
