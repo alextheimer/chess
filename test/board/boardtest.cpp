@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <memory>
+#include <functional>
 
 #include "gtest/gtest.h"
 #include "board/board.h"
@@ -15,6 +16,7 @@ using board::Piece;
 using board::Board;
 using board::PieceType;
 using board::PieceColor;
+using board::ZobHash;
 
 /*
 ~~~ Test Partitions ~~~
@@ -43,6 +45,9 @@ getOccupiedSquares
     board: single piece, no pieces, multiple pieces
     board: occupied squares at (0,0), (0,7) (7,0), (7,7), other
     board: { contains various piecetypes/colors }
+getZobHash
+    baord: no pieces, single piece, multiple pieces
+    board diffs: piece added/removed, piece moved/unmoved, piece removed/added
 TODO(theimer): test overwrite variants of move/setPiece
 */
 
@@ -309,5 +314,126 @@ TEST(BoardTest, GetOccupiedSquaresTest) {
             // make sure all squares were accounted for
             ASSERT_EQ(static_cast<std::size_t>(0), square_set.size());
         }
+    }
+}
+
+/*
+Covers:
+    getZobHash
+        baord: no pieces, single piece, multiple pieces
+        board diffs: piece added/removed, piece moved/unmoved, piece removed/added
+*/
+TEST(BoardTest, ZobTest) {
+
+    /*
+    NOTE: This framework ensures that hashes do not match until
+          the final diff has been applied.
+    */
+
+    struct TestSpec {
+        std::unordered_map<Square, Piece> piece_map;
+        std::vector<std::function<void(Board*)>> diffs;
+    };
+
+    auto makeSet = [](Piece piece, Square square) {
+        return [piece, square](Board* board){board->setPiece(piece, square);};
+    };
+
+    auto makeRemove = [](Square square) {
+        return [square](Board* board){board->removePiece(square);};
+    };
+
+    auto makeMove = [](Square from, Square to) {
+        return [from, to](Board* board){board->movePiece(from, to);};
+    };
+
+    std::vector<TestSpec> spec_vec = {
+        {{
+            // empty
+        }, {
+            // empty
+        }},
+
+        {{
+            // empty
+        }, {
+            makeSet((Piece){PieceType::KNIGHT, PieceColor::BLACK},
+                    Square(0, 0)),
+            makeSet((Piece){PieceType::ROOK, PieceColor::WHITE},
+                    Square(0, 7)),
+            makeSet((Piece){PieceType::BISHOP, PieceColor::WHITE},
+                    Square(7, 0)),
+            makeSet((Piece){PieceType::KING, PieceColor::BLACK},
+                    Square(7, 7)),
+            makeRemove(Square(0, 7)),
+            makeRemove(Square(7, 7)),
+            makeRemove(Square(7, 0)),
+            makeRemove(Square(0, 0))
+        }},
+
+        {{
+            { Square(0, 0), (Piece){ PieceType::QUEEN, PieceColor::BLACK } }
+        }, {
+            makeMove(Square(0, 0), Square(0, 7)),
+            makeMove(Square(0, 7), Square(0, 0))
+        }},
+
+        {{
+            { Square(0, 0), (Piece){ PieceType::QUEEN, PieceColor::BLACK } },
+            { Square(7, 7), (Piece){ PieceType::KING, PieceColor::WHITE } },
+            { Square(3, 2), (Piece){ PieceType::PAWN, PieceColor::WHITE } },
+            { Square(5, 6), (Piece){ PieceType::BISHOP, PieceColor::BLACK } }
+        }, {
+            makeMove(Square(0, 0), Square(4, 4)),
+            makeMove(Square(7, 7), Square(0, 0)),
+            makeMove(Square(3, 2), Square(5, 7)),
+            makeMove(Square(5, 6), Square(7, 7)),
+            // reversse...
+            makeMove(Square(7, 7), Square(5, 6)),
+            makeMove(Square(5, 7), Square(3, 2)),
+            makeMove(Square(0, 0), Square(7, 7)),
+            makeMove(Square(4, 4), Square(0, 0))
+        }},
+
+        {{
+            { Square(0, 0), (Piece){ PieceType::QUEEN, PieceColor::BLACK } },
+            { Square(7, 7), (Piece){ PieceType::KING, PieceColor::WHITE } },
+            { Square(3, 2), (Piece){ PieceType::PAWN, PieceColor::WHITE } },
+            { Square(5, 6), (Piece){ PieceType::BISHOP, PieceColor::BLACK } }
+        }, {
+            makeRemove(Square(0, 0)),
+            makeRemove(Square(7, 7)),
+            makeRemove(Square(3, 2)),
+            makeRemove(Square(5, 6)),
+            makeSet((Piece){PieceType::QUEEN, PieceColor::BLACK},
+                    Square(0, 0)),
+            makeSet((Piece){PieceType::KING, PieceColor::WHITE},
+                    Square(7, 7)),
+            makeSet((Piece){PieceType::PAWN, PieceColor::WHITE},
+                    Square(3, 2)),
+            makeSet((Piece){PieceType::BISHOP, PieceColor::BLACK},
+                    Square(5, 6))
+        }}
+    };
+
+    for (const TestSpec& spec : spec_vec ) {
+        Board board(spec.piece_map);
+        ZobHash hash_before = board.getZobHash();
+
+        // apply all but the final diff; make sure hashes aren't equal
+        for (int i = 0; i < static_cast<int>(spec.diffs.size()) - 1; ++i) {
+            auto fdiff = spec.diffs[i];
+            fdiff(&board);
+            ASSERT_NE(hash_before, board.getZobHash());
+        }
+
+        // now appy the final diff; make sure the hash is equal
+        if (spec.diffs.size() > 0) {
+            spec.diffs[spec.diffs.size()-1](&board);
+        }
+
+        ZobHash hash_after = board.getZobHash();
+        ASSERT_EQ(hash_before, hash_after) << "before: " << hash_before << "; "
+                                           << "after: " << hash_after;
     }
 }
