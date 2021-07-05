@@ -2,6 +2,7 @@
 #define PLAYER_COMPUTER_H_
 
 #include <string>
+#include <unordered_map>
 
 #include "game/game.h"
 
@@ -12,7 +13,8 @@ class Computer : public game::Player {
     Computer(std::string name);
     game::Move getMove(const board::Board& board, board::PieceColor);
 
- // TODO(theimer): private cache fields
+ private:
+    std::unordered_map<board::ZobHash, int64_t> score_cache_;
 };
 
 }  // namespace player

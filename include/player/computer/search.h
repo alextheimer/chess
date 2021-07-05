@@ -3,12 +3,15 @@
 #ifndef PLAYER_COMPUTER_SEARCH_H_
 #define PLAYER_COMPUTER_SEARCH_H_
 
+#include <unordered_map>
+
 #include "game/game.h"
 
 namespace player {
 namespace computer {
 
 // TODO(theimer): directly associate players with colors?
+// TODO(theimer): typedef scores; remove Zob dependency-- just use size_t
 
 /*
 Searches the tree of possible Boards to a certain depth, and returns
@@ -21,12 +24,15 @@ happens, one of the "best-possible" Moves is ***RANDOMLY*** returned.
 @param depth: must be >= 1
 @param board_heuristic: accepts a Board and color, and returns a
     heuristic value of the Board from the "color" player's perspective
+@param score_cache: Can contain existing pairs.
+                    Will be updated with additional scores.
 */
-game::Move alphaBetaSearch(const board::Board& board,
-                           board::PieceColor color,
-                           std::size_t depth,
-                           int64_t (*board_heuristic)(const board::Board&,
-                                                      board::PieceColor color));
+game::Move alphaBetaSearch(
+        const board::Board& board, board::PieceColor color,
+        std::size_t depth,
+        int64_t (*board_heuristic)(const board::Board&,
+                                   board::PieceColor color),
+        std::unordered_map<board::ZobHash, int64_t>* score_cache);
 
 /*
 Returns the negative of the count of oppositely-colored pieces.

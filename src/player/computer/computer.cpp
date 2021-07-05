@@ -15,5 +15,6 @@ player::Computer::Computer(std::string name) : Player(name) {
 Move player::Computer::getMove(const Board& board, PieceColor color) {
     return player::computer::alphaBetaSearch(
                                   board, color, SEARCH_DEPTH,
-                                  &player::computer::basicBoardHeuristic);
+                                  &player::computer::basicBoardHeuristic,
+                                  &score_cache_);
 }

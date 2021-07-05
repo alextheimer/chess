@@ -12,6 +12,7 @@ using board::Board;
 using board::PieceColor;
 using board::Piece;
 using board::Square;
+using board::ZobHash;
 
 using game::Move;
 
@@ -112,7 +113,8 @@ typedef int64_t (*AlphaBetaVariantFunc)(
                            Board* board, PieceColor color,
                            std::size_t depth_remaining,
                            int64_t alpha, int64_t beta,
-                           BoardHeuristicFunc board_heuristic);
+                           BoardHeuristicFunc board_heuristic,
+                           std::unordered_map<ZobHash, int64_t>* score_cache);
 
 // These are passed as argument to alphaBetaSearchBase.
 //    See definition for details.
@@ -135,7 +137,8 @@ A "friendly" node in the search tree.
 int64_t alphaBetaSearchMax(Board* board, PieceColor color,
                            std::size_t depth_remaining,
                            int64_t alpha, int64_t beta,
-                           BoardHeuristicFunc board_heuristic);
+                           BoardHeuristicFunc board_heuristic,
+                           std::unordered_map<ZobHash, int64_t>* score_cache);
 /*
 Minimizer variant of the search.
 
@@ -148,7 +151,8 @@ An "opponent" node of the search tree.
 int64_t alphaBetaSearchMin(Board* board, PieceColor color,
                            std::size_t depth_remaining,
                            int64_t alpha, int64_t beta,
-                           BoardHeuristicFunc board_heuristic);
+                           BoardHeuristicFunc board_heuristic,
+                           std::unordered_map<ZobHash, int64_t>* score_cache);
 
 /*
 The "machinery" of the alphaBetaSearch variants.
@@ -176,14 +180,24 @@ int64_t alphaBetaSearchBase(Board* board, PieceColor color,
                             AlphaBetaVariantFunc child_eval_variant,
                             ScoreUpdateFunc score_update,
                             ExitCondFunc exit_cond,
-                            BoundUpdateFunc bound_update) {
+                            BoundUpdateFunc bound_update,
+                            std::unordered_map<ZobHash, int64_t>* score_cache) {
     ASSERT(depth_remaining >= 0,
             "must have non-negative depth_remaining; depth_remaining: "
             + std::to_string(depth_remaining));
 
+    // TODO(theimer): make this a separate function
+    ZobHash hash_with_depth = board->getZobHash() + depth_remaining;
+    auto cache_pair_ptr = score_cache->find(hash_with_depth);
+    if (cache_pair_ptr != score_cache->end()) {
+        return cache_pair_ptr->second;
+    }
+
     if (depth_remaining == 0) {
         // leaf node!
-        return board_heuristic(*board, heuristic_eval_color);
+        int64_t score = board_heuristic(*board, heuristic_eval_color);
+        (*score_cache)[hash_with_depth] = score;
+        return score;
     }
 
     util::Buffer<Move, game::MAX_NUM_MOVES_PLY> move_buffer;
@@ -192,7 +206,9 @@ int64_t alphaBetaSearchBase(Board* board, PieceColor color,
 
     // TODO(theimer): unsure if this is actually needed
     if (num_moves == 0) {
-        return board_heuristic(*board, heuristic_eval_color);
+        int64_t score = board_heuristic(*board, heuristic_eval_color);
+        (*score_cache)[hash_with_depth] = score;
+        return score;
     }
 
     // start evaluating children...
@@ -208,7 +224,8 @@ int64_t alphaBetaSearchBase(Board* board, PieceColor color,
         //     and (depth_remaining - 1)
         int64_t child_score =
                 child_eval_variant(board, board::oppositeColor(color),
-                    depth_remaining - 1, alpha, beta, board_heuristic);
+                                   depth_remaining - 1, alpha, beta,
+                                   board_heuristic, score_cache);
 
         // Update the current Board's score.
         score = score_update(score, child_score);
@@ -225,6 +242,8 @@ int64_t alphaBetaSearchBase(Board* board, PieceColor color,
         //     then keep evaluating children
         bound_update(&alpha, &beta, score);
     }
+
+    (*score_cache)[hash_with_depth] = score;
     return score;
 }
 
@@ -232,7 +251,8 @@ int64_t alphaBetaSearchBase(Board* board, PieceColor color,
 int64_t alphaBetaSearchMax(Board* board, PieceColor color,
                            std::size_t depth_remaining,
                            int64_t alpha, int64_t beta,
-                           BoardHeuristicFunc board_heuristic) {
+                           BoardHeuristicFunc board_heuristic,
+                           std::unordered_map<ZobHash, int64_t>* score_cache) {
 
     // Assume the worst-possible score.
     int64_t score_init = std::numeric_limits<int64_t>::min();
@@ -266,14 +286,15 @@ int64_t alphaBetaSearchMax(Board* board, PieceColor color,
     return alphaBetaSearchBase(board, color, depth_remaining, alpha, beta,
                                board_heuristic, heuristic_eval_color,
                                score_init, child_eval_variant, score_update,
-                               exit_cond, bound_update);
+                               exit_cond, bound_update, score_cache);
 }
 
 
 int64_t alphaBetaSearchMin(Board* board, PieceColor color,
                            std::size_t depth_remaining,
                            int64_t alpha, int64_t beta,
-                           BoardHeuristicFunc board_heuristic) {
+                           BoardHeuristicFunc board_heuristic,
+                           std::unordered_map<ZobHash, int64_t>* score_cache) {
 
 
     // Assume the opponent's worst-possible score (i.e. the max
@@ -313,7 +334,7 @@ int64_t alphaBetaSearchMin(Board* board, PieceColor color,
     return alphaBetaSearchBase(board, color, depth_remaining, alpha, beta,
                                board_heuristic, heuristic_eval_color,
                                score_init, child_eval_variant, score_update,
-                               exit_cond, bound_update);
+                               exit_cond, bound_update, score_cache);
 }
 
 /*
@@ -324,7 +345,8 @@ This is the "root" call of the search tree (i.e. a "friendly" node).
 Move player::computer::alphaBetaSearch(
                            const Board& board, PieceColor color,
                            std::size_t depth,
-                           BoardHeuristicFunc board_heuristic) {
+                           BoardHeuristicFunc board_heuristic,
+                           std::unordered_map<ZobHash, int64_t>* score_cache) {
 
     // this implementation is different enough from the alphaBetaSearch
     //     variants that it isn't processed thru  alphaBetaSearchBase
@@ -350,10 +372,9 @@ Move player::computer::alphaBetaSearch(
                 game::makeMove(&board_copy, move);
         int64_t score = alphaBetaSearchMin(
                              &board_copy, board::oppositeColor(color),
-                             depth - 1,
-                             alpha,
+                             depth - 1, alpha,
                              std::numeric_limits<int64_t>::max(),  // beta
-                             board_heuristic);
+                             board_heuristic, score_cache);
         game::unmakeMove(&board_copy, move, overwritten_opt);
         if (score > alpha) {
             // new highest score found; clear out the others.
