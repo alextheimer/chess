@@ -6,12 +6,15 @@
 #include <unordered_map>
 
 #include "game/game.h"
+#include "util/fixedmap.h"
 
 namespace player {
 namespace computer {
 
 // TODO(theimer): directly associate players with colors?
 // TODO(theimer): typedef scores; remove Zob dependency-- just use size_t
+
+typedef util::FixedMap<int64_t> ScoreCache;
 
 /*
 Searches the tree of possible Boards to a certain depth, and returns
@@ -32,7 +35,7 @@ game::Move alphaBetaSearch(
         std::size_t depth,
         int64_t (*board_heuristic)(const board::Board&,
                                    board::PieceColor color),
-        std::unordered_map<board::ZobHash, int64_t>* score_cache);
+        ScoreCache* score_cache);
 
 /*
 Returns the negative of the count of oppositely-colored pieces.

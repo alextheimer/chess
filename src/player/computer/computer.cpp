@@ -6,9 +6,12 @@ using board::Board;
 using board::PieceColor;
 using game::Move;
 
+static constexpr std::size_t CACHE_SIZE = 1000000;
 static constexpr std::size_t SEARCH_DEPTH = 6;
 
-player::Computer::Computer(std::string name) : Player(name) {
+player::Computer::Computer(std::string name) :
+        score_cache_(CACHE_SIZE),
+        Player(name) {
     // intentionally blank
 }
 

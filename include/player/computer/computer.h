@@ -2,9 +2,9 @@
 #define PLAYER_COMPUTER_H_
 
 #include <string>
-#include <unordered_map>
 
 #include "game/game.h"
+#include "util/fixedmap.h"
 
 namespace player {
 
@@ -14,7 +14,7 @@ class Computer : public game::Player {
     game::Move getMove(const board::Board& board, board::PieceColor);
 
  private:
-    std::unordered_map<board::ZobHash, int64_t> score_cache_;
+    util::FixedMap<int64_t> score_cache_;
 };
 
 }  // namespace player
