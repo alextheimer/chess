@@ -6,12 +6,14 @@ using board::Board;
 using board::PieceColor;
 using game::Move;
 
+static constexpr std::size_t SEARCH_DEPTH = 6;
+
 player::Computer::Computer(std::string name) : Player(name) {
     // intentionally blank
 }
 
 Move player::Computer::getMove(const Board& board, PieceColor color) {
     return player::computer::alphaBetaSearch(
-                                  board, color, 5 /* max depth */,
+                                  board, color, SEARCH_DEPTH,
                                   &player::computer::basicBoardHeuristic);
 }
