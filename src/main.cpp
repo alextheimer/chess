@@ -24,5 +24,5 @@ int main(int argc, char *argv[]) {
     }
 
     game::Player& winner = game.getWinner();
-    std::cout << winner.getName() << " wins!";
+    std::cout << winner.getName() << " wins!" << std::endl;
 }
