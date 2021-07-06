@@ -299,7 +299,7 @@ Board::Board(const Board& other) : hash_(other.hash_) {
 Board::Board(const std::unordered_map<Square, Piece>& piece_map) {
     // Just step thru map elements and set each piece at its square.
     // Note: all field array indices are already initialized to zero.
-    ZobHash hash = board::ZOB_INIT;
+    std::size_t hash = board::ZOB_INIT;
     for (auto iterator = piece_map.begin();
              iterator != piece_map.end();
              ++iterator)  {

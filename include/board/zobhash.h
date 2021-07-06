@@ -19,23 +19,20 @@
 
 namespace board {
 
-// Datatype of a Board's Zobrist Hash
-typedef std::size_t ZobHash;
-
 // Hash value of a Board with no included Piece/Square pairs.
-constexpr ZobHash ZOB_INIT = 0;
+constexpr std::size_t ZOB_INIT = 0;
 
 /*
 Includes/Excludes a Piece/Square pair from a hash value.
 */
-ZobHash toggleZobPiece(ZobHash hash, Piece piece, SquareIndex square_index);
+std::size_t toggleZobPiece(std::size_t hash, Piece piece, SquareIndex square_index);
 
 // TODO(theimer): use this!
 /*
 Excludes a Piece/Square pair from a hash value, and includes
 a Piece/Square pair where the second Square is identical to the first.
 */
-ZobHash replaceZobPiece(ZobHash hash, Piece old_piece,
+std::size_t replaceZobPiece(std::size_t hash, Piece old_piece,
                         Piece new_piece, SquareIndex square_index);
 
 }  // namespace board

@@ -14,7 +14,6 @@ using board::Board;
 using board::PieceColor;
 using board::Piece;
 using board::Square;
-using board::ZobHash;
 
 using player::computer::IScoreCache;
 using player::computer::BoardScore;

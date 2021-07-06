@@ -165,7 +165,7 @@ class Board {
              ] = { 0 };
 
     // Zobrist Hash value.
-    ZobHash hash_;
+    std::size_t hash_;
 
     // TODO(theimer): this is super ugly; PIMPL if not too much overhead
     bool squareIsOccupiedIndex(std::size_t index) const;
