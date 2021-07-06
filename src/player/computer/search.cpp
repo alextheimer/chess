@@ -14,7 +14,7 @@ using board::Piece;
 using board::Square;
 using board::ZobHash;
 
-using player::computer::ScoreCache;
+using player::computer::IScoreCache;
 using player::computer::BoardScore;
 using player::computer::BoardHeuristicFunc;
 
@@ -115,7 +115,7 @@ typedef BoardScore (*AlphaBetaVariantFunc)(
                            std::size_t depth_remaining,
                            BoardScore alpha, BoardScore beta,
                            BoardHeuristicFunc board_heuristic,
-                           ScoreCache* score_cache);
+                           IScoreCache* score_cache);
 
 // These are passed as argument to alphaBetaSearchBase.
 //    See definition for details.
@@ -139,7 +139,7 @@ BoardScore alphaBetaSearchMax(Board* board, PieceColor color,
                            std::size_t depth_remaining,
                            BoardScore alpha, BoardScore beta,
                            BoardHeuristicFunc board_heuristic,
-                           ScoreCache* score_cache);
+                           IScoreCache* score_cache);
 /*
 Minimizer variant of the search.
 
@@ -153,7 +153,7 @@ BoardScore alphaBetaSearchMin(Board* board, PieceColor color,
                            std::size_t depth_remaining,
                            BoardScore alpha, BoardScore beta,
                            BoardHeuristicFunc board_heuristic,
-                           ScoreCache* score_cache);
+                           IScoreCache* score_cache);
 
 /*
 The "machinery" of the alphaBetaSearch variants.
@@ -182,7 +182,7 @@ BoardScore alphaBetaSearchBase(Board* board, PieceColor color,
                             ScoreUpdateFunc score_update,
                             ExitCondFunc exit_cond,
                             BoundUpdateFunc bound_update,
-                            ScoreCache* score_cache) {
+                            IScoreCache* score_cache) {
     ASSERT(depth_remaining >= 0,
             "must have non-negative depth_remaining; depth_remaining: "
             + std::to_string(depth_remaining));
@@ -253,7 +253,7 @@ BoardScore alphaBetaSearchMax(Board* board, PieceColor color,
                            std::size_t depth_remaining,
                            BoardScore alpha, BoardScore beta,
                            BoardHeuristicFunc board_heuristic,
-                           ScoreCache* score_cache) {
+                           IScoreCache* score_cache) {
 
     // Assume the worst-possible score.
     BoardScore score_init = std::numeric_limits<BoardScore>::min();
@@ -295,7 +295,7 @@ BoardScore alphaBetaSearchMin(Board* board, PieceColor color,
                            std::size_t depth_remaining,
                            BoardScore alpha, BoardScore beta,
                            BoardHeuristicFunc board_heuristic,
-                           ScoreCache* score_cache) {
+                           IScoreCache* score_cache) {
 
 
     // Assume the opponent's worst-possible score (i.e. the max
@@ -347,7 +347,7 @@ Move player::computer::alphaBetaSearch(
                            const Board& board, PieceColor color,
                            std::size_t depth,
                            BoardHeuristicFunc board_heuristic,
-                           ScoreCache* score_cache) {
+                           IScoreCache* score_cache) {
 
     // this implementation is different enough from the alphaBetaSearch
     //     variants that it isn't processed thru  alphaBetaSearchBase

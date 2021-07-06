@@ -32,7 +32,7 @@ game::Move alphaBetaSearch(
         const board::Board& board, board::PieceColor color,
         std::size_t depth,
         BoardHeuristicFunc board_heuristic,
-        player::computer::ScoreCache* score_cache);
+        player::computer::IScoreCache* score_cache);
 
 /*
 Returns the negative of the count of oppositely-colored pieces.

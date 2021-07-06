@@ -10,13 +10,11 @@ namespace computer{
 
 typedef int64_t BoardScore;
 
-// TODO(theimer): make IScoreCache. Possibly change Player, as well.
-
 /*
 Interface of a data structure that allows fast storage/retrieval of BoardScores.
 BoardScores are keyed on Board-depth pairs.
 */
-class ScoreCache {
+class IScoreCache {
  public:
     /*
     Returns an iterator referring to the "past-the-end" BoardScore.

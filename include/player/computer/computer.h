@@ -19,7 +19,7 @@ class Computer : public game::Player {
  private:
     class ScoreCacheImpl : public util::FixedSizeMap<std::size_t,
                                                   player::computer::BoardScore>,
-                           public player::computer::ScoreCache {
+                           public player::computer::IScoreCache {
      public:
         ScoreCacheImpl(std::size_t size);
         player::computer::BoardScore* end() const override;

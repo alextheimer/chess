@@ -7,7 +7,7 @@ using board::Board;
 using board::PieceColor;
 using game::Move;
 using player::computer::BoardScore;
-using player::computer::ScoreCache;
+using player::computer::IScoreCache;
 using player::Computer;
 
 typedef util::FixedSizeMap<std::size_t, BoardScore> BaseMap;
