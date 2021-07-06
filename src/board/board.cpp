@@ -387,10 +387,6 @@ Piece Board::getPiece(Square square) const {
     return getPieceIndex(index);
 }
 
-board::ZobHash Board::getZobHash() const {
-    return hash_;
-}
-
 std::size_t std::hash<Board>::operator()(const board::Board& board) const {
-    return board.getZobHash();
+    return board.hash_;
 }

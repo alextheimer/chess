@@ -22,8 +22,8 @@ static constexpr std::size_t SEARCH_DEPTH = 6;
 std::size_t hashWithDepth(const Board& board, std::size_t depth) {
     ASSERT(depth >= 0,
             "depth must be at least 0; depth: " + std::to_string(depth));
-    // TODO(theimer): something more clever (also use std::hash)
-    return board.getZobHash() + depth;
+    // TODO(theimer): something more clever
+    return std::hash<Board>{}(board) + depth;
 }
 
 Computer::ScoreCacheImpl::ScoreCacheImpl(std::size_t size) :

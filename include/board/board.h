@@ -12,6 +12,25 @@
 #include "board/piece.h"
 #include "board/zobhash.h"
 
+// need to declare Board for use in template specialization below
+namespace board {
+
+class Board;
+
+}  // namespace board
+
+
+// need to declare template specialization in order to make this
+//     a friend of Board
+namespace std {
+
+template <>
+struct hash<board::Board> {
+    std::size_t operator()(const board::Board& board) const;
+};
+
+}  // namespace std
+
 namespace board {
 
 // Stores a single bit of data for each of the 64 spaces on a Board.
@@ -128,10 +147,8 @@ class Board {
     */
     std::size_t getOccupiedSquares(Square* buffer) const;
 
-    /*
-    Returns the Zobrist Hash of the board.
-    */
-    ZobHash getZobHash() const;
+    friend std::size_t std::hash<board::Board>::operator()(
+                                       const board::Board& board) const;
 
  private:
     /*
@@ -164,14 +181,5 @@ class Board {
 };
 
 }  // namespace board
-
-namespace std {
-
-// TODO(theimer): make friends with Board and remove getZobHash()
-template <> struct hash<board::Board> {
-    std::size_t operator()(const board::Board& board) const;
-};
-
-}  // namespace std
 
 #endif  // BOARD_BOARD_H_

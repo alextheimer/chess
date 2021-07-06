@@ -16,7 +16,6 @@ using board::Piece;
 using board::Board;
 using board::PieceType;
 using board::PieceColor;
-using board::ZobHash;
 
 /*
 ~~~ Test Partitions ~~~
@@ -45,7 +44,7 @@ getOccupiedSquares
     board: single piece, no pieces, multiple pieces
     board: occupied squares at (0,0), (0,7) (7,0), (7,7), other
     board: { contains various piecetypes/colors }
-getZobHash
+std::hash
     baord: no pieces, single piece, multiple pieces
     board diffs: piece added/removed, piece moved/unmoved, piece removed/added
 TODO(theimer): test overwrite variants of move/setPiece
@@ -319,11 +318,11 @@ TEST(BoardTest, GetOccupiedSquaresTest) {
 
 /*
 Covers:
-    getZobHash
+    std::hash
         baord: no pieces, single piece, multiple pieces
         board diffs: piece added/removed, piece moved/unmoved, piece removed/added
 */
-TEST(BoardTest, ZobTest) {
+TEST(BoardTest, HashTest) {
     /*
     NOTE: This framework ensures that hashes do not match until
           the final diff has been applied.
@@ -417,13 +416,13 @@ TEST(BoardTest, ZobTest) {
 
     for (const TestSpec& spec : spec_vec) {
         Board board(spec.piece_map);
-        ZobHash hash_before = board.getZobHash();
+        std::size_t hash_before = std::hash<Board>{}(board);
 
         // apply all but the final diff; make sure hashes aren't equal
         for (int i = 0; i < static_cast<int>(spec.diffs.size()) - 1; ++i) {
             auto fdiff = spec.diffs[i];
             fdiff(&board);
-            ASSERT_NE(hash_before, board.getZobHash());
+            ASSERT_NE(hash_before, std::hash<Board>{}(board));
         }
 
         // now appy the final diff; make sure the hash is equal
@@ -431,7 +430,7 @@ TEST(BoardTest, ZobTest) {
             spec.diffs[spec.diffs.size()-1](&board);
         }
 
-        ZobHash hash_after = board.getZobHash();
+        std::size_t hash_after = std::hash<Board>{}(board);
         ASSERT_EQ(hash_before, hash_after) << "before: " << hash_before << "; "
                                            << "after: " << hash_after;
     }
