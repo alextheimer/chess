@@ -133,9 +133,16 @@ Player& Game::getWinner() const {
     ASSERT(isEnded(), "game not yet ended");
     // get the color of the only remaining king; return that player.
     util::Buffer<Square, 2> buffer;
+
+    // prevents "unused variable" compiler warning
+ #ifdef DEBUG
     std::size_t size =
             board_->getOccupiedSquares(PieceType::KING, buffer.start());
-    ASSERT(size == 1, "size: " + std::to_string(1));
+    ASSERT(size == 1, "size: " + std::to_string(size));
+ #else
+    board_->getOccupiedSquares(PieceType::KING, buffer.start());
+ #endif
+
     PieceColor color = board_->getPiece(buffer.get(0)).color;
     switch (color) {
     case PieceColor::BLACK:

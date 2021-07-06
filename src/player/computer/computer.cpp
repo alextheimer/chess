@@ -48,8 +48,8 @@ void Computer::ScoreCacheImpl::set(const Board& board, std::size_t depth,
 }
 
 Computer::Computer(std::string name) :
-        score_cache_(CACHE_SIZE),
-        Player(name) {
+        Player(name),
+        score_cache_(CACHE_SIZE) {
     // intentionally blank
 }
 
