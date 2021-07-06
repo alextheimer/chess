@@ -25,7 +25,7 @@ BoardScore* Computer::ScoreCacheImpl::find(std::size_t key) const {
     return util::FixedSizeMap<std::size_t, BoardScore>::find(key);
 }
 
-void Computer::ScoreCacheImpl::set(std::size_t key, const BoardScore& value) {
+void Computer::ScoreCacheImpl::set(std::size_t key, BoardScore value) {
     return util::FixedSizeMap<std::size_t, BoardScore>::set(key, value);
 }
 

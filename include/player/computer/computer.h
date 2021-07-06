@@ -24,7 +24,7 @@ class Computer : public game::Player {
         ScoreCacheImpl(std::size_t size);
         player::computer::BoardScore* end() const;
         player::computer::BoardScore* find(std::size_t key) const;
-        void set(std::size_t key, const player::computer::BoardScore& value);
+        void set(std::size_t key, player::computer::BoardScore value);
     };
 
     ScoreCacheImpl score_cache_;
