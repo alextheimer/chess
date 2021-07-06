@@ -278,13 +278,6 @@ std::size_t bitboardToSquares(Bitboard board, Square* buffer) {
     return ptr - buffer;
 }
 
-size_t std::hash<Piece>::operator()(const board::Piece piece) const {
-    // TODO(theimer): use board::compressPiece?
-    static constexpr std::size_t TYPE_SHIFT = 10;  // Arbitrary choice
-    return (static_cast<size_t>(piece.type) << TYPE_SHIFT)
-          | static_cast<size_t>(piece.color);
-}
-
 Board::Board() : hash_(board::ZOB_INIT) {
     // intentionally blank
 }

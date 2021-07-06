@@ -167,11 +167,6 @@ class Board {
 
 namespace std {
 
-// TODO(theimer): move to piece.h
-template <> struct hash<board::Piece> {
-    std::size_t operator()(const board::Piece piece) const;
-};
-
 //TODO(theimer): make friends with Board and remove getZobHash()
 template <> struct hash<board::Board> {
     std::size_t operator()(const board::Board& board) const;

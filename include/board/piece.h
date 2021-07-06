@@ -37,6 +37,10 @@ std::string to_string(board::PieceColor color);
 std::string to_string(board::PieceType type);
 std::string to_string(board::Piece piece);
 
+template <> struct hash<board::Piece> {
+    std::size_t operator()(const board::Piece piece) const;
+};
+
 }  // namespace std
 
 #endif  // BOARD_PIECE_H_

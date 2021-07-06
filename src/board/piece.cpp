@@ -97,3 +97,10 @@ std::string std::to_string(PieceType type) {
             "unhandled PieceType value: " + static_cast<std::size_t>(type));
     }
 }
+
+size_t std::hash<Piece>::operator()(const board::Piece piece) const {
+    // TODO(theimer): use board::compressPiece?
+    static constexpr std::size_t TYPE_SHIFT = 10;  // Arbitrary choice
+    return (static_cast<size_t>(piece.type) << TYPE_SHIFT)
+          | static_cast<size_t>(piece.color);
+}
