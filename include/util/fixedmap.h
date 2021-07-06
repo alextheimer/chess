@@ -10,7 +10,7 @@ namespace util {
 /*
 TODO(theimer)
 */
-template <typename V>
+template <typename K, typename V>
 class FixedMap {
  public:
     FixedMap(std::size_t max_size) : max_size_(max_size) {
@@ -25,7 +25,7 @@ class FixedMap {
         return reinterpret_cast<V*>(slots_ + max_size_);
     }
 
-    V* find(std::size_t key) const {
+    V* find(const K& key) const {
         std::size_t index = getIndex(key);
         FixedMapSlot& slot = slots_[index];
         if (slot.present && (slot.key == key)) {
@@ -35,7 +35,7 @@ class FixedMap {
         }
     }
 
-    void set(std::size_t key, const V& value) {
+    void set(const K& key, const V& value) {
         std::size_t index = getIndex(key);
         FixedMapSlot& slot = slots_[index];
         slot.present = true;
@@ -56,8 +56,9 @@ class FixedMap {
     std::size_t max_size_;
     FixedMapSlot* slots_;
 
-    std::size_t getIndex(std::size_t key) const {
-        std::size_t index =  key % max_size_;
+    std::size_t getIndex(const K& key) const {
+        std::size_t hash = std::hash<K>{}(key);
+        std::size_t index =  hash % max_size_;
         ASSERT(index < max_size_, "invalid index: " + std::to_string(index));
         return index;
     }
