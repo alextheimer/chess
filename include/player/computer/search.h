@@ -6,15 +6,13 @@
 #include <unordered_map>
 
 #include "game/game.h"
-#include "util/fixedmap.h"
+#include "player/computer/scorecache.h"
 
 namespace player {
 namespace computer {
 
-typedef int64_t BoardScore;
 typedef BoardScore (*BoardHeuristicFunc)(const board::Board&,
                                          board::PieceColor color);
-typedef util::FixedMap<BoardScore> ScoreCache;
 
 /*
 Searches the tree of possible Boards to a certain depth, and returns
@@ -34,7 +32,7 @@ game::Move alphaBetaSearch(
         const board::Board& board, board::PieceColor color,
         std::size_t depth,
         BoardHeuristicFunc board_heuristic,
-        ScoreCache* score_cache);
+        player::computer::ScoreCache* score_cache);
 
 /*
 Returns the negative of the count of oppositely-colored pieces.
