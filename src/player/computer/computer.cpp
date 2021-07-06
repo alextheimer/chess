@@ -1,6 +1,7 @@
 #include "player/computer/computer.h"
 
 #include "player/computer/search.h"
+#include "util/assert.h"
 
 using board::Board;
 using board::PieceColor;
@@ -15,6 +16,8 @@ static constexpr std::size_t CACHE_SIZE = 1000000;
 static constexpr std::size_t SEARCH_DEPTH = 6;
 
 std::size_t hashWithDepth(const Board& board, std::size_t depth) {
+    ASSERT(depth >= 0,
+            "depth must be at least 0; depth: " + std::to_string(depth));
     // TODO(theimer): something more clever (also use std::hash)
     return board.getZobHash() + depth;
 }
@@ -30,12 +33,16 @@ BoardScore* Computer::ScoreCacheImpl::end() const {
 
 BoardScore* Computer::ScoreCacheImpl::find(const Board& board,
                                            std::size_t depth) const {
+    ASSERT(depth >= 0,
+            "depth must be at least 0; depth: " + std::to_string(depth));
     std::size_t hash_with_depth = hashWithDepth(board, depth);
     return BaseMap::find(hash_with_depth);
 }
 
 void Computer::ScoreCacheImpl::set(const Board& board, std::size_t depth,
                                    BoardScore value) {
+    ASSERT(depth >= 0,
+            "depth must be at least 0; depth: " + std::to_string(depth));
     std::size_t hash_with_depth = hashWithDepth(board, depth);
     BaseMap::set(hash_with_depth, value);
 }
