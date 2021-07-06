@@ -17,7 +17,7 @@ class Computer : public game::Player {
     game::Move getMove(const board::Board& board, board::PieceColor);
 
  private:
-    class ScoreCacheImpl : public util::FixedMap<std::size_t,
+    class ScoreCacheImpl : public util::FixedSizeMap<std::size_t,
                                              player::computer::BoardScore>,
                        public player::computer::ScoreCache {
      public:

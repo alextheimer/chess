@@ -11,13 +11,13 @@ namespace util {
 TODO(theimer)
 */
 template <typename K, typename V>
-class FixedMap {
+class FixedSizeMap {
  public:
-    FixedMap(std::size_t max_size) : max_size_(max_size) {
-        slots_ = new FixedMapSlot[max_size];
+    FixedSizeMap(std::size_t max_size) : max_size_(max_size) {
+        slots_ = new FixedSizeMapSlot[max_size];
     }
 
-    ~FixedMap() {
+    ~FixedSizeMap() {
         delete[] slots_;
     }
 
@@ -27,7 +27,7 @@ class FixedMap {
 
     V* find(const K& key) const {
         std::size_t index = getIndex(key);
-        FixedMapSlot& slot = slots_[index];
+        FixedSizeMapSlot& slot = slots_[index];
         if (slot.present && (slot.key == key)) {
             return &slot.value;
         } else {
@@ -37,7 +37,7 @@ class FixedMap {
 
     void set(const K& key, const V& value) {
         std::size_t index = getIndex(key);
-        FixedMapSlot& slot = slots_[index];
+        FixedSizeMapSlot& slot = slots_[index];
         slot.present = true;
         slot.value = value;
         slot.key = key;
@@ -45,16 +45,16 @@ class FixedMap {
 
  private:
     /*
-    A "slot" in a FixedMap.
+    A "slot" in a FixedSizeMap.
     */
-    struct FixedMapSlot {
+    struct FixedSizeMapSlot {
         bool present = false;
         std::size_t key;
         V value;
     };
 
     std::size_t max_size_;
-    FixedMapSlot* slots_;
+    FixedSizeMapSlot* slots_;
 
     std::size_t getIndex(const K& key) const {
         std::size_t hash = std::hash<K>{}(key);

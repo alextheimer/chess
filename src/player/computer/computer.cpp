@@ -13,20 +13,20 @@ static constexpr std::size_t CACHE_SIZE = 1000000;
 static constexpr std::size_t SEARCH_DEPTH = 6;
 
 Computer::ScoreCacheImpl::ScoreCacheImpl(std::size_t size) :
-        util::FixedMap<std::size_t, BoardScore>(size) {
+        util::FixedSizeMap<std::size_t, BoardScore>(size) {
     // intentionally blank
 }
 
 BoardScore* Computer::ScoreCacheImpl::end() const {
-    return util::FixedMap<std::size_t, BoardScore>::end();
+    return util::FixedSizeMap<std::size_t, BoardScore>::end();
 }
 
 BoardScore* Computer::ScoreCacheImpl::find(std::size_t key) const {
-    return util::FixedMap<std::size_t, BoardScore>::find(key);
+    return util::FixedSizeMap<std::size_t, BoardScore>::find(key);
 }
 
 void Computer::ScoreCacheImpl::set(std::size_t key, const BoardScore& value) {
-    return util::FixedMap<std::size_t, BoardScore>::set(key, value);
+    return util::FixedSizeMap<std::size_t, BoardScore>::set(key, value);
 }
 
 Computer::Computer(std::string name) :
