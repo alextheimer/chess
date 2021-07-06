@@ -31,15 +31,21 @@ struct Square {
     */
     Square(DimIndex row, DimIndex col);
 
-    // TODO(theimer): describe size_t params
-
     /*
     Returns true iff (row, col) describes a valid Square.
+
+    Note: row/col are std::size_t to prevent implicit casts to
+          types of lesser size (i.e. such that an argument is
+          truncated from 0x1000000000000000 to 0x00).
     */
     static bool isValidDims(std::size_t row, std::size_t col);
 
     /*
     Returns true iff `index` describes a valid square.
+
+    Note: index is std::size_t to prevent implicit casts to
+          types of lesser size (i.e. such that an argument is
+          truncated from 0x1000000000000000 to 0x00).
     */
     static bool isValidIndex(std::size_t index);
 
