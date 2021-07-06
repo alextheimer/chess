@@ -7,35 +7,35 @@ using board::PieceColor;
 using game::Move;
 using player::computer::BoardScore;
 using player::computer::ScoreCache;
-using player::computer::ScoreCacheImpl;
+using player::Computer;
 
 static constexpr std::size_t CACHE_SIZE = 1000000;
 static constexpr std::size_t SEARCH_DEPTH = 6;
 
-ScoreCacheImpl::ScoreCacheImpl(std::size_t size) :
+Computer::ScoreCacheImpl::ScoreCacheImpl(std::size_t size) :
         util::FixedMap<std::size_t, BoardScore>(size) {
     // intentionally blank
 }
 
-BoardScore* ScoreCacheImpl::end() const {
+BoardScore* Computer::ScoreCacheImpl::end() const {
     return util::FixedMap<std::size_t, BoardScore>::end();
 }
 
-BoardScore* ScoreCacheImpl::find(std::size_t key) const {
+BoardScore* Computer::ScoreCacheImpl::find(std::size_t key) const {
     return util::FixedMap<std::size_t, BoardScore>::find(key);
 }
 
-void ScoreCacheImpl::set(std::size_t key, const BoardScore& value) {
+void Computer::ScoreCacheImpl::set(std::size_t key, const BoardScore& value) {
     return util::FixedMap<std::size_t, BoardScore>::set(key, value);
 }
 
-player::Computer::Computer(std::string name) :
+Computer::Computer(std::string name) :
         score_cache_(CACHE_SIZE),
         Player(name) {
     // intentionally blank
 }
 
-Move player::Computer::getMove(const Board& board, PieceColor color) {
+Move Computer::getMove(const Board& board, PieceColor color) {
     return player::computer::alphaBetaSearch(
                                   board, color, SEARCH_DEPTH,
                                   &player::computer::basicBoardHeuristic,

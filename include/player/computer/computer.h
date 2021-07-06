@@ -10,19 +10,6 @@
 
 namespace player {
 
-namespace computer {
-
-class ScoreCacheImpl : public util::FixedMap<std::size_t,
-                                             player::computer::BoardScore>,
-                       public player::computer::ScoreCache {
- public:
-    ScoreCacheImpl(std::size_t size);
-    player::computer::BoardScore* end() const;
-    player::computer::BoardScore* find(std::size_t key) const;
-    void set(std::size_t key, const player::computer::BoardScore& value);
-};
-
-}  // namespace computer
 
 class Computer : public game::Player {
  public:
@@ -30,7 +17,17 @@ class Computer : public game::Player {
     game::Move getMove(const board::Board& board, board::PieceColor);
 
  private:
-    player::computer::ScoreCacheImpl score_cache_;
+    class ScoreCacheImpl : public util::FixedMap<std::size_t,
+                                             player::computer::BoardScore>,
+                       public player::computer::ScoreCache {
+     public:
+        ScoreCacheImpl(std::size_t size);
+        player::computer::BoardScore* end() const;
+        player::computer::BoardScore* find(std::size_t key) const;
+        void set(std::size_t key, const player::computer::BoardScore& value);
+    };
+
+    ScoreCacheImpl score_cache_;
 };
 
 }  // namespace player
