@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <limits>
+#include <string>
 
 using board::Board;
 using board::Square;

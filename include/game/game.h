@@ -3,6 +3,7 @@
 #ifndef GAME_GAME_H_
 #define GAME_GAME_H_
 
+#include <string>
 #include <ostream>
 #include <unordered_map>
 
@@ -16,7 +17,7 @@ Thrown by Game when a Player attempts an invalid move.
 */
 class InvalidMoveEx : public std::exception {
  public:
-    InvalidMoveEx(Move move);
+    explicit InvalidMoveEx(Move move);
     const char* what() const throw();
     Move getMove() const;
  private:
@@ -28,12 +29,11 @@ extern const std::unordered_map<board::Square, board::Piece> INIT_PIECE_MAP;
 
 class Player {
  public:
-    Player(std::string name);
+    explicit Player(std::string name);
     std::string getName();
     virtual Move getMove(const board::Board& board, board::PieceColor) = 0;
  private:
     std::string name_;
-
 };
 
 // Manages a game of chess between two Players.

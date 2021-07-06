@@ -11,7 +11,7 @@ namespace player {
 
 class Human : public game::Player {
  public:
-    Human(std::string name);
+    explicit Human(std::string name);
     game::Move getMove(const board::Board& board,
                        board::PieceColor color) override;
 };

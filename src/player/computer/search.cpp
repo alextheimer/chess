@@ -5,6 +5,8 @@
 #include <limits>
 #include <random>
 #include <cstdlib>
+#include <algorithm>
+#include <vector>
 
 #include "util/buffer.h"
 
@@ -119,9 +121,12 @@ typedef BoardScore (*AlphaBetaVariantFunc)(
 
 // These are passed as argument to alphaBetaSearchBase.
 //    See definition for details.
-typedef BoardScore (*ScoreUpdateFunc)(BoardScore score, BoardScore child_score);
-typedef bool (*ExitCondFunc)(BoardScore alpha, BoardScore beta, BoardScore score);
-typedef void (*BoundUpdateFunc)(BoardScore* alpha, BoardScore* beta, BoardScore score);
+typedef BoardScore (*ScoreUpdateFunc)(BoardScore score,
+                                      BoardScore child_score);
+typedef bool (*ExitCondFunc)(BoardScore alpha, BoardScore beta,
+                             BoardScore score);
+typedef void (*BoundUpdateFunc)(BoardScore* alpha, BoardScore* beta,
+                                BoardScore score);
 
 // Forward-declare both of the variants because their definitions
 //     reference each other.
@@ -248,7 +253,6 @@ BoardScore alphaBetaSearchBase(Board* board, PieceColor color,
     return score;
 }
 
-
 BoardScore alphaBetaSearchMax(Board* board, PieceColor color,
                            std::size_t depth_remaining,
                            BoardScore alpha, BoardScore beta,
@@ -272,7 +276,8 @@ BoardScore alphaBetaSearchMax(Board* board, PieceColor color,
     children. The opponent can prevent the player from ever reaching this node,
     so we disregard it in the search.
     */
-    ExitCondFunc exit_cond =  [](BoardScore alpha, BoardScore beta, BoardScore score) {
+    ExitCondFunc exit_cond =  [](BoardScore alpha, BoardScore beta,
+                                 BoardScore score) {
         return score >= beta;
     };
 
@@ -289,7 +294,6 @@ BoardScore alphaBetaSearchMax(Board* board, PieceColor color,
                                score_init, child_eval_variant, score_update,
                                exit_cond, bound_update, score_cache);
 }
-
 
 BoardScore alphaBetaSearchMin(Board* board, PieceColor color,
                            std::size_t depth_remaining,
@@ -317,7 +321,8 @@ BoardScore alphaBetaSearchMin(Board* board, PieceColor color,
     children. The maximizer (i.e. non-opponent player) can prevent the
     minimizer from ever reaching this node, so we disregard it in the search.
     */
-    ExitCondFunc exit_cond =  [](BoardScore alpha, BoardScore beta, BoardScore score) {
+    ExitCondFunc exit_cond =  [](BoardScore alpha, BoardScore beta,
+                                 BoardScore score) {
         return score <= alpha;
     };
 
@@ -348,7 +353,6 @@ Move player::computer::alphaBetaSearch(
                            std::size_t depth,
                            BoardHeuristicFunc board_heuristic,
                            IScoreCache* score_cache) {
-
     // this implementation is different enough from the alphaBetaSearch
     //     variants that it isn't processed thru  alphaBetaSearchBase
 

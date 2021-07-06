@@ -3,8 +3,8 @@
 #ifndef GAME_MOVE_H_
 #define GAME_MOVE_H_
 
-#include <string>
 #include <optional>
+#include <string>
 
 #include "board/board.h"
 

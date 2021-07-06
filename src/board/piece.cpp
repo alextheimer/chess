@@ -43,9 +43,7 @@ std::string std::to_string(Piece piece) {
 PieceColor board::oppositeColor(PieceColor color) {
     ASSERT(color != PieceColor::NUM_PIECE_COLORS, "invalid PieceColor");
     // just flip the single bit
-    return static_cast<PieceColor>(
-               static_cast<std::size_t>(color) ^ 1
-           );
+    return static_cast<PieceColor>(static_cast<std::size_t>(color) ^ 1);
 }
 
 CompressedPiece board::compressPiece(Piece piece) {

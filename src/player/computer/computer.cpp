@@ -1,4 +1,8 @@
+// Copyright 2021 Alex Theimer
+
 #include "player/computer/computer.h"
+
+#include <string>
 
 #include "player/computer/search.h"
 #include "util/assert.h"

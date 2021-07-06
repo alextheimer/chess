@@ -285,7 +285,8 @@ void game::unmakeMove(Board* board, Move move,
     #ifdef DEBUG
     if (replacement.has_value()) {
         ASSERT(board->getPieceColor(move.to) != replacement->color,
-                "piece has same color as replacement: " + std::to_string(move.to));
+                "piece has same color as replacement: "
+                + std::to_string(move.to));
     }
     # endif
 

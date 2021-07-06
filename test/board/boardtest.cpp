@@ -324,7 +324,6 @@ Covers:
         board diffs: piece added/removed, piece moved/unmoved, piece removed/added
 */
 TEST(BoardTest, ZobTest) {
-
     /*
     NOTE: This framework ensures that hashes do not match until
           the final diff has been applied.
@@ -416,7 +415,7 @@ TEST(BoardTest, ZobTest) {
         }}
     };
 
-    for (const TestSpec& spec : spec_vec ) {
+    for (const TestSpec& spec : spec_vec) {
         Board board(spec.piece_map);
         ZobHash hash_before = board.getZobHash();
 

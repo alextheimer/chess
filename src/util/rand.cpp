@@ -1,3 +1,5 @@
+// Copyright 2021 Alex Theimer
+
 #include "util/rand.h"
 
 #include <random>

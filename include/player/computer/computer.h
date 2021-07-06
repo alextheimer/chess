@@ -1,3 +1,5 @@
+// Copyright 2021 Alex Theimer
+
 #ifndef PLAYER_COMPUTER_H_
 #define PLAYER_COMPUTER_H_
 
@@ -13,7 +15,7 @@ namespace player {
 
 class Computer : public game::Player {
  public:
-    Computer(std::string name);
+    explicit Computer(std::string name);
     game::Move getMove(const board::Board& board, board::PieceColor) override;
 
  private:
@@ -21,7 +23,7 @@ class Computer : public game::Player {
                                                   player::computer::BoardScore>,
                            public player::computer::IScoreCache {
      public:
-        ScoreCacheImpl(std::size_t size);
+        explicit ScoreCacheImpl(std::size_t size);
         player::computer::BoardScore* end() const override;
         player::computer::BoardScore* find(const board::Board& board,
                                            std::size_t depth) const override;

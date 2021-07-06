@@ -1,3 +1,5 @@
+// Copyright 2021 Alex Theimer
+
 #ifndef PLAYER_COMPUTER_SCORECACHE_H_
 #define PLAYER_COMPUTER_SCORECACHE_H_
 
@@ -6,7 +8,7 @@
 #include "board/board.h"
 
 namespace player {
-namespace computer{
+namespace computer {
 
 typedef int64_t BoardScore;
 

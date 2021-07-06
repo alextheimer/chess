@@ -1,8 +1,11 @@
+// Copyright 2021 Alex Theimer
+
 #ifndef BOARD_SQUARE_H_
 #define BOARD_SQUARE_H_
 
 #include <cstdint>
 #include <ostream>
+#include <string>
 
 namespace board {
 

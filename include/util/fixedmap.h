@@ -1,3 +1,5 @@
+// Copyright 2021 Alex Theimer
+
 #ifndef UTIL_FIXEDMAP_H_
 #define UTIL_FIXEDMAP_H_
 
@@ -14,7 +16,7 @@ Collisions are simply replaced with the most-recent value.
 template <typename K, typename V>
 class FixedSizeMap {
  public:
-    FixedSizeMap(std::size_t size) :
+    explicit FixedSizeMap(std::size_t size) :
             size_(size),
             slots_(new FixedSizeMapSlot[size]) {
        // intentionally blank

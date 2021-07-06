@@ -1,3 +1,5 @@
+// Copyright 2021 Alex Theimer
+
 #ifndef UTIL_RAND_H_
 #define UTIL_RAND_H_
 

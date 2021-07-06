@@ -1,6 +1,10 @@
-#include <sstream>
+// Copyright 2021 Alex Theimer
 
 #include "board/square.h"
+
+#include <string>
+#include <sstream>
+
 #include "util/assert.h"
 #include "util/math.h"
 
@@ -13,8 +17,10 @@ const std::size_t DIM_MASK =
         (static_cast<std::size_t>(1) << NUM_DIM_BITS) - 1;
 
 Square::Square(DimIndex row, DimIndex col) : row(row), col(col) {
-    ASSERT(row >= 0 && row < Square::MAX_DIM_VALUE, "row: " + std::to_string(row));
-    ASSERT(col >= 0 && col < Square::MAX_DIM_VALUE, "col: " + std::to_string(col));
+    ASSERT(row >= 0 && row < Square::MAX_DIM_VALUE,
+            "row: " + std::to_string(row));
+    ASSERT(col >= 0 && col < Square::MAX_DIM_VALUE,
+            "col: " + std::to_string(col));
 }
 
 bool Square::isValidDims(std::size_t row, std::size_t col) {

@@ -167,7 +167,7 @@ class Board {
 
 namespace std {
 
-//TODO(theimer): make friends with Board and remove getZobHash()
+// TODO(theimer): make friends with Board and remove getZobHash()
 template <> struct hash<board::Board> {
     std::size_t operator()(const board::Board& board) const;
 };
