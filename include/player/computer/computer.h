@@ -14,7 +14,7 @@ namespace player {
 class Computer : public game::Player {
  public:
     Computer(std::string name);
-    game::Move getMove(const board::Board& board, board::PieceColor);
+    game::Move getMove(const board::Board& board, board::PieceColor) override;
 
  private:
     class ScoreCacheImpl : public util::FixedSizeMap<std::size_t,
@@ -22,11 +22,11 @@ class Computer : public game::Player {
                            public player::computer::ScoreCache {
      public:
         ScoreCacheImpl(std::size_t size);
-        player::computer::BoardScore* end() const;
+        player::computer::BoardScore* end() const override;
         player::computer::BoardScore* find(const board::Board& board,
-                                           std::size_t depth) const;
+                                           std::size_t depth) const override;
         void set(const board::Board& board, std::size_t depth,
-                 player::computer::BoardScore value);
+                 player::computer::BoardScore value) override;
     };
 
     ScoreCacheImpl score_cache_;
