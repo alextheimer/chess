@@ -18,13 +18,15 @@ class Computer : public game::Player {
 
  private:
     class ScoreCacheImpl : public util::FixedSizeMap<std::size_t,
-                                             player::computer::BoardScore>,
-                       public player::computer::ScoreCache {
+                                                  player::computer::BoardScore>,
+                           public player::computer::ScoreCache {
      public:
         ScoreCacheImpl(std::size_t size);
         player::computer::BoardScore* end() const;
-        player::computer::BoardScore* find(std::size_t key) const;
-        void set(std::size_t key, player::computer::BoardScore value);
+        player::computer::BoardScore* find(const board::Board& board,
+                                           std::size_t depth) const;
+        void set(const board::Board& board, std::size_t depth,
+                 player::computer::BoardScore value);
     };
 
     ScoreCacheImpl score_cache_;

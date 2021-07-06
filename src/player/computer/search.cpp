@@ -188,8 +188,8 @@ BoardScore alphaBetaSearchBase(Board* board, PieceColor color,
             + std::to_string(depth_remaining));
 
     // TODO(theimer): make this a separate function
-    ZobHash hash_with_depth = board->getZobHash() + depth_remaining;
-    BoardScore* score_ptr = score_cache->find(hash_with_depth);
+    // TODO(theimer): possible recomputation of cache index below
+    BoardScore* score_ptr = score_cache->find(*board, depth_remaining);
     if (score_ptr != score_cache->end()) {
         return *score_ptr;
     }
@@ -197,7 +197,7 @@ BoardScore alphaBetaSearchBase(Board* board, PieceColor color,
     if (depth_remaining == 0) {
         // leaf node!
         BoardScore score = board_heuristic(*board, heuristic_eval_color);
-        score_cache->set(hash_with_depth, score);
+        score_cache->set(*board, depth_remaining, score);
         return score;
     }
 
@@ -208,7 +208,7 @@ BoardScore alphaBetaSearchBase(Board* board, PieceColor color,
     // TODO(theimer): unsure if this is actually needed
     if (num_moves == 0) {
         BoardScore score = board_heuristic(*board, heuristic_eval_color);
-        score_cache->set(hash_with_depth, score);
+        score_cache->set(*board, depth_remaining, score);
         return score;
     }
 
@@ -244,7 +244,7 @@ BoardScore alphaBetaSearchBase(Board* board, PieceColor color,
         bound_update(&alpha, &beta, score);
     }
 
-    score_cache->set(hash_with_depth, score);
+    score_cache->set(*board, depth_remaining, score);
     return score;
 }
 

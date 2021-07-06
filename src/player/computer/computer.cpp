@@ -9,24 +9,35 @@ using player::computer::BoardScore;
 using player::computer::ScoreCache;
 using player::Computer;
 
+typedef util::FixedSizeMap<std::size_t, BoardScore> BaseMap;
+
 static constexpr std::size_t CACHE_SIZE = 1000000;
 static constexpr std::size_t SEARCH_DEPTH = 6;
 
+std::size_t hashWithDepth(const Board& board, std::size_t depth) {
+    // TODO(theimer): something more clever (also use std::hash)
+    return board.getZobHash() + depth;
+}
+
 Computer::ScoreCacheImpl::ScoreCacheImpl(std::size_t size) :
-        util::FixedSizeMap<std::size_t, BoardScore>(size) {
+                                         BaseMap(size) {
     // intentionally blank
 }
 
 BoardScore* Computer::ScoreCacheImpl::end() const {
-    return util::FixedSizeMap<std::size_t, BoardScore>::end();
+    return BaseMap::end();
 }
 
-BoardScore* Computer::ScoreCacheImpl::find(std::size_t key) const {
-    return util::FixedSizeMap<std::size_t, BoardScore>::find(key);
+BoardScore* Computer::ScoreCacheImpl::find(const Board& board,
+                                           std::size_t depth) const {
+    std::size_t hash_with_depth = hashWithDepth(board, depth);
+    return BaseMap::find(hash_with_depth);
 }
 
-void Computer::ScoreCacheImpl::set(std::size_t key, BoardScore value) {
-    return util::FixedSizeMap<std::size_t, BoardScore>::set(key, value);
+void Computer::ScoreCacheImpl::set(const Board& board, std::size_t depth,
+                                   BoardScore value) {
+    std::size_t hash_with_depth = hashWithDepth(board, depth);
+    BaseMap::set(hash_with_depth, value);
 }
 
 Computer::Computer(std::string name) :
