@@ -13,8 +13,8 @@ TODO(theimer)
 template <typename K, typename V>
 class FixedSizeMap {
  public:
-    FixedSizeMap(std::size_t max_size) : max_size_(max_size) {
-        slots_ = new FixedSizeMapSlot[max_size];
+    FixedSizeMap(std::size_t size) : size_(size) {
+        slots_ = new FixedSizeMapSlot[size];
     }
 
     ~FixedSizeMap() {
@@ -22,7 +22,7 @@ class FixedSizeMap {
     }
 
     V* end() const {
-        return reinterpret_cast<V*>(slots_ + max_size_);
+        return reinterpret_cast<V*>(slots_ + size_);
     }
 
     V* find(const K& key) const {
@@ -53,13 +53,13 @@ class FixedSizeMap {
         V value;
     };
 
-    std::size_t max_size_;
+    std::size_t size_;
     FixedSizeMapSlot* slots_;
 
     std::size_t getIndex(const K& key) const {
         std::size_t hash = std::hash<K>{}(key);
-        std::size_t index =  hash % max_size_;
-        ASSERT(index < max_size_, "invalid index: " + std::to_string(index));
+        std::size_t index =  hash % size_;
+        ASSERT(index < size_, "invalid index: " + std::to_string(index));
         return index;
     }
 };
