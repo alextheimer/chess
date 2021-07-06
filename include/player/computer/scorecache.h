@@ -6,12 +6,13 @@
 namespace player {
 namespace computer{
 
-template <typename K, typename V>
+typedef int64_t BoardScore;
+
 class ScoreCache {
  public:
-    virtual V* end() const  = 0;
-    virtual V* find(const K& key) const = 0;
-    virtual void set(const K& key, const V& value) = 0;
+    virtual BoardScore* end() const  = 0;
+    virtual BoardScore* find(std::size_t key) const = 0;
+    virtual void set(std::size_t key, const BoardScore& value) = 0;
 };
 
 }  // namespace computer
