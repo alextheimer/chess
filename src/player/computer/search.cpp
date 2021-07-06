@@ -15,6 +15,8 @@ using board::Square;
 using board::ZobHash;
 
 using player::computer::ScoreCache;
+using player::computer::BoardScore;
+using player::computer::BoardHeuristicFunc;
 
 using game::Move;
 
@@ -107,22 +109,19 @@ using game::Move;
 ################################################################################
 */
 
-// evaluates `board` from the perspective of `color`
-typedef int64_t (*BoardHeuristicFunc)(const Board& board, PieceColor color);
-
 // signature of alphaBetaSearchMin and alphaBetaSearchMax
-typedef int64_t (*AlphaBetaVariantFunc)(
+typedef BoardScore (*AlphaBetaVariantFunc)(
                            Board* board, PieceColor color,
                            std::size_t depth_remaining,
-                           int64_t alpha, int64_t beta,
+                           BoardScore alpha, BoardScore beta,
                            BoardHeuristicFunc board_heuristic,
                            ScoreCache* score_cache);
 
 // These are passed as argument to alphaBetaSearchBase.
 //    See definition for details.
-typedef int64_t (*ScoreUpdateFunc)(int64_t score, int64_t child_score);
-typedef bool (*ExitCondFunc)(int64_t alpha, int64_t beta, int64_t score);
-typedef void (*BoundUpdateFunc)(int64_t* alpha, int64_t* beta, int64_t score);
+typedef BoardScore (*ScoreUpdateFunc)(BoardScore score, BoardScore child_score);
+typedef bool (*ExitCondFunc)(BoardScore alpha, BoardScore beta, BoardScore score);
+typedef void (*BoundUpdateFunc)(BoardScore* alpha, BoardScore* beta, BoardScore score);
 
 // Forward-declare both of the variants because their definitions
 //     reference each other.
@@ -136,9 +135,9 @@ A "friendly" node in the search tree.
 @param color: the color of the maximizing player.
 @param depth_remaining: must be >= 0
 */
-int64_t alphaBetaSearchMax(Board* board, PieceColor color,
+BoardScore alphaBetaSearchMax(Board* board, PieceColor color,
                            std::size_t depth_remaining,
-                           int64_t alpha, int64_t beta,
+                           BoardScore alpha, BoardScore beta,
                            BoardHeuristicFunc board_heuristic,
                            ScoreCache* score_cache);
 /*
@@ -150,9 +149,9 @@ An "opponent" node of the search tree.
 @param color: the color of the maximizing player.
 @param depth_remaining: must be >= 0
 */
-int64_t alphaBetaSearchMin(Board* board, PieceColor color,
+BoardScore alphaBetaSearchMin(Board* board, PieceColor color,
                            std::size_t depth_remaining,
-                           int64_t alpha, int64_t beta,
+                           BoardScore alpha, BoardScore beta,
                            BoardHeuristicFunc board_heuristic,
                            ScoreCache* score_cache);
 
@@ -173,12 +172,12 @@ The "machinery" of the alphaBetaSearch variants.
 @param exit_cond: returns true iff children no longer need to be evaluated.
 @param bound_update: updates alpha and/or beta.
 */
-int64_t alphaBetaSearchBase(Board* board, PieceColor color,
+BoardScore alphaBetaSearchBase(Board* board, PieceColor color,
                             std::size_t depth_remaining,
-                            int64_t alpha, int64_t beta,
+                            BoardScore alpha, BoardScore beta,
                             BoardHeuristicFunc board_heuristic,
                             PieceColor heuristic_eval_color,
-                            int64_t score_init,
+                            BoardScore score_init,
                             AlphaBetaVariantFunc child_eval_variant,
                             ScoreUpdateFunc score_update,
                             ExitCondFunc exit_cond,
@@ -190,14 +189,14 @@ int64_t alphaBetaSearchBase(Board* board, PieceColor color,
 
     // TODO(theimer): make this a separate function
     ZobHash hash_with_depth = board->getZobHash() + depth_remaining;
-    int64_t* score_ptr = score_cache->find(hash_with_depth);
+    BoardScore* score_ptr = score_cache->find(hash_with_depth);
     if (score_ptr != score_cache->end()) {
         return *score_ptr;
     }
 
     if (depth_remaining == 0) {
         // leaf node!
-        int64_t score = board_heuristic(*board, heuristic_eval_color);
+        BoardScore score = board_heuristic(*board, heuristic_eval_color);
         score_cache->set(hash_with_depth, score);
         return score;
     }
@@ -208,13 +207,13 @@ int64_t alphaBetaSearchBase(Board* board, PieceColor color,
 
     // TODO(theimer): unsure if this is actually needed
     if (num_moves == 0) {
-        int64_t score = board_heuristic(*board, heuristic_eval_color);
+        BoardScore score = board_heuristic(*board, heuristic_eval_color);
         score_cache->set(hash_with_depth, score);
         return score;
     }
 
     // start evaluating children...
-    int64_t score = score_init;
+    BoardScore score = score_init;
     for (std::size_t i = 0; i < num_moves; ++i) {
         // Temporarily make a Move and store any "killed" opponent piece.
         Move move = move_buffer.get(i);
@@ -224,7 +223,7 @@ int64_t alphaBetaSearchBase(Board* board, PieceColor color,
         // Evaluate the Board that results from the Move.
         // Note: Children are evaluated with the opposite color
         //     and (depth_remaining - 1)
-        int64_t child_score =
+        BoardScore child_score =
                 child_eval_variant(board, board::oppositeColor(color),
                                    depth_remaining - 1, alpha, beta,
                                    board_heuristic, score_cache);
@@ -250,20 +249,20 @@ int64_t alphaBetaSearchBase(Board* board, PieceColor color,
 }
 
 
-int64_t alphaBetaSearchMax(Board* board, PieceColor color,
+BoardScore alphaBetaSearchMax(Board* board, PieceColor color,
                            std::size_t depth_remaining,
-                           int64_t alpha, int64_t beta,
+                           BoardScore alpha, BoardScore beta,
                            BoardHeuristicFunc board_heuristic,
                            ScoreCache* score_cache) {
 
     // Assume the worst-possible score.
-    int64_t score_init = std::numeric_limits<int64_t>::min();
+    BoardScore score_init = std::numeric_limits<BoardScore>::min();
 
     // children are evaluated as minimizers (i.e. opponents)
     AlphaBetaVariantFunc child_eval_variant = alphaBetaSearchMin;
 
     // this node of the search wants to maximize its score
-    ScoreUpdateFunc score_update = [](int64_t score, int64_t child_score){
+    ScoreUpdateFunc score_update = [](BoardScore score, BoardScore child_score){
         return std::max(score, child_score);
     };
 
@@ -273,13 +272,13 @@ int64_t alphaBetaSearchMax(Board* board, PieceColor color,
     children. The opponent can prevent the player from ever reaching this node,
     so we disregard it in the search.
     */
-    ExitCondFunc exit_cond =  [](int64_t alpha, int64_t beta, int64_t score) {
+    ExitCondFunc exit_cond =  [](BoardScore alpha, BoardScore beta, BoardScore score) {
         return score >= beta;
     };
 
     // store the "player's best-possible score"
     BoundUpdateFunc bound_update =
-            [](int64_t* alpha, int64_t* beta, int64_t score) {
+            [](BoardScore* alpha, BoardScore* beta, BoardScore score) {
         *alpha = std::max(*alpha, score);
     };
 
@@ -292,23 +291,23 @@ int64_t alphaBetaSearchMax(Board* board, PieceColor color,
 }
 
 
-int64_t alphaBetaSearchMin(Board* board, PieceColor color,
+BoardScore alphaBetaSearchMin(Board* board, PieceColor color,
                            std::size_t depth_remaining,
-                           int64_t alpha, int64_t beta,
+                           BoardScore alpha, BoardScore beta,
                            BoardHeuristicFunc board_heuristic,
                            ScoreCache* score_cache) {
 
 
     // Assume the opponent's worst-possible score (i.e. the max
     //     score possible for the player)
-    int64_t score_init = std::numeric_limits<int64_t>::max();
+    BoardScore score_init = std::numeric_limits<BoardScore>::max();
 
     // children are evaluated as maximizers (i.e. the "player's" turn)
     AlphaBetaVariantFunc child_eval_variant = alphaBetaSearchMax;
 
     // these "opponent" nodes want to find the minimum-possible
     //     score for the player.
-    ScoreUpdateFunc score_update = [](int64_t score, int64_t child_score){
+    ScoreUpdateFunc score_update = [](BoardScore score, BoardScore child_score){
         return std::min(score, child_score);
     };
 
@@ -318,14 +317,14 @@ int64_t alphaBetaSearchMin(Board* board, PieceColor color,
     children. The maximizer (i.e. non-opponent player) can prevent the
     minimizer from ever reaching this node, so we disregard it in the search.
     */
-    ExitCondFunc exit_cond =  [](int64_t alpha, int64_t beta, int64_t score) {
+    ExitCondFunc exit_cond =  [](BoardScore alpha, BoardScore beta, BoardScore score) {
         return score <= alpha;
     };
 
 
     // store the "player's worst-possible score"
     BoundUpdateFunc bound_update =
-            [](int64_t* alpha, int64_t* beta, int64_t score) {
+            [](BoardScore* alpha, BoardScore* beta, BoardScore score) {
         *beta = std::min(*beta, score);
     };
 
@@ -367,15 +366,15 @@ Move player::computer::alphaBetaSearch(
     // This is nearly the same implementation as alphaBetaSearchMax,
     //     but all highest-scoring moves are stored in a vector.
     std::vector<Move> best_moves;
-    int64_t alpha = std::numeric_limits<int64_t>::min();
+    BoardScore alpha = std::numeric_limits<BoardScore>::min();
     for (std::size_t i = 0; i < num_moves; ++i) {
         Move move = move_buffer.get(i);
         std::optional<Piece> overwritten_opt =
                 game::makeMove(&board_copy, move);
-        int64_t score = alphaBetaSearchMin(
+        BoardScore score = alphaBetaSearchMin(
                              &board_copy, board::oppositeColor(color),
                              depth - 1, alpha,
-                             std::numeric_limits<int64_t>::max(),  // beta
+                             std::numeric_limits<BoardScore>::max(),  // beta
                              board_heuristic, score_cache);
         game::unmakeMove(&board_copy, move, overwritten_opt);
         if (score > alpha) {
@@ -392,7 +391,7 @@ Move player::computer::alphaBetaSearch(
     return best_moves[rand() % best_moves.size()];
 }
 
-int64_t player::computer::basicBoardHeuristic(const Board& board,
+BoardScore player::computer::basicBoardHeuristic(const Board& board,
                                               PieceColor color) {
     // just the negative count of the opponent pieces
     util::Buffer<Square, Board::SIZE> dummy_buffer;

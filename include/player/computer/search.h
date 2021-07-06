@@ -11,10 +11,10 @@
 namespace player {
 namespace computer {
 
-// TODO(theimer): directly associate players with colors?
-// TODO(theimer): typedef scores; remove Zob dependency-- just use size_t
-
-typedef util::FixedMap<int64_t> ScoreCache;
+typedef int64_t BoardScore;
+typedef BoardScore (*BoardHeuristicFunc)(const board::Board&,
+                                         board::PieceColor color);
+typedef util::FixedMap<BoardScore> ScoreCache;
 
 /*
 Searches the tree of possible Boards to a certain depth, and returns
@@ -33,8 +33,7 @@ happens, one of the "best-possible" Moves is ***RANDOMLY*** returned.
 game::Move alphaBetaSearch(
         const board::Board& board, board::PieceColor color,
         std::size_t depth,
-        int64_t (*board_heuristic)(const board::Board&,
-                                   board::PieceColor color),
+        BoardHeuristicFunc board_heuristic,
         ScoreCache* score_cache);
 
 /*
@@ -45,7 +44,8 @@ i.e. "More enemies = worse."
               evaluated. Example: if color == BLACK, then a Board is
               evaluated worse for every additional WHITE piece.
 */
-int64_t basicBoardHeuristic(const board::Board& board, board::PieceColor color);
+BoardScore basicBoardHeuristic(const board::Board& board,
+                               board::PieceColor color);
 
 }  // namespace computer
 }  // namespace player
