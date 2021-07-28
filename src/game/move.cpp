@@ -99,11 +99,11 @@ std::size_t getMovesVector(const Board& board, PieceColor color, Square square,
             curr_sq = Square(new_row, new_col);
             if (!board.squareIsOccupied(curr_sq)) {
                 // square is empty!
-                *move_ptr = (Move){ square, curr_sq };
+                *move_ptr = Move{ square, curr_sq };
                 ++move_ptr;
             } else if (!board.squareIsOccupiedColor(curr_sq, color)) {
                 // square occupied by enemy
-                *move_ptr = (Move){ square, curr_sq };
+                *move_ptr = Move{ square, curr_sq };
                 ++move_ptr;
                 break;
             } else {
@@ -160,10 +160,10 @@ Fills a buffer with all valid moves by a rook.
 std::size_t getMovesRook(const Board& board, PieceColor color,
                          Square square, Move* buffer) {
     static const std::array<Diff, 4> vectors = {{
-            (Diff){  0,  1 },
-            (Diff){  1,  0 },
-            (Diff){ -1,  0 },
-            (Diff){  0, -1 },
+            Diff{  0,  1 },
+            Diff{  1,  0 },
+            Diff{ -1,  0 },
+            Diff{  0, -1 },
     }};
 
     return getMovesVector(board, color, square, vectors, buffer);
@@ -175,10 +175,10 @@ Fills a buffer with all valid moves by a bishop.
 std::size_t getMovesBishop(const Board& board, PieceColor color,
                            Square square, Move* buffer) {
     static const std::array<Diff, 4> vectors = {{
-            (Diff){  1,  1 },
-            (Diff){  1, -1 },
-            (Diff){ -1,  1 },
-            (Diff){ -1, -1 },
+            Diff{  1,  1 },
+            Diff{  1, -1 },
+            Diff{ -1,  1 },
+            Diff{ -1, -1 },
     }};
 
     return getMovesVector(board, color, square, vectors, buffer);
@@ -190,14 +190,14 @@ Fills a buffer with all valid moves by a queen.
 std::size_t getMovesQueen(const Board& board, PieceColor color,
                           Square square, Move* buffer) {
     static const std::array<Diff, 8> vectors = {{
-            (Diff){  1,  1 },
-            (Diff){  1, -1 },
-            (Diff){ -1,  1 },
-            (Diff){ -1, -1 },
-            (Diff){  0,  1 },
-            (Diff){  1,  0 },
-            (Diff){ -1,  0 },
-            (Diff){  0, -1 },
+            Diff{  1,  1 },
+            Diff{  1, -1 },
+            Diff{ -1,  1 },
+            Diff{ -1, -1 },
+            Diff{  0,  1 },
+            Diff{  1,  0 },
+            Diff{ -1,  0 },
+            Diff{  0, -1 },
     }};
 
     return getMovesVector(board, color, square, vectors, buffer);

@@ -34,18 +34,18 @@ Note:
 */
 
 static const std::unordered_map<Piece, char> PIECE_CHAR_MAP = {
-        { (Piece){ PieceType::BISHOP, PieceColor::BLACK }, 'B' },
-        { (Piece){ PieceType::BISHOP, PieceColor::WHITE }, 'b' },
-        { (Piece){ PieceType::KNIGHT, PieceColor::BLACK }, 'N' },
-        { (Piece){ PieceType::KNIGHT, PieceColor::WHITE }, 'n' },
-        { (Piece){ PieceType::ROOK,  PieceColor::BLACK }, 'R' },
-        { (Piece){ PieceType::ROOK, PieceColor::WHITE }, 'r' },
-        { (Piece){ PieceType::KING, PieceColor::BLACK }, 'K' },
-        { (Piece){ PieceType::KING, PieceColor::WHITE }, 'k' },
-        { (Piece){ PieceType::QUEEN, PieceColor::BLACK }, 'Q' },
-        { (Piece){ PieceType::QUEEN, PieceColor::WHITE }, 'q' },
-        { (Piece){ PieceType::PAWN, PieceColor::BLACK }, 'P' },
-        { (Piece){ PieceType::PAWN, PieceColor::WHITE }, 'p' }
+        { Piece{ PieceType::BISHOP, PieceColor::BLACK }, 'B' },
+        { Piece{ PieceType::BISHOP, PieceColor::WHITE }, 'b' },
+        { Piece{ PieceType::KNIGHT, PieceColor::BLACK }, 'N' },
+        { Piece{ PieceType::KNIGHT, PieceColor::WHITE }, 'n' },
+        { Piece{ PieceType::ROOK,  PieceColor::BLACK }, 'R' },
+        { Piece{ PieceType::ROOK, PieceColor::WHITE }, 'r' },
+        { Piece{ PieceType::KING, PieceColor::BLACK }, 'K' },
+        { Piece{ PieceType::KING, PieceColor::WHITE }, 'k' },
+        { Piece{ PieceType::QUEEN, PieceColor::BLACK }, 'Q' },
+        { Piece{ PieceType::QUEEN, PieceColor::WHITE }, 'q' },
+        { Piece{ PieceType::PAWN, PieceColor::BLACK }, 'P' },
+        { Piece{ PieceType::PAWN, PieceColor::WHITE }, 'p' }
 };
 
 std::string makeIndexSquareString(std::size_t index) {
@@ -140,7 +140,7 @@ Piece Board::getPieceIndex(std::size_t index) const {
             "invalid index: " + std::to_string(index));
     PieceType type = getPieceTypeIndex(index);
     PieceColor color = getPieceColorIndex(index);
-    return (Piece){ type, color };
+    return Piece{ type, color };
 }
 
 void Board::setPieceIndex(Piece piece, std::size_t index) {

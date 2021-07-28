@@ -81,19 +81,19 @@ Covers:
 TEST(BoardTest, SquareIsOccupiedTest) {
     std::vector<std::unordered_map<Square, Piece>> piece_maps = {
         {},
-        {{Square(0, 0), (Piece){PieceType::KING, PieceColor::BLACK}}},
-        {{Square(7, 7), (Piece){PieceType::PAWN, PieceColor::WHITE}}},
+        {{Square(0, 0), Piece{PieceType::KING, PieceColor::BLACK}}},
+        {{Square(7, 7), Piece{PieceType::PAWN, PieceColor::WHITE}}},
         {
-            {Square(0, 0), (Piece){PieceType::QUEEN, PieceColor::WHITE}},
-            {Square(0, 7), (Piece){PieceType::BISHOP, PieceColor::WHITE}},
-            {Square(7, 0), (Piece){PieceType::ROOK, PieceColor::BLACK}},
-            {Square(7, 7), (Piece){PieceType::KNIGHT, PieceColor::WHITE}},
+            {Square(0, 0), Piece{PieceType::QUEEN, PieceColor::WHITE}},
+            {Square(0, 7), Piece{PieceType::BISHOP, PieceColor::WHITE}},
+            {Square(7, 0), Piece{PieceType::ROOK, PieceColor::BLACK}},
+            {Square(7, 7), Piece{PieceType::KNIGHT, PieceColor::WHITE}},
         },
         {
-            {Square(4, 5), (Piece){PieceType::QUEEN, PieceColor::BLACK}},
-            {Square(0, 7), (Piece){PieceType::KING, PieceColor::WHITE}},
-            {Square(6, 1), (Piece){PieceType::PAWN, PieceColor::BLACK}},
-            {Square(3, 2), (Piece){PieceType::PAWN, PieceColor::BLACK}},
+            {Square(4, 5), Piece{PieceType::QUEEN, PieceColor::BLACK}},
+            {Square(0, 7), Piece{PieceType::KING, PieceColor::WHITE}},
+            {Square(6, 1), Piece{PieceType::PAWN, PieceColor::BLACK}},
+            {Square(3, 2), Piece{PieceType::PAWN, PieceColor::BLACK}},
         },
     };
 
@@ -128,19 +128,19 @@ Covers:
 TEST(BoardTest, GetSetTest) {
     std::vector<std::unordered_map<Square, Piece>> piece_maps = {
         {},
-        {{Square(0, 0), (Piece){PieceType::KING, PieceColor::BLACK}}},
-        {{Square(7, 7), (Piece){PieceType::PAWN, PieceColor::WHITE}}},
+        {{Square(0, 0), Piece{PieceType::KING, PieceColor::BLACK}}},
+        {{Square(7, 7), Piece{PieceType::PAWN, PieceColor::WHITE}}},
         {
-            {Square(0, 0), (Piece){PieceType::QUEEN, PieceColor::WHITE}},
-            {Square(0, 7), (Piece){PieceType::BISHOP, PieceColor::WHITE}},
-            {Square(7, 0), (Piece){PieceType::ROOK, PieceColor::BLACK}},
-            {Square(7, 7), (Piece){PieceType::KNIGHT, PieceColor::WHITE}},
+            {Square(0, 0), Piece{PieceType::QUEEN, PieceColor::WHITE}},
+            {Square(0, 7), Piece{PieceType::BISHOP, PieceColor::WHITE}},
+            {Square(7, 0), Piece{PieceType::ROOK, PieceColor::BLACK}},
+            {Square(7, 7), Piece{PieceType::KNIGHT, PieceColor::WHITE}},
         },
         {
-            {Square(4, 5), (Piece){PieceType::QUEEN, PieceColor::BLACK}},
-            {Square(0, 7), (Piece){PieceType::KING, PieceColor::WHITE}},
-            {Square(6, 1), (Piece){PieceType::PAWN, PieceColor::BLACK}},
-            {Square(3, 2), (Piece){PieceType::PAWN, PieceColor::BLACK}},
+            {Square(4, 5), Piece{PieceType::QUEEN, PieceColor::BLACK}},
+            {Square(0, 7), Piece{PieceType::KING, PieceColor::WHITE}},
+            {Square(6, 1), Piece{PieceType::PAWN, PieceColor::BLACK}},
+            {Square(3, 2), Piece{PieceType::PAWN, PieceColor::BLACK}},
         },
     };
 
@@ -189,37 +189,37 @@ TEST(BoardTest, MoveTest) {
 
     std::vector<TestSpec> specs = {
         {
-            {{Square(0, 0), (Piece){PieceType::KING, PieceColor::BLACK}}},
-            {(Move){Square(0, 0), Square(7, 7)}}
+            {{Square(0, 0), Piece{PieceType::KING, PieceColor::BLACK}}},
+            {Move{Square(0, 0), Square(7, 7)}}
         },
         {
-            {{Square(7, 7), (Piece){PieceType::PAWN, PieceColor::WHITE}}},
-            {(Move){Square(7, 7), Square(0, 0)}}
+            {{Square(7, 7), Piece{PieceType::PAWN, PieceColor::WHITE}}},
+            {Move{Square(7, 7), Square(0, 0)}}
         },
         {
             {
-                {Square(0, 0), (Piece){PieceType::QUEEN, PieceColor::WHITE}},
-                {Square(0, 7), (Piece){PieceType::BISHOP, PieceColor::WHITE}},
-                {Square(7, 0), (Piece){PieceType::ROOK, PieceColor::BLACK}},
-                {Square(7, 7), (Piece){PieceType::KNIGHT, PieceColor::WHITE}},
+                {Square(0, 0), Piece{PieceType::QUEEN, PieceColor::WHITE}},
+                {Square(0, 7), Piece{PieceType::BISHOP, PieceColor::WHITE}},
+                {Square(7, 0), Piece{PieceType::ROOK, PieceColor::BLACK}},
+                {Square(7, 7), Piece{PieceType::KNIGHT, PieceColor::WHITE}},
             },
             {
-                (Move){Square(0, 7), Square(3, 2)},
-                (Move){Square(7, 0), Square(2, 3)},
+                Move{Square(0, 7), Square(3, 2)},
+                Move{Square(7, 0), Square(2, 3)},
             }
         },
         {
             {
-                {Square(4, 5), (Piece){PieceType::QUEEN, PieceColor::BLACK}},
-                {Square(1, 6), (Piece){PieceType::KING, PieceColor::WHITE}},
-                {Square(6, 1), (Piece){PieceType::PAWN, PieceColor::BLACK}},
-                {Square(3, 2), (Piece){PieceType::PAWN, PieceColor::BLACK}},
+                {Square(4, 5), Piece{PieceType::QUEEN, PieceColor::BLACK}},
+                {Square(1, 6), Piece{PieceType::KING, PieceColor::WHITE}},
+                {Square(6, 1), Piece{PieceType::PAWN, PieceColor::BLACK}},
+                {Square(3, 2), Piece{PieceType::PAWN, PieceColor::BLACK}},
             },
             {
-                (Move){Square(4, 5), Square(2, 3)},
-                (Move){Square(1, 6), Square(7, 0)},
-                (Move){Square(6, 1), Square(0, 0)},
-                (Move){Square(3, 2), Square(5, 5)},
+                Move{Square(4, 5), Square(2, 3)},
+                Move{Square(1, 6), Square(7, 0)},
+                Move{Square(6, 1), Square(0, 0)},
+                Move{Square(3, 2), Square(5, 5)},
             }
         },
     };
@@ -266,19 +266,19 @@ TEST(BoardTest, GetOccupiedSquaresTest) {
     std::vector<std::unordered_map<Square, Piece>> piece_maps = {
         {/* intentionally empty */},
         {
-            { Square(0, 0), (Piece){ PieceType::KING, PieceColor::BLACK } }
+            { Square(0, 0), Piece{ PieceType::KING, PieceColor::BLACK } }
         },
         {
-            { Square(0, 0), (Piece){ PieceType::BISHOP, PieceColor::BLACK } },
-            { Square(0, 7), (Piece){ PieceType::QUEEN, PieceColor::WHITE } },
-            { Square(7, 0), (Piece){ PieceType::ROOK, PieceColor::BLACK } },
-            { Square(7, 7), (Piece){ PieceType::KNIGHT, PieceColor::WHITE } },
+            { Square(0, 0), Piece{ PieceType::BISHOP, PieceColor::BLACK } },
+            { Square(0, 7), Piece{ PieceType::QUEEN, PieceColor::WHITE } },
+            { Square(7, 0), Piece{ PieceType::ROOK, PieceColor::BLACK } },
+            { Square(7, 7), Piece{ PieceType::KNIGHT, PieceColor::WHITE } },
         },
         {
-            { Square(0, 4), (Piece){ PieceType::PAWN, PieceColor::BLACK } },
-            { Square(2, 3), (Piece){ PieceType::QUEEN, PieceColor::WHITE } },
-            { Square(7, 1), (Piece){ PieceType::ROOK, PieceColor::BLACK } },
-            { Square(1, 6), (Piece){ PieceType::PAWN, PieceColor::BLACK } },
+            { Square(0, 4), Piece{ PieceType::PAWN, PieceColor::BLACK } },
+            { Square(2, 3), Piece{ PieceType::QUEEN, PieceColor::WHITE } },
+            { Square(7, 1), Piece{ PieceType::ROOK, PieceColor::BLACK } },
+            { Square(1, 6), Piece{ PieceType::PAWN, PieceColor::BLACK } },
         }
     };
 
@@ -355,13 +355,13 @@ TEST(BoardTest, HashTest) {
         {{
             // empty
         }, {
-            makeSet((Piece){PieceType::KNIGHT, PieceColor::BLACK},
+            makeSet(Piece{PieceType::KNIGHT, PieceColor::BLACK},
                     Square(0, 0)),
-            makeSet((Piece){PieceType::ROOK, PieceColor::WHITE},
+            makeSet(Piece{PieceType::ROOK, PieceColor::WHITE},
                     Square(0, 7)),
-            makeSet((Piece){PieceType::BISHOP, PieceColor::WHITE},
+            makeSet(Piece{PieceType::BISHOP, PieceColor::WHITE},
                     Square(7, 0)),
-            makeSet((Piece){PieceType::KING, PieceColor::BLACK},
+            makeSet(Piece{PieceType::KING, PieceColor::BLACK},
                     Square(7, 7)),
             makeRemove(Square(0, 7)),
             makeRemove(Square(7, 7)),
@@ -370,17 +370,17 @@ TEST(BoardTest, HashTest) {
         }},
 
         {{
-            { Square(0, 0), (Piece){ PieceType::QUEEN, PieceColor::BLACK } }
+            { Square(0, 0), Piece{ PieceType::QUEEN, PieceColor::BLACK } }
         }, {
             makeMove(Square(0, 0), Square(0, 7)),
             makeMove(Square(0, 7), Square(0, 0))
         }},
 
         {{
-            { Square(0, 0), (Piece){ PieceType::QUEEN, PieceColor::BLACK } },
-            { Square(7, 7), (Piece){ PieceType::KING, PieceColor::WHITE } },
-            { Square(3, 2), (Piece){ PieceType::PAWN, PieceColor::WHITE } },
-            { Square(5, 6), (Piece){ PieceType::BISHOP, PieceColor::BLACK } }
+            { Square(0, 0), Piece{ PieceType::QUEEN, PieceColor::BLACK } },
+            { Square(7, 7), Piece{ PieceType::KING, PieceColor::WHITE } },
+            { Square(3, 2), Piece{ PieceType::PAWN, PieceColor::WHITE } },
+            { Square(5, 6), Piece{ PieceType::BISHOP, PieceColor::BLACK } }
         }, {
             makeMove(Square(0, 0), Square(4, 4)),
             makeMove(Square(7, 7), Square(0, 0)),
@@ -394,22 +394,22 @@ TEST(BoardTest, HashTest) {
         }},
 
         {{
-            { Square(0, 0), (Piece){ PieceType::QUEEN, PieceColor::BLACK } },
-            { Square(7, 7), (Piece){ PieceType::KING, PieceColor::WHITE } },
-            { Square(3, 2), (Piece){ PieceType::PAWN, PieceColor::WHITE } },
-            { Square(5, 6), (Piece){ PieceType::BISHOP, PieceColor::BLACK } }
+            { Square(0, 0), Piece{ PieceType::QUEEN, PieceColor::BLACK } },
+            { Square(7, 7), Piece{ PieceType::KING, PieceColor::WHITE } },
+            { Square(3, 2), Piece{ PieceType::PAWN, PieceColor::WHITE } },
+            { Square(5, 6), Piece{ PieceType::BISHOP, PieceColor::BLACK } }
         }, {
             makeRemove(Square(0, 0)),
             makeRemove(Square(7, 7)),
             makeRemove(Square(3, 2)),
             makeRemove(Square(5, 6)),
-            makeSet((Piece){PieceType::QUEEN, PieceColor::BLACK},
+            makeSet(Piece{PieceType::QUEEN, PieceColor::BLACK},
                     Square(0, 0)),
-            makeSet((Piece){PieceType::KING, PieceColor::WHITE},
+            makeSet(Piece{PieceType::KING, PieceColor::WHITE},
                     Square(7, 7)),
-            makeSet((Piece){PieceType::PAWN, PieceColor::WHITE},
+            makeSet(Piece{PieceType::PAWN, PieceColor::WHITE},
                     Square(3, 2)),
-            makeSet((Piece){PieceType::BISHOP, PieceColor::BLACK},
+            makeSet(Piece{PieceType::BISHOP, PieceColor::BLACK},
                     Square(5, 6))
         }}
     };

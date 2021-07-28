@@ -34,7 +34,7 @@ Move promptPlayerForMove() {
                      << ", " << std::to_string(row_to) << ")" << std::endl;
         } else {
             // dims are good!
-            return (Move){ Square(row_from, col_from), Square(row_to, col_to) };
+            return Move{ Square(row_from, col_from), Square(row_to, col_to) };
         }
     }
 }

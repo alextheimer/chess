@@ -62,7 +62,7 @@ Piece board::decompressPiece(CompressedPiece compressed_piece) {
     PieceColor color =
             static_cast<PieceColor>(compressed_piece & PIECE_COLOR_MASK);
     // TODO(theimer): this syntax seems too C-ish
-    return (Piece){type, color};
+    return Piece{type, color};
 }
 
 bool board::operator==(Piece lhs, Piece rhs) {

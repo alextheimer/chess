@@ -72,7 +72,7 @@ static std::vector<std::size_t> makeZobVec() {
             for (std::size_t icolor = 0; icolor < NUM_COLORS; ++icolor) {
                 PieceType type = static_cast<PieceType>(itype);
                 PieceColor color = static_cast<PieceColor>(icolor);
-                std::size_t index = getZobIndex(isquare, (Piece){type, color});
+                std::size_t index = getZobIndex(isquare, Piece{type, color});
                 zob_vec[index] = util::getRand64();
             }
         }
