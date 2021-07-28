@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "util/buffer.h"
+#include "util/macro.h"
 
 using board::Board;
 using board::PieceColor;
@@ -277,12 +278,14 @@ BoardScore alphaBetaSearchMax(Board* board, PieceColor color,
     */
     ExitCondFunc exit_cond =  [](BoardScore alpha, BoardScore beta,
                                  BoardScore score) {
+        UNUSED(alpha);
         return score >= beta;
     };
 
     // store the "player's best-possible score"
     BoundUpdateFunc bound_update =
             [](BoardScore* alpha, BoardScore* beta, BoardScore score) {
+        UNUSED(beta);
         *alpha = std::max(*alpha, score);
     };
 
@@ -322,6 +325,7 @@ BoardScore alphaBetaSearchMin(Board* board, PieceColor color,
     */
     ExitCondFunc exit_cond =  [](BoardScore alpha, BoardScore beta,
                                  BoardScore score) {
+        UNUSED(beta);
         return score <= alpha;
     };
 
@@ -329,6 +333,7 @@ BoardScore alphaBetaSearchMin(Board* board, PieceColor color,
     // store the "player's worst-possible score"
     BoundUpdateFunc bound_update =
             [](BoardScore* alpha, BoardScore* beta, BoardScore score) {
+        UNUSED(alpha);
         *beta = std::min(*beta, score);
     };
 

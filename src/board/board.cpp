@@ -152,6 +152,8 @@ void Board::setPieceIndex(Piece piece, std::size_t index) {
                  index, true);
     util::setBit(&this->color_bitboards_[static_cast<std::size_t>(piece.color)],
                  index, true);
+    // All Board constructors initialize hash_, so I have no idea why gcc
+    //     thinks this might be uninitialized.
     hash_ = toggleZobPiece(hash_, piece, index);
     ASSERT(squareIsOccupiedIndex(index),
             "index unoccupied after set: " + makeIndexSquareString(index));

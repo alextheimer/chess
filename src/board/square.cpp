@@ -28,9 +28,7 @@ bool Square::isValidDims(std::size_t row, std::size_t col) {
 }
 
 bool Square::isValidIndex(std::size_t index) {
-    // >=0 just in case datatype changes
-    //    (this should only exist in assertions, anyways)
-    return (index < Square::NUM_SQUARES) && (index >= 0);
+    return (index < Square::NUM_SQUARES);
 }
 
 SquareIndex Square::squareToIndex(Square square) {

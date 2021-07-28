@@ -7,7 +7,7 @@
 #include "util/assert.h"
 
 bool isValidBitIndex(std::size_t bit_index) {
-    return (bit_index < util::NUM_BITOP_BITS) && (bit_index >= 0);
+    return (bit_index < util::NUM_BITOP_BITS);
 }
 
 void util::setBit(BitOpType* bits, std::size_t bit_index, bool bit) {
