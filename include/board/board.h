@@ -12,6 +12,8 @@
 #include "board/piece.h"
 #include "board/zobhash.h"
 
+// *** Template includes at end of this file! ***
+
 // need to declare Board for use in template specialization below
 namespace board {
 
@@ -128,24 +130,27 @@ class Board {
 
     /*
     Fills a buffer with all Squares that contain a piece with the specified PieceColor.
-    @param buffer: an Iterator at the beginning of the buffer.
+    @param buffer: a random-access iterator at the beginning of the buffer.
     @return: the number of Squares added to the buffer.
     */
-    std::size_t getOccupiedSquares(PieceColor color, Square* buffer) const;
+    template<typename RandomAccessIter>
+    std::size_t getOccupiedSquares(PieceColor color, RandomAccessIter buffer) const;
 
     /*
     Fills a buffer with all Squares that contain a piece with the specified PieceType.
-    @param buffer: an Iterator at the beginning of the buffer.
+    @param buffer: a random-access iterator at the beginning of the buffer.
     @return: the number of Squares added to the buffer.
     */
-    std::size_t getOccupiedSquares(PieceType type, Square* buffer) const;
+    template<typename RandomAccessIter>
+    std::size_t getOccupiedSquares(PieceType type, RandomAccessIter buffer) const;
 
     /*
     Fills a buffer with all Squares that contain a piece.
-    @param buffer: an Iterator at the beginning of the buffer.
+    @param buffer: a random-access iterator at the beginning of the buffer.
     @return: the number of Squares added to the buffer.
     */
-    std::size_t getOccupiedSquares(Square* buffer) const;
+    template<typename RandomAccessIter>
+    std::size_t getOccupiedSquares(RandomAccessIter buffer) const;
 
     friend std::size_t std::hash<board::Board>::operator()(
                                        const board::Board& board) const;
@@ -181,5 +186,7 @@ class Board {
 };
 
 }  // namespace board
+
+#include "board/board.tpp"
 
 #endif  // BOARD_BOARD_H_

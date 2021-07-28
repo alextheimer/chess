@@ -26,19 +26,21 @@ std::ostream& operator<<(std::ostream& out, Move move);
 /*
 Fills a buffer with all possible moves for the Piece at the specified Square.
 @param square: must be occupied by a Piece of PieceColor `color`
-@param buffer: an Iterator at the start of the buffer.
+@param buffer: a random-access iterator at the start of the buffer.
 @return: the number of Moves added to the buffer.
 */
+template<typename RandomAccessIter>
 std::size_t getPieceMoves(const board::Board& board, board::PieceColor color,
-                          board::Square square, Move* buffer);
+                          board::Square square, RandomAccessIter buffer);
 
 /*
 Fills a buffer with all possible moves for Pieces of the specified color.
-@param buffer: an Iterator at the start of the buffer.
+@param buffer: a random-access iterator at the start of the buffer.
 @return: the number of Moves added to the buffer.
 */
+template<typename RandomAccessIter>
 std::size_t getAllMoves(const board::Board& board,
-                        board::PieceColor color, Move* buffer);
+                        board::PieceColor color, RandomAccessIter buffer);
 
 /*
 Applies the specified move to the board.

@@ -263,23 +263,6 @@ void Board::movePieceOverwriteIndex(std::size_t from_index,
     #endif  // DEBUG
 }
 
-/*
-Fills a buffer with all Squares such that each contains a 1 on the Bitboard.
-@param buffer: an Iterator at the first index of the buffer.
-@return: the number of Squares added to the buffer.
-*/
-std::size_t bitboardToSquares(Bitboard board, Square* buffer) {
-     Square* ptr = buffer;
-    // i.e. "while 1's exist on the board"
-    // TODO(theimer): might vectorize with popcount-based for loop
-    while (board > 0) {
-        std::size_t index = util::popLowestBit(&board);
-        *ptr = Square::indexToSquare(index);
-        ++ptr;
-    }
-    return ptr - buffer;
-}
-
 Board::Board() : hash_(board::ZOB_INIT) {
     // intentionally blank
 }
@@ -346,27 +329,6 @@ PieceColor Board::getPieceColor(Square square) const {
     return getPieceColorIndex(index);
 }
 
-std::size_t Board::getOccupiedSquares(PieceColor color, Square* buffer) const {
-    Bitboard board = color_bitboards_[static_cast<size_t>(color)];
-    return bitboardToSquares(board, buffer);
-}
-
-std::size_t Board::getOccupiedSquares(PieceType type, Square* buffer) const {
-    Bitboard board = piece_bitboards_[static_cast<size_t>(type)];
-    return bitboardToSquares(board, buffer);
-}
-
-std::size_t Board::getOccupiedSquares(Square* buffer) const {
-    // get the union of all color bitboards, then convert to squares.
-    Bitboard board = 0;
-    for (std::size_t i = 0;
-            i < static_cast<std::size_t>(PieceColor::NUM_PIECE_COLORS);
-            ++i) {
-        board |= color_bitboards_[i];
-    }
-    return bitboardToSquares(board, buffer);
-}
-
 void Board::removePiece(Square square) {
     std::size_t index = Square::squareToIndex(square);
     removePieceIndex(index);
@@ -392,3 +354,4 @@ Piece Board::getPiece(Square square) const {
 std::size_t std::hash<Board>::operator()(const board::Board& board) const {
     return board.hash_;
 }
+

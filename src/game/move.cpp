@@ -36,12 +36,13 @@ A valid Move is any such that the destination:
     (2) does not contain a piece of the same color
 
 @param color: the color of the piece at the Square
-@param buffer: an Iterator at the first index of the buffer
+@param buffer: a random-access iterator at the first index of the buffer
 @return: the number of Moves added to the buffer
 */
-template <std::size_t SIZE>
+template <typename RandomAccessIter, std::size_t SIZE>
 std::size_t getMovesDiff(const Board& board, PieceColor color, Square square,
-                         const std::array<Diff, SIZE>& diffs, Move* buffer) {
+                         const std::array<Diff, SIZE>& diffs,
+                         RandomAccessIter buffer) {
     std::size_t i = 0;
     for (Diff diff : diffs) {
         std::size_t row = square.row + diff.row_diff;
@@ -72,14 +73,14 @@ A valid Move is any such that the destination:
     (2) does not contain a piece of the same color
 
 @param color: the color of the piece at the Square
-@param buffer: an Iterator at the first index of the buffer
+@param buffer: a random-access iterator at the first index of the buffer
 @return: the number of Moves added to the buffer
 */
-template <std::size_t SIZE>
+template <typename RandomAccessIter, std::size_t SIZE>
 std::size_t getMovesVector(const Board& board, PieceColor color, Square square,
                            const std::array<Diff, SIZE>& vectors,
-                           Move* buffer) {
-    Move* move_ptr = buffer;
+                           RandomAccessIter buffer) {
+    RandomAccessIter begin = buffer;
     for (Diff vec : vectors) {
         // TODO(theimer): worth changing the spec for this?
 //        ASSERT((std::abs(vec.row_diff) <= 1) && (std::abs(vec.col_diff) <= 1),
@@ -99,12 +100,12 @@ std::size_t getMovesVector(const Board& board, PieceColor color, Square square,
             curr_sq = Square(new_row, new_col);
             if (!board.squareIsOccupied(curr_sq)) {
                 // square is empty!
-                *move_ptr = Move{ square, curr_sq };
-                ++move_ptr;
+                *buffer = Move{ square, curr_sq };
+                ++buffer;
             } else if (!board.squareIsOccupiedColor(curr_sq, color)) {
                 // square occupied by enemy
-                *move_ptr = Move{ square, curr_sq };
-                ++move_ptr;
+                *buffer = Move{ square, curr_sq };
+                ++buffer;
                 break;
             } else {
                 // occupied by friendly!
@@ -113,14 +114,15 @@ std::size_t getMovesVector(const Board& board, PieceColor color, Square square,
             }
         }
     }
-    return move_ptr - buffer;
+    return buffer - begin;
 }
 
 /*
 Fills a buffer with all valid moves by a king or pawn.
 */
+template<typename RandomAccessIter>
 std::size_t getMovesPawnKing(const Board& board, PieceColor color,
-                             Square square, Move* buffer) {
+                             Square square, RandomAccessIter buffer) {
     static const std::array<Diff, 8> diffs = {{
             {  1,  0 },
             {  0,  1 },
@@ -138,8 +140,9 @@ std::size_t getMovesPawnKing(const Board& board, PieceColor color,
 /*
 Fills a buffer with all valid moves by a knight.
 */
+template<typename RandomAccessIter>
 std::size_t getMovesKnight(const Board& board, PieceColor color,
-                           Square square, Move* buffer) {
+                           Square square, RandomAccessIter buffer) {
     static const std::array<Diff, 8> diffs = {{
             {  2,  1 },
             {  2, -1 },
@@ -157,8 +160,9 @@ std::size_t getMovesKnight(const Board& board, PieceColor color,
 /*
 Fills a buffer with all valid moves by a rook.
 */
+template<typename RandomAccessIter>
 std::size_t getMovesRook(const Board& board, PieceColor color,
-                         Square square, Move* buffer) {
+                         Square square, RandomAccessIter buffer) {
     static const std::array<Diff, 4> vectors = {{
             Diff{  0,  1 },
             Diff{  1,  0 },
@@ -172,8 +176,9 @@ std::size_t getMovesRook(const Board& board, PieceColor color,
 /*
 Fills a buffer with all valid moves by a bishop.
 */
+template<typename RandomAccessIter>
 std::size_t getMovesBishop(const Board& board, PieceColor color,
-                           Square square, Move* buffer) {
+                           Square square, RandomAccessIter buffer) {
     static const std::array<Diff, 4> vectors = {{
             Diff{  1,  1 },
             Diff{  1, -1 },
@@ -187,8 +192,9 @@ std::size_t getMovesBishop(const Board& board, PieceColor color,
 /*
 Fills a buffer with all valid moves by a queen.
 */
+template<typename RandomAccessIter>
 std::size_t getMovesQueen(const Board& board, PieceColor color,
-                          Square square, Move* buffer) {
+                          Square square, RandomAccessIter buffer) {
     static const std::array<Diff, 8> vectors = {{
             Diff{  1,  1 },
             Diff{  1, -1 },
@@ -219,8 +225,9 @@ std::ostream& game::operator<<(std::ostream& out, Move move) {
     return out;
 }
 
+template<typename RandomAccessIter>
 std::size_t game::getPieceMoves(const Board& board, PieceColor color,
-                                Square square, Move* buffer) {
+                                Square square, RandomAccessIter buffer) {
     // TODO(theimer): better to just map function pointers?
     PieceType type = board.getPieceType(square);
     switch (type) {
@@ -241,13 +248,14 @@ std::size_t game::getPieceMoves(const Board& board, PieceColor color,
     }
 }
 
+template<typename RandomAccessIter>
 std::size_t game::getAllMoves(const Board& board, PieceColor color,
-                              Move* buffer) {
+                              RandomAccessIter buffer) {
     // get all occupied squares, then get the valid moves from those squares
     util::Buffer<Square, Board::SIZE> occupied_buffer;
     std::size_t num_occupied =
             board.getOccupiedSquares(color, occupied_buffer.start());
-    Move* next_move_slot = buffer;
+    RandomAccessIter next_move_slot = buffer;
     for (std::size_t i = 0; i < num_occupied; ++i) {
         next_move_slot += getPieceMoves(
                 board, color, occupied_buffer.get(i), next_move_slot);
