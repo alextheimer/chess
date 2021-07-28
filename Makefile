@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -Wall -std=c++17
+CFLAGS = -Wall -Wextra -pedantic -std=c++17
 
 TARGET = chess
 
@@ -7,9 +7,9 @@ TARGET_DEPS = $(shell find src -type f -not -name main.cpp)
 TEST_DEPS = $(shell find test -type f -not -name run)
 
 ifeq ($(DEBUG), 1)
-	CFLAGS += -g -O0 -DDEBUG
+	CFLAGS += -O0 -g3 -fsanitize=address -fsanitize=undefined
 else
-	CFLAGS += -O3 -DNDEBUG -flto
+	CFLAGS += -O3 -flto
 endif
 
 ifeq ($(VECREP), 1)
